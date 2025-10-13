@@ -1,0 +1,16 @@
+// ::ng-deep {
+//   mat-toolbar {
+//     padding: 10.5px;
+//   }
+// }
+
+::ng-deep {
+  mat-sidenav-container {
+    mat-sidenav-content {
+      mat-toolbar {
+        padding: 10.5px;
+        background-color: red;
+      }
+    }
+  }
+}

@@ -1,0 +1,195 @@
+<div class="w-full overflow-x-auto">
+  <div class="min-w-max flex justify-center">
+    <div class="flex w-full flex-col items-center">
+      <div
+        class="group flex cursor-default flex-col items-center transition-all duration-200"
+      >
+        <div class="relative">
+          <img
+            class="relative inline-flex 
+               {{ isSmallNode ? 'h-8 w-8' : 'h-12 w-12' }} 
+               items-center justify-center mt-2 rounded-full ring-2 ring-primary"
+            src="person-img.jpg"
+          />
+        </div>
+
+        <div class="mt-2 space-y-1 text-center">
+          <div
+            class="{{ isSmallNode ? 'text-xs' : 'text-sm' }} 
+               font-medium font-semibold text-blue-600 transition-colors"
+          >
+            {{ userNode().userName }}
+          </div>
+
+          <div
+            class="text-muted-foreground {{
+              isSmallNode ? 'text-[10px]' : 'text-xs'
+            }}"
+          >
+            {{ userNode().firstName }} {{ userNode().lastName }}
+          </div>
+
+          <div
+            class="text-muted-foreground {{
+              isSmallNode ? 'text-[10px]' : 'text-xs'
+            }}"
+          >
+            {{ userNode().leftPoints }} • {{ userNode().rightPoints }}
+          </div>
+
+          <div
+            class="bg-muted/50 rounded border px-2 py-1 {{
+              isSmallNode ? 'text-[10px]' : 'text-xs'
+            }}"
+          >
+            <span class="font-medium text-green-600">
+              {{ userNode().leftDownline }}</span
+            >
+            <span class="text-muted-foreground mx-1">|</span>
+            <span class="font-medium text-purple-600">{{
+              userNode().rightDownline
+            }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex w-full flex-col items-center">
+        <div
+          class="group flex cursor-default flex-col items-center transition-all duration-200"
+        >
+          @if (currentDepth !== 4) {
+            <div class="bg-gray-300 h-6 w-px"></div>
+          }
+
+          <div
+            *ngIf="
+              currentDepth < 4 &&
+              (userNode().leftChild || userNode().rightChild)
+            "
+            class="flex w-full justify-center relative gap-12"
+          >
+            <div class="absolute top-0 h-px bg-gray-300 w-full"></div>
+
+            <div class="flex flex-col items-center">
+              <div class="relative w-full flex justify-end">
+                <div class="absolute top-0 left-1/2 w-px h-6 bg-gray-300"></div>
+              </div>
+
+              <div class="pt-6 flex justify-center">
+                <ng-container *ngIf="userNode().leftChild; else leftEmptySlot">
+                  <app-geonology-tree
+                    [userNode]="userNode().leftChild!"
+                  ></app-geonology-tree>
+                </ng-container>
+
+                <ng-template #leftEmptySlot>
+                  @if (currentDepth === 3) {
+                    <div class="relative">
+                      <div class="group flex flex-col items-center">
+                        <span
+                          class="border-border relative flex size-8 shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50"
+                        >
+                          <span
+                            class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full"
+                          >
+                            <mat-icon>question_mark</mat-icon></span
+                          >
+                        </span>
+                        <div class="text-muted-foreground mt-2 text-xs">
+                          Empty
+                        </div>
+                        <div class="text-muted-foreground text-xs">0 | 0</div>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="relative">
+                      <div
+                        class="flex cursor-pointer flex-col items-center"
+                        (click)="handleAddMember(userNode())"
+                      >
+                        <span
+                          class="border-border relative flex size-10 shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-blue-400 group-hover:opacity-80"
+                          ><span
+                            class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-blue-600"
+                          >
+                            <mat-icon>add</mat-icon></span
+                          ></span
+                        >
+                        <div
+                          class="mt-2 text-xs text-blue-600 group-hover:text-blue-700"
+                        >
+                          Add Member
+                        </div>
+                        <div class="text-muted-foreground text-xs">0 | 0</div>
+                      </div>
+                    </div>
+                  }
+                </ng-template>
+              </div>
+            </div>
+
+            <div class="flex flex-col items-center">
+              <div class="relative w-full flex justify-start">
+                <div class="absolute top-0 left-1/2 w-px h-6 bg-gray-300"></div>
+              </div>
+
+              <div class="pt-6 flex justify-center">
+                <ng-container
+                  *ngIf="userNode().rightChild; else rightEmptySlot"
+                >
+                  <app-geonology-tree
+                    [userNode]="userNode().rightChild!"
+                  ></app-geonology-tree>
+                </ng-container>
+
+                <ng-template #rightEmptySlot>
+                  @if (currentDepth === 3) {
+                    <div class="relative">
+                      <div class="group flex flex-col items-center">
+                        <span
+                          class="border-border relative flex size-8 shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50"
+                        >
+                          <span
+                            class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full"
+                          >
+                            <mat-icon>question_mark</mat-icon></span
+                          >
+                        </span>
+                        <div class="text-muted-foreground mt-2 text-xs">
+                          Empty
+                        </div>
+                        <div class="text-muted-foreground text-xs">0 | 0</div>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="relative">
+                      <div
+                        class="flex cursor-pointer flex-col items-center"
+                        (click)="handleAddMember(userNode())"
+                      >
+                        <span
+                          class="border-border relative flex size-10 shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-blue-400 group-hover:opacity-80"
+                          ><span
+                            class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-blue-600"
+                          >
+                            <mat-icon>add</mat-icon></span
+                          ></span
+                        >
+                        <div
+                          class="mt-2 text-xs text-blue-600 group-hover:text-blue-700"
+                        >
+                          Add Member
+                        </div>
+                        <div class="text-muted-foreground text-xs">0 | 0</div>
+                      </div>
+                    </div>
+                  }
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

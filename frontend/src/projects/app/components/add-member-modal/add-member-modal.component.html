@@ -1,0 +1,151 @@
+<mat-dialog-content class="p-4 sm:p-6 max-h-[80vh] overflow-y-auto">
+  <div class="flex flex-col gap-2 space-y-3 text-center sm:text-left">
+    <div class="flex items-center gap-3">
+      <div
+        class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100"
+      >
+        <mat-icon color="primary">person_add</mat-icon>
+      </div>
+      <div>
+        <h2 class="text-xl font-semibold">Add New Member</h2>
+        <p class="text-muted-foreground text-sm">
+          Create a new MLM account in your network tree
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="text-card-foreground bg-muted/30 flex flex-col gap-6 rounded-xl border py-6 shadow-sm"
+    >
+      <div class="px-6 pt-4">
+        <div class="flex items-center justify-center space-x-3 text-sm">
+          <div class="flex items-center gap-2">
+            <span class="text-muted-foreground">Placement Parent:</span>
+            <span
+              class="inline-flex rounded-md border px-2 py-0.5 text-xs font-medium"
+              >ramil03</span
+            >
+          </div>
+          <mat-icon>arrow_right_alt</mat-icon>
+          <div class="flex items-center gap-2">
+            <span class="text-muted-foreground">Side:</span>
+            <span
+              class="inline-flex rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium capitalize"
+              >left</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form class="space-y-6 pt-4">
+    <!-- Personal Info -->
+    <div class="space-y-4">
+      <div class="flex items-center gap-2 pb-2">
+        <h3 class="text-foreground text-sm font-medium">
+          Personal Information
+        </h3>
+        <div class="flex-1 h-px bg-border"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <mat-form-field class="w-full">
+          <mat-label>First Name</mat-label>
+          <input matInput placeholder="John" required />
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+          <mat-label>Last Name</mat-label>
+          <input matInput placeholder="Doe" required />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Account Info -->
+    <div class="space-y-4">
+      <div class="flex items-center gap-2 pb-2">
+        <h3 class="text-foreground text-sm font-medium">Account Information</h3>
+        <div class="flex-1 h-px bg-border"></div>
+      </div>
+
+      <mat-form-field class="w-full">
+        <mat-label>Username</mat-label>
+        <input
+          matInput
+          id="username"
+          placeholder="johndoe123"
+          minlength="3"
+          required
+        />
+      </mat-form-field>
+
+      <mat-form-field class="w-full">
+        <mat-label>Activation Code</mat-label>
+        <input
+          matInput
+          id="activationCode"
+          placeholder="Enter 8+ character activation code"
+          minlength="8"
+          required
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Network Placement -->
+    <div class="space-y-3">
+      <div class="flex items-center gap-2 pb-2">
+        <h3 class="text-foreground text-sm font-medium">Network Placement</h3>
+        <div class="flex-1 h-px bg-border"></div>
+      </div>
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-sm">
+          <span>Sponsor</span>
+          <button mat-stroked-button color="primary" disabled>
+            <mat-icon>lock</mat-icon> Locked
+          </button>
+        </div>
+        <div
+          class="bg-muted/30 flex items-center justify-between rounded-md border px-3 py-2"
+        >
+          <span class="font-mono text-sm">ramil03</span>
+          <span
+            class="bg-secondary text-secondary-foreground inline-flex rounded-md px-2 py-0.5 text-xs font-medium"
+            >Default</span
+          >
+        </div>
+        <p class="text-muted-foreground text-xs">
+          The sponsor will receive referral bonuses from this member.
+        </p>
+      </div>
+    </div>
+
+    <!-- Placement Summary -->
+    <mat-card appearance="outlined" class="border-blue-200 bg-blue-50">
+      <mat-card-content>
+        <div class="flex items-start gap-3">
+          <mat-icon color="primary">info</mat-icon>
+          <div class="space-y-2">
+            <h4 class="text-sm font-medium text-blue-900">Placement Summary</h4>
+            <div class="grid grid-cols-2 gap-4 text-xs">
+              <div>
+                <span class="text-blue-700">Placement Parent:</span>
+                <p class="font-medium text-blue-900">ramil03</p>
+              </div>
+              <div>
+                <span class="text-blue-700">Placement:</span>
+                <p class="font-medium text-blue-900 capitalize">left side</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-4 flex gap-1">
+  <button mat-stroked-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" mat-dialog-close>
+    Create Member
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,211 @@
+<!-- Top Summary Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+  <!-- Card -->
+  <div
+    class="p-6 bg-white rounded-2xl border shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02]"
+  >
+    <h2 class="text-2xl font-bold text-gray-800">339.18 PHP</h2>
+    <p class="text-gray-500 text-sm mt-1">All USID Balance</p>
+  </div>
+
+  <div
+    class="p-6 bg-white rounded-2xl border shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02]"
+  >
+    <h2 class="text-2xl font-bold text-gray-800">54.54 PHP</h2>
+    <p class="text-gray-500 text-sm mt-1">FA049950 Balance</p>
+  </div>
+
+  <div
+    class="p-6 bg-white rounded-2xl border shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02]"
+  >
+    <h2 class="text-2xl font-bold text-gray-800">145.00 PHP</h2>
+    <p class="text-gray-500 text-sm mt-1">EC Wallet</p>
+  </div>
+
+  <div
+    class="p-6 bg-white rounded-2xl border shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02]"
+  >
+    <h2 class="text-2xl font-bold text-gray-800">0.00 PHP</h2>
+    <p class="text-gray-500 text-sm mt-1">MG Pay</p>
+  </div>
+
+  <div
+    class="p-6 bg-white rounded-2xl border shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02]"
+  >
+    <h2 class="text-2xl font-bold text-gray-800">0</h2>
+    <p class="text-gray-500 text-sm mt-1">Travel GC</p>
+  </div>
+
+  <div
+    class="p-6 bg-white rounded-2xl border shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02]"
+  >
+    <h2 class="text-2xl font-bold text-gray-800">0</h2>
+    <p class="text-gray-500 text-sm mt-1">Product GC</p>
+  </div>
+</div>
+
+<!-- Reload Button + Title -->
+<div class="mt-12">
+  <div class="flex items-center justify-between mb-6">
+    <h4 class="text-base font-bold text-gray-800">EC Wallet Reload History</h4>
+    <button
+      (click)="openReloadModal()"
+      class="px-5 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300"
+    >
+      Reload Now
+    </button>
+  </div>
+
+  <!-- Transaction Table -->
+  <div
+    class="overflow-x-auto bg-white rounded-xl shadow border animate-fade-in"
+  >
+    <table class="min-w-full text-sm text-left text-gray-600">
+      <thead class="bg-gray-100 text-gray-700 text-xs uppercase">
+        <tr>
+          <th class="px-4 py-3">Ref. #</th>
+          <th class="px-4 py-3">User ID</th>
+          <th class="px-4 py-3">Amount</th>
+          <th class="px-4 py-3">Date</th>
+          <th class="px-4 py-3">Author</th>
+          <th class="px-4 py-3">Remarks</th>
+          <th class="px-4 py-3">Currency</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let tx of transactions"
+          class="border-b hover:bg-gray-50 transition"
+        >
+          <td class="px-4 py-2">{{ tx.ref }}</td>
+          <td class="px-4 py-2">{{ tx.userId }}</td>
+          <td
+            class="px-4 py-2 font-semibold"
+            [ngClass]="tx.amount < 0 ? 'text-red-500' : 'text-green-600'"
+          >
+            {{ tx.amount | number: "1.2-2" }}
+          </td>
+          <td class="px-4 py-2">
+            {{ tx.date | date: "yyyy-MM-dd HH:mm:ss" }}
+          </td>
+          <td class="px-4 py-2">{{ tx.author }}</td>
+          <td class="px-4 py-2">{{ tx.remarks }}</td>
+          <td class="px-4 py-2">{{ tx.currency }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal  NOTE change this into angular material -->
+<div
+  *ngIf="showReloadModal"
+  class="fixed inset-0 bg-transparent flex items-center justify-center z-30 animate-fade-in"
+>
+  <div
+    class="bg-white rounded-2xl shadow-2xl p-8 w-[420px] relative animate-scale-in"
+  >
+    <!-- Close button -->
+    <button
+      (click)="closeReloadModal()"
+      class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl transition"
+    >
+      ✕
+    </button>
+
+    <h5 class="font-bold mb-6 text-center">Reload Now</h5>
+
+    <!-- Amount buttons -->
+    <div class="grid grid-cols-3 gap-3 text-center mb-6">
+      <button
+        *ngFor="let amt of amounts"
+        (click)="selectAmount(amt)"
+        [class.bg-blue-100]="selectedAmount === amt"
+        [class.text-blue-600]="selectedAmount === amt"
+        class="px-3 py-2 border rounded-lg hover:bg-gray-100 transition"
+      >
+        {{ amt | number: "1.0-0" }}.00
+      </button>
+    </div>
+
+    <!-- Operation -->
+    <div class="flex items-center justify-center gap-6 mb-6">
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input
+          type="radio"
+          name="op"
+          value="+"
+          [checked]="operation === '+'"
+          (change)="toggleOperation('+')"
+        />
+        +
+      </label>
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input
+          type="radio"
+          name="op"
+          value="-"
+          [checked]="operation === '-'"
+          (change)="toggleOperation('-')"
+        />
+        -
+      </label>
+    </div>
+
+    <!-- Total -->
+    <div class="flex justify-between text-lg font-bold mb-6">
+      <span>Total:</span>
+      <span class="text-blue-600"
+        >{{ selectedAmount | number: "1.2-2" }} PHP</span
+      >
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-center gap-4">
+      <button
+        (click)="proceed()"
+        class="px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow-md transition transform hover:-translate-y-0.5"
+      >
+        ✅ Proceed
+      </button>
+      <button
+        (click)="closeReloadModal()"
+        class="px-5 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg shadow-md transition transform hover:-translate-y-0.5"
+      >
+        ✖ Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Animations -->
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-in-out;
+  }
+</style>
+
+<ng-container *cdkPortal>
+  <h5 class="text-2xl font-semibold">Ecu Wallet</h5>
+</ng-container>

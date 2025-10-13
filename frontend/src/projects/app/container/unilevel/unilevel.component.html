@@ -1,0 +1,125 @@
+<!-- Header Controls -->
+<div class="flex items-center space-x-4 animate-fade-in">
+  <select
+    class="border p-2 rounded-lg shadow-sm bg-white transition-all duration-300 ease-in-out transform hover:scale-105 hover:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+  >
+    <option>2025</option>
+  </select>
+  <select
+    class="border p-2 rounded-lg shadow-sm bg-white transition-all duration-300 ease-in-out transform hover:scale-105 hover:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+  >
+    <option>September</option>
+  </select>
+  <button
+    class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-110 hover:shadow-xl hover:from-blue-600 hover:to-blue-700 active:scale-95"
+  >
+    🔍 View
+  </button>
+</div>
+
+<!-- Main Content -->
+<div class="grid grid-cols-3 gap-6 mt-6">
+  <!-- Left Panel -->
+  <div
+    class="col-span-2 bg-white rounded-2xl shadow-lg p-6 transform transition-all duration-500 ease-in-out hover:scale-[1.01] hover:shadow-xl animate-slide-up"
+  >
+    <h2 class="text-xl font-bold mb-4 text-gray-700 flex items-center gap-2">
+      📊 UNILEVEL HISTORY
+    </h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-gradient-to-r from-blue-100 to-blue-200 text-gray-700">
+          <tr>
+            <th class="p-3">Ref. #</th>
+            <th class="p-3">Business Partner</th>
+            <th class="p-3">Product / Date</th>
+            <th class="p-3">Commission</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            class="border-b transition-all duration-300 hover:bg-blue-50 hover:scale-[1.01] cursor-pointer"
+          >
+            <td class="p-3 font-medium">1</td>
+            <td class="p-3">
+              ADA ACHA <br />
+              <span class="text-xs text-gray-500">ED252737</span>
+            </td>
+            <td class="p-3">
+              PMA WINS H <br />
+              <span class="text-xs text-gray-500">2025-09-19</span>
+            </td>
+            <td class="p-3">
+              <span class="font-semibold text-blue-600">Level: 2</span> <br />
+              Value: <span class="font-semibold">4.25</span>
+            </td>
+          </tr>
+          <!-- more rows -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div
+    class="bg-white rounded-2xl shadow-lg p-6 text-center transform transition-all duration-500 ease-in-out hover:scale-[1.02] hover:shadow-xl animate-slide-up"
+  >
+    <div
+      class="text-4xl font-extrabold text-blue-600 animate-bounce drop-shadow-lg"
+    >
+      ₱233.50
+    </div>
+    <div class="text-gray-500 text-sm mt-1">
+      YOUR TOTAL UNILEVEL EARNINGS FOR THIS MONTH
+    </div>
+
+    <h2 class="mt-6 text-lg font-semibold text-gray-700 border-b pb-2">
+      Earnings Summary
+    </h2>
+
+    <table class="w-full mt-3 text-sm">
+      <thead class="bg-gradient-to-r from-blue-100 to-blue-200 text-gray-700">
+        <tr>
+          <th class="p-2">Level</th>
+          <th class="p-2">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          class="hover:bg-blue-50 transition-all duration-300 hover:scale-[1.01] cursor-pointer"
+        >
+          <td class="p-2 font-semibold">1</td>
+          <td class="p-2">10.25</td>
+        </tr>
+        <tr
+          class="hover:bg-blue-50 transition-all duration-300 hover:scale-[1.01] cursor-pointer"
+        >
+          <td class="p-2 font-semibold">2</td>
+          <td class="p-2">102.25</td>
+        </tr>
+        <tr
+          class="hover:bg-blue-50 transition-all duration-300 hover:scale-[1.01] cursor-pointer"
+        >
+          <td class="p-2 font-semibold">3</td>
+          <td class="p-2">39.75</td>
+        </tr>
+        <tr
+          class="hover:bg-blue-50 transition-all duration-300 hover:scale-[1.01] cursor-pointer"
+        >
+          <td class="p-2 font-semibold">4</td>
+          <td class="p-2">39.5</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button
+      class="mt-6 w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-2 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 hover:from-green-600 hover:to-green-700 active:scale-95"
+    >
+      📥 Download Report
+    </button>
+  </div>
+</div>
+
+<ng-container *cdkPortal>
+  <h5 class="text-2xl font-semibold">Unilevel</h5>
+</ng-container>

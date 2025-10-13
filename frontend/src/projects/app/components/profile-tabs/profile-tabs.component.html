@@ -1,0 +1,46 @@
+<mat-tab-group mat-stretch-tabs>
+  <!-- Tab 1 -->
+  <mat-tab label="Reminders">
+    <div class="bg-white rounded-xl shadow-md p-6">
+      <h6 class="text-base font-bold mb-2">Welcome {{ name }}!</h6>
+      <p>
+        Your EC R2ME link is
+        <a [href]="reminderLink" class="text-red-500 underline">{{
+          reminderLink
+        }}</a>
+      </p>
+      <p class="mt-2 text-gray-700">{{ reminderText }}</p>
+    </div>
+  </mat-tab>
+
+  <!-- Tab 2 -->
+  <mat-tab label="Account Info">
+    <div class="bg-white rounded-xl shadow-md p-6">
+      Account Info goes here...
+    </div>
+  </mat-tab>
+
+  <!-- Tab 3 -->
+  <mat-tab label="Prime Monitoring">
+    <div class="bg-white rounded-xl shadow-md p-6">
+      Prime Monitoring goes here...
+    </div>
+  </mat-tab>
+
+  <!-- Tab 4 -->
+  <mat-tab label="Package Points">
+    <div class="bg-white rounded-xl shadow-md p-6">
+      Package Points go here...
+    </div>
+  </mat-tab>
+
+  <!-- Tab 5 -->
+  <mat-tab label="PGI">
+    <div class="bg-white rounded-xl shadow-md p-6">PGI content...</div>
+  </mat-tab>
+
+  <!-- Tab 6 -->
+  <mat-tab label="Non-GA Tree">
+    <div class="bg-white rounded-xl shadow-md p-6">Non-GA Tree content...</div>
+  </mat-tab>
+</mat-tab-group>

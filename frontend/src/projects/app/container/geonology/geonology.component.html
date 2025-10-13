@@ -1,0 +1,19 @@
+<div>
+  <app-geonology-tree
+    [userNode]="userNode"
+    (addMember)="handleAddMember($event)"
+  ></app-geonology-tree>
+  <div class="text-gray-400 px-6 py-3 mt-3">
+    <div class="flex items-center justify-center gap-6 text-xs">
+      <div class="flex items-center gap-1">
+        <mat-icon style="color: rgba(241, 44, 44, 0.719)">bolt</mat-icon>
+        <span>Deduction Active</span>
+      </div>
+      <span>Click avatars to navigate</span>
+    </div>
+  </div>
+</div>
+
+<ng-container *cdkPortal>
+  <h5 class="text-2xl font-semibold">Geonology</h5>
+</ng-container>

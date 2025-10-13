@@ -1,0 +1,31 @@
+<mat-sidenav-container fullscreen>
+  <mat-sidenav #sidenav mode="side" opened class="sidenav">
+    <app-sys-sidenav (toggleSidenav)="toggleExpansion()"></app-sys-sidenav>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar class="geonology-toolbar sticky-toolbar">
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <div class="flex gap-4">
+        <span>
+          <img src="logo/logo.png" alt="logo" width="100px" height="10px" />
+        </span>
+        <ng-container *ngTemplateOutlet="titlePortal"></ng-container>
+        hello
+      </div>
+    </mat-toolbar>
+
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<ng-template #titlePortal>
+  @if (portal()) {
+    <app-page-title></app-page-title>
+  }
+</ng-template>

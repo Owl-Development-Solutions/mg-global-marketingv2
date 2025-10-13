@@ -1,0 +1,31 @@
+<div class="bg-white rounded-xl shadow-md p-6 flex items-start space-x-6">
+  <img
+    [src]="imgUrl"
+    alt="preview "
+    class="w-40 h-47 rounded-lg object-cover"
+  />
+
+  <div class="flex-1">
+    <h5 class="font-bold hover:text-blue-500">{{ name }}</h5>
+
+    <div class="flex gap-4 text-sm text-gray-500">
+      <span class="items-center gap-1 flex hover:text-blue-500"
+        ><mat-icon class="text-sm">person</mat-icon> {{ id }}</span
+      >
+      <span class="items-center gap-1 flex hover:text-blue-500"
+        ><mat-icon>alternate_email</mat-icon> {{ email }}</span
+      >
+    </div>
+
+    <div class="flex flex-wrap gap-4 mt-4">
+      @for (balance of balances; track balance.label) {
+        <div
+          class="border border-dashed rounded-lg p-4 w-40 text-center bg-gray-50"
+        >
+          <p class="text-xl font-semibold">{{ balance.amount }}</p>
+          <p class="text-xs text-gray-500">{{ balance.label }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>
