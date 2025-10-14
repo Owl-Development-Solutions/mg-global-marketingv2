@@ -63,7 +63,7 @@ export class EcuWalletComponent {
 
   // ✅ Modal State
   showReloadModal = false;
-  amounts = [100, 500, 1000, 5000, 10000, 20000, 50000, 100000];
+  amounts = [500, 1000, 5000, 10000, 20000, 50000, 100000];
   selectedAmount = 0;
   operation: '+' | '-' = '+';
 
