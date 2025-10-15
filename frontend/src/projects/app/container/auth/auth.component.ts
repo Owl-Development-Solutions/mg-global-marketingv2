@@ -9,6 +9,5 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [RouterModule, CommonModule],
   templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.scss'],
 })
 export class AuthComponent extends BreakpointObserverComponent {}
