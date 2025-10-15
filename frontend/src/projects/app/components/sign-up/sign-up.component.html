@@ -15,7 +15,7 @@
 
       @if (fullName.invalid) {
         <mat-error>
-          @if (fullName.hasError('required')) {
+          @if (fullName.hasError("required")) {
             <span>Full Name is required</span>
           }
         </mat-error>
@@ -37,7 +37,7 @@
 
       @if (email.invalid) {
         <mat-error>
-          @if (email.hasError('required')) {
+          @if (email.hasError("required")) {
             <span>Email is required</span>
           }
         </mat-error>
@@ -50,7 +50,8 @@
       name="password"
       [required]="true"
       [error]="password"
-      [(ngModel)]="signUpInput.password">
+      [(ngModel)]="signUpInput.password"
+    >
     </app-password-field>
 
     <app-password-field
@@ -60,14 +61,16 @@
       [required]="true"
       [confirmFor]="signUpInput.password"
       [error]="confirmPassword"
-      [(ngModel)]="signUpInput.confirmPassword">
+      [(ngModel)]="signUpInput.confirmPassword"
+    >
     </app-password-field>
 
     <span class="mb-5 mt-4">
       Already have an account?
       <span
         (click)="clickSignIn()"
-        class="font-bold text-primary hover:underline cursor-pointer">
+        class="text-primary hover:underline cursor-pointer"
+      >
         Sign in here
       </span>
     </span>
@@ -79,8 +82,9 @@
           title: 'Error',
           message: error,
           showClose: false,
-          errorType: 'error'
-        }">
+          errorType: 'error',
+        }"
+      >
       </app-notification>
     }
 
@@ -88,17 +92,21 @@
       mat-flat-button
       color="primary"
       type="submit"
-      [disabled]="authForm.invalid">
+      [disabled]="authForm.invalid"
+    >
       Create Account
     </button>
   </form>
 
   <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-    <h3 class="text-sm font-semibold text-blue-900 mb-2">What happens next?</h3>
+    <h3 class="text-sm text-blue-900 mb-2">What happens next?</h3>
     <div class="text-xs text-blue-800 space-y-1">
       <p>1. Create your login account (this step)</p>
       <p>2. Sign in and set up your business account</p>
-      <p>3. Link an existing account or wait for your sponsor to transfer one to you</p>
+      <p>
+        3. Link an existing account or wait for your sponsor to transfer one to
+        you
+      </p>
     </div>
   </div>
 </div>
