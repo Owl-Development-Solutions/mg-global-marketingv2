@@ -1,0 +1,28 @@
+form {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-button {
+  font-size: 24px;
+  padding: 10px 0 10px 0;
+  margin-top: 10px;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  background-color: white;
+  border-radius: 5px;
+}
+
+.forgot-password {
+  color: #005ac5;
+  cursor: pointer;
+}

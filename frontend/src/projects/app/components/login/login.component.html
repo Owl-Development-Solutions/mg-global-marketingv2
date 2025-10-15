@@ -1,0 +1,70 @@
+<div>
+  @if (loading) {
+    <div class="spinner-container">
+      <mat-spinner
+        color="primary"
+        mode="indeterminate">
+      </mat-spinner>
+    </div>
+  } @else {
+    <form #authForm="ngForm" (ngSubmit)="login(authForm)">
+      <mat-form-field hideRequiredMarker>
+        <mat-label>Email</mat-label>
+        <input
+          required
+          type="text"
+          matInput
+          placeholder="Email"
+          name="email"
+          id="email"
+          #email="ngModel"
+          [(ngModel)]="input()!.email"
+        />
+
+        @if (email.invalid) {
+          <mat-error>
+            @if (email.hasError('required')) {
+              <span>Username is required</span>
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <app-password-field
+        #password="ngModel"
+        name="password"
+        [required]="true"
+        [label]="'Password'"
+        [isDisabled]="loading"
+        [error]="password"
+        [(ngModel)]="input.password">
+      </app-password-field>
+
+      <span
+        class="mb-8"
+        (click)="forgottenPassword(authForm.value?.username)">
+        Forgot Password?
+      </span>
+
+      @if (error) {
+        <app-notification
+          class="mb-8"
+          [notification]="{
+            title: 'Error',
+            message: error,
+            showClose: false,
+            errorType: 'error'
+          }">
+        </app-notification>
+      }
+
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="authForm.invalid">
+        Login
+      </button>
+    </form>
+  }
+</div>

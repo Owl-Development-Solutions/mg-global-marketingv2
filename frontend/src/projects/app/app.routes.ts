@@ -1,4 +1,6 @@
 import {
+  AuthComponent,
+  AuthFormComponent,
   DashboardComponent,
   EcuWalletComponent,
   GeonologyComponent,
@@ -32,6 +34,16 @@ export const routes: Routes = [
       {
         path: 'ecu-wallet',
         component: EcuWalletComponent,
+      },
+    ],
+  },
+  {
+    path: 'auth',
+    component: AuthComponent,
+    children: [
+      {
+        path: 'login',
+        component: AuthFormComponent,
       },
     ],
   },
