@@ -7,3 +7,4 @@ export * from './add-member-modal/add-member-modal.component';
 export * from './breakpoint-observer/breakpoint-observer.component';
 export * from './login/login.component';
 export * from './sign-up/sign-up.component';
+export * from './add-wallet-button/add-wallet-button.component';

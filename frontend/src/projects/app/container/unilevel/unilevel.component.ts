@@ -1,10 +1,11 @@
 import { Component, inject, ViewChild } from '@angular/core';
 import { PageTitlePortalService } from '../../services';
 import { CdkPortal } from '@angular/cdk/portal';
+import { AddWalletButtonComponent } from '../../components';
 
 @Component({
   selector: 'app-unilevel',
-  imports: [CdkPortal],
+  imports: [CdkPortal, AddWalletButtonComponent],
   templateUrl: './unilevel.component.html',
   styleUrl: './unilevel.component.scss',
 })

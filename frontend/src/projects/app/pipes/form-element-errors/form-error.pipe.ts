@@ -11,8 +11,6 @@ export class FormErrorPipe implements PipeTransform {
   };
 
   transform(errors: ValidationErrors, label: string): string | null {
-    console.log(errors);
-
     if (errors) {
       if (errors['required']) {
         return `${label} is required`;

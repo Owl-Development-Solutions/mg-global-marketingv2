@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { GeonologyTreeComponent } from '../../components';
+import {
+  GeonologyTreeComponent,
+  AddWalletButtonComponent,
+} from '../../components';
 import { GeonolyResult } from '../../mock';
 import { MatIcon } from '@angular/material/icon';
 import { CdkPortal } from '@angular/cdk/portal';
@@ -8,7 +11,13 @@ import { PageTitlePortalService } from '../../services';
 
 @Component({
   selector: 'app-geonology',
-  imports: [CommonModule, GeonologyTreeComponent, MatIcon, CdkPortal],
+  imports: [
+    CommonModule,
+    GeonologyTreeComponent,
+    MatIcon,
+    CdkPortal,
+    AddWalletButtonComponent,
+  ],
   styleUrl: './geonology.component.scss',
   templateUrl: './geonology.component.html',
 })
