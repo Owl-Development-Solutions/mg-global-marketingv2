@@ -42,7 +42,7 @@ export const routes: Routes = [
     component: AuthComponent,
     children: [
       {
-        path: 'login',
+        path: 'credentials',
         component: AuthFormComponent,
       },
     ],

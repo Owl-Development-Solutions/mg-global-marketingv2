@@ -18,13 +18,13 @@
           name="email"
           id="email"
           #email="ngModel"
-          [(ngModel)]="input()!.email"
+          [(ngModel)]="input!.email"
         />
 
         @if (email.invalid) {
           <mat-error>
             @if (email.hasError('required')) {
-              <span>Username is required</span>
+              <span>Email is required</span>
             }
           </mat-error>
         }
@@ -37,14 +37,23 @@
         [label]="'Password'"
         [isDisabled]="loading"
         [error]="password"
-        [(ngModel)]="input.password">
+        [(ngModel)]="input!.password">
       </app-password-field>
 
-      <span
-        class="mb-8"
+
+      <div class="flex justify-between items-center">
+              <span
+        class="mb-5 mt-4 cursor-pointer hover:underline"
         (click)="forgottenPassword(authForm.value?.username)">
         Forgot Password?
       </span>
+
+      <span
+         class="mb-5 mt-4 cursor-pointer hover:underline text-primary"
+         (click)="signUpHere()"
+      >Register Here</span>
+
+      </div>
 
       @if (error) {
         <app-notification

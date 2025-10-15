@@ -1,1 +1,104 @@
-<p>sign-up works!</p>
+<div>
+  <form #authForm="ngForm" (ngSubmit)="signUp(authForm)">
+    <mat-form-field hideRequiredMarker>
+      <mat-label>Full Name</mat-label>
+      <input
+        required
+        type="text"
+        matInput
+        placeholder="Full Name"
+        name="fullName"
+        id="fullName"
+        #fullName="ngModel"
+        [(ngModel)]="signUpInput!.fullName"
+      />
+
+      @if (fullName.invalid) {
+        <mat-error>
+          @if (fullName.hasError('required')) {
+            <span>Full Name is required</span>
+          }
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field hideRequiredMarker>
+      <mat-label>Email</mat-label>
+      <input
+        required
+        type="text"
+        matInput
+        placeholder="Email"
+        name="email"
+        id="email"
+        #email="ngModel"
+        [(ngModel)]="signUpInput!.email"
+      />
+
+      @if (email.invalid) {
+        <mat-error>
+          @if (email.hasError('required')) {
+            <span>Email is required</span>
+          }
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <app-password-field
+      #password="ngModel"
+      [label]="'Password'"
+      name="password"
+      [required]="true"
+      [error]="password"
+      [(ngModel)]="signUpInput.password">
+    </app-password-field>
+
+    <app-password-field
+      #confirmPassword="ngModel"
+      [label]="'Confirm Password'"
+      name="confirmPassword"
+      [required]="true"
+      [confirmFor]="signUpInput.password"
+      [error]="confirmPassword"
+      [(ngModel)]="signUpInput.confirmPassword">
+    </app-password-field>
+
+    <span class="mb-5 mt-4">
+      Already have an account?
+      <span
+        (click)="clickSignIn()"
+        class="font-bold text-primary hover:underline cursor-pointer">
+        Sign in here
+      </span>
+    </span>
+
+    @if (error) {
+      <app-notification
+        class="mb-8"
+        [notification]="{
+          title: 'Error',
+          message: error,
+          showClose: false,
+          errorType: 'error'
+        }">
+      </app-notification>
+    }
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="authForm.invalid">
+      Create Account
+    </button>
+  </form>
+
+  <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+    <h3 class="text-sm font-semibold text-blue-900 mb-2">What happens next?</h3>
+    <div class="text-xs text-blue-800 space-y-1">
+      <p>1. Create your login account (this step)</p>
+      <p>2. Sign in and set up your business account</p>
+      <p>3. Link an existing account or wait for your sponsor to transfer one to you</p>
+    </div>
+  </div>
+</div>

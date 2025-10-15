@@ -14,6 +14,7 @@ import { MatInput } from '@angular/material/input';
 import { PasswordFieldComponent } from '../password-field/password-field.component';
 import { MatButton } from '@angular/material/button';
 import { NotificationComponent } from '../notification/notification.component';
+import { SignInAttributes } from '../../models';
 
 @Component({
   selector: 'app-login',
@@ -28,26 +29,34 @@ import { NotificationComponent } from '../notification/notification.component';
     PasswordFieldComponent,
     MatButton,
     NotificationComponent,
+    MatInput,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  @Input() input: any;
+  @Input() input!: SignInAttributes;
 
   @Input() error!: string | null;
 
-  @Input() isHandse!: boolean;
+  @Input() isHandset!: boolean;
 
   @Input() loading = false;
 
   @Output() submit = new EventEmitter<NgForm>();
 
-  login(data: any) {
-    console.log(data);
+  @Output() signUp = new EventEmitter<boolean>();
+
+  login(data: NgForm) {
+    this.submit.emit(data);
   }
 
   forgottenPassword(data: any) {
+    // TODO TO BE IMPLIMENTED
     console.log(data);
+  }
+
+  signUpHere() {
+    this.signUp.emit(true);
   }
 }

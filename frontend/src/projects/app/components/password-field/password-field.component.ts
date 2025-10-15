@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   forwardRef,
@@ -19,6 +20,7 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { FormErrorPipe } from '../../pipes';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-password-field',
@@ -30,6 +32,7 @@ import { FormErrorPipe } from '../../pipes';
     MatIcon,
     FormsModule,
     MatError,
+    CommonModule,
   ],
   templateUrl: './password-field.component.html',
   styleUrl: './password-field.component.scss',
@@ -40,6 +43,7 @@ import { FormErrorPipe } from '../../pipes';
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PasswordFieldComponent implements ControlValueAccessor, OnChanges {
   @Input() isHandset: boolean = false;
@@ -53,6 +57,8 @@ export class PasswordFieldComponent implements ControlValueAccessor, OnChanges {
   @Input() error!: ValidationErrors;
 
   @Input() required: boolean = false;
+
+  @Input() confirmFor?: string;
 
   @ViewChild(NgModel)
   private ngModel!: NgModel;
@@ -71,11 +77,16 @@ export class PasswordFieldComponent implements ControlValueAccessor, OnChanges {
     if (changes['error'] && this.ngModel) {
       this.ngModel.control.setErrors(this.error);
     }
+
+    if (changes['confirmFor'] && this.ngModel) {
+      this.validateConfirmPassword();
+    }
   }
 
   writeValue(value: string): void {
     if (value !== undefined) {
-      this.value = this.value;
+      this.value = value;
+      this.validateConfirmPassword();
     }
   }
 
@@ -83,8 +94,13 @@ export class PasswordFieldComponent implements ControlValueAccessor, OnChanges {
     return this.value;
   }
 
+  get mismatch(): any {
+    return !!this.confirmFor && this.value && this.confirmFor !== this.value;
+  }
+
   set inputValue(value) {
     this.value = value;
+    this.validateConfirmPassword();
     this.onChange(this.value);
   }
 
@@ -98,5 +114,19 @@ export class PasswordFieldComponent implements ControlValueAccessor, OnChanges {
 
   public resetField() {
     this.ngModel.control.markAsUntouched();
+  }
+
+  private validateConfirmPassword() {
+    if (!this.ngModel) return;
+
+    const control = this.ngModel.control;
+    if (this.mismatch) {
+      control.setErrors({ ...(control.errors ?? {}), mismatch: true });
+    } else {
+      if (control.errors?.['mismatch']) {
+        const { mismatch, ...rest } = control.errors;
+        control.setErrors(Object.keys(rest).length ? rest : null);
+      }
+    }
   }
 }
