@@ -1,26 +1,28 @@
 <div
-  class="@container h-full bg-gradient-to-tl from-50% from-primary to-accent-700 to-100%"
+  class="@container h-screen w-screen bg-gradient-to-tl from-primary to-accent-700 flex items-center justify-center overflow-hidden"
 >
-  <div class="h-full flex flex-col @3xl:flex-row">
+  <!-- Fullscreen logo image -->
+  <div class="absolute inset-0">
+    <img
+      src="logo/MG-nivjenz.svg"
+      alt="logo"
+      class="w-full h-full object-cover filter invert opacity-80"
+      class="w-full h-full object-cover"
+    />
+  </div>
+
+  <!-- Content overlay -->
+  <div class="relative z-10 flex flex-col @3xl:flex-row w-full h-full">
     <div
-      class="grow flex flex-col gap-16 max-w-8xl grow mx-auto items-center justify-center p-8"
+      class="grow flex flex-col gap-16 max-w-8xl mx-auto items-center justify-center p-8"
     >
       <!-- <h1 class="@3xl:hidden text-white text-5xl text-center">NivJenz</h1> -->
-
-      <img
-        src="logo/transparent-logo.png"
-        alt="logo"
-        [class.h-32]="(breakpoint$ | async)?.matches"
-        [class.h-72]="(breakpoint$ | async)?.matches === false"
-        class="filter invert"
-      />
     </div>
+
     <div
-      class="@3xl:max-w-lg @3xl:min-w-[490px] bg-white flex flex-col gap-4 p-8 justify-center"
+      class="@3xl:max-w-lg @3xl:min-w-[490px] bg-white bg-opacity-90 backdrop-blur-lg flex flex-col gap-4 p-8 justify-center shadow-2xl rounded-2xl"
     >
-      <h1
-        class="hidden @3xl:block text-primary text-5xl text-center"
-      >
+      <h1 class="hidden @3xl:block text-primary text-5xl text-center">
         NivJenz
       </h1>
       <div>
