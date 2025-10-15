@@ -1,0 +1,26 @@
+form {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  background-color: white;
+  border-radius: 5px;
+}
+
+.forgot-password {
+  color: #005ac5;
+  cursor: pointer;
+}
+
+app-password-field + app-password-field {
+  margin-top: 1rem;
+}

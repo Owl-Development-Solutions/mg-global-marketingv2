@@ -3,3 +3,5 @@ export * from './shell/shell-component';
 export * from './unilevel/unilevel.component';
 export * from './geonology/geonology.component';
 export * from './ecu-wallet/ecu-wallet.component';
+export * from './auth/auth.component';
+export * from './auth/auth-form/auth-form.component';
