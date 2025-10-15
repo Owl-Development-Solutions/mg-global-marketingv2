@@ -1,12 +1,20 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ProfileCardComponent } from '../../components';
+import {
+  ProfileCardComponent,
+  AddWalletButtonComponent,
+} from '../../components';
 import { ProfileTabsComponent } from '../../components/profile-tabs/profile-tabs.component';
 import { PageTitlePortalService } from '../../services';
 import { CdkPortal } from '@angular/cdk/portal';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ProfileCardComponent, ProfileTabsComponent, CdkPortal],
+  imports: [
+    ProfileCardComponent,
+    ProfileTabsComponent,
+    CdkPortal,
+    AddWalletButtonComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
@@ -19,6 +27,23 @@ export class DashboardComponent implements OnDestroy, OnInit {
     setTimeout(() => {
       this.pageTitlePortal.setPortal(this.pageTitle);
     });
+  }
+
+  currentUser = {
+    firstName: 'Nena',
+    lastName: 'Saramosing',
+  };
+
+  getTitleBasedOnTime(): string {
+    const currentHour = new Date().getHours();
+
+    if (currentHour >= 5 && currentHour < 12) {
+      return 'Good Morning';
+    } else if (currentHour >= 12 && currentHour < 18) {
+      return 'Good Afternoon';
+    } else {
+      return 'Good Evening';
+    }
   }
 
   ngOnDestroy(): void {

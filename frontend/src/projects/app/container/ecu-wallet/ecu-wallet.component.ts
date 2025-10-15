@@ -2,6 +2,7 @@ import { Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PageTitlePortalService } from '../../services';
 import { CdkPortal } from '@angular/cdk/portal';
+import { AddWalletButtonComponent } from '../../components';
 
 interface Transaction {
   ref: string;
@@ -15,7 +16,7 @@ interface Transaction {
 
 @Component({
   selector: 'app-ecu-wallet',
-  imports: [CommonModule, CdkPortal],
+  imports: [CommonModule, CdkPortal, AddWalletButtonComponent],
   templateUrl: './ecu-wallet.component.html',
   styleUrls: ['./ecu-wallet.component.scss'],
 })
