@@ -1,22 +1,31 @@
-<div class="overflow-scroll @container h-full bg-gradient-to-tl from-50% from-primary to-accent-700 to-100%">
-    <div class="h-full flex flex-col @3xl:flex-row">
-        <div class="grow flex flex-col gap-16 max-w-8xl grow mx-auto items-center justify-center p-8">
-            <h1 class="@3xl:hidden text-white text-5xl text-center">NivJenz</h1>
-  
-              <img src="logo/logo.png" alt="logo"
-                  [class.h-32]="(breakpoint$ | async)?.matches"
-                [class.h-72]="(breakpoint$ | async)?.matches === false"
-              
-              
-              />
-        </div>
-            <div class="@3xl:max-w-lg @3xl:min-w-[360px] bg-white flex flex-col dark:bg-gray-900 gap-4 p-8 justify-center ">
-           <h1 class="hidden @3xl:block font-activedealer text-primary dark:text-white text-5xl text-center">NivJenz</h1>
-           <div>
-            <router-outlet></router-outlet>
-           </div>
-    </div>
+<div
+  class="overflow-scroll @container h-full bg-gradient-to-tl from-50% from-primary to-accent-700 to-100%"
+>
+  <div class="h-full flex flex-col @3xl:flex-row">
+    <div
+      class="grow flex flex-col gap-16 max-w-8xl grow mx-auto items-center justify-center p-8"
+    >
+      <h1 class="@3xl:hidden text-white text-5xl text-center">NivJenz</h1>
 
+      <img
+        src="logo/transparent-logo.png"
+        alt="logo"
+        [class.h-32]="(breakpoint$ | async)?.matches"
+        [class.h-72]="(breakpoint$ | async)?.matches === false"
+        class="filter invert"
+      />
     </div>
-
+    <div
+      class="@3xl:max-w-lg @3xl:min-w-[360px] bg-white flex flex-col gap-4 p-8 justify-center"
+    >
+      <h1
+        class="hidden @3xl:block font-activedealer text-primary dark:text-white text-5xl text-center"
+      >
+        NivJenz
+      </h1>
+      <div>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
 </div>
