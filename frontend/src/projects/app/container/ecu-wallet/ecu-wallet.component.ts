@@ -16,7 +16,7 @@ interface Transaction {
 
 @Component({
   selector: 'app-ecu-wallet',
-  imports: [CommonModule, CdkPortal, AddWalletButtonComponent],
+  imports: [CommonModule, CdkPortal],
   templateUrl: './ecu-wallet.component.html',
   styleUrls: ['./ecu-wallet.component.scss'],
 })

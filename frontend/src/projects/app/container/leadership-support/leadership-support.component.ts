@@ -5,10 +5,9 @@ import { PageTitlePortalService } from '../../services';
 
 @Component({
   selector: 'app-leadership-support',
-  standalone: true,
   imports: [PortalModule, CommonModule],
   templateUrl: './leadership-support.component.html',
-  styleUrls: ['./leadership-support.component.scss'],
+  styleUrl: './leadership-support.component.scss',
 })
 export class LeadershipSupportComponent implements OnInit, OnDestroy {
   activeTab: 'wallet' | 'history' = 'wallet';
@@ -18,10 +17,30 @@ export class LeadershipSupportComponent implements OnInit, OnDestroy {
   @ViewChild(CdkPortal) pageTitle!: CdkPortal;
 
   // Simple mock transactions for display. Replace with real data from a service.
-  transactions: Array<{ date: string; description: string; amount: number; balance: number }> = [
-    { date: '2025-10-01', description: 'Referral bonus', amount: 50, balance: 1050 },
-    { date: '2025-09-28', description: 'Withdrawal', amount: -20, balance: 1000 },
-    { date: '2025-09-15', description: 'Commission', amount: 100, balance: 1020 },
+  transactions: Array<{
+    date: string;
+    description: string;
+    amount: number;
+    balance: number;
+  }> = [
+    {
+      date: '2025-10-01',
+      description: 'Referral bonus',
+      amount: 50,
+      balance: 1050,
+    },
+    {
+      date: '2025-09-28',
+      description: 'Withdrawal',
+      amount: -20,
+      balance: 1000,
+    },
+    {
+      date: '2025-09-15',
+      description: 'Commission',
+      amount: 100,
+      balance: 1020,
+    },
   ];
 
   // Base balance if you need to compute dynamically; using last known balance in transactions as current balance

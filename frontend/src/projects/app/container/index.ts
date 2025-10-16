@@ -5,4 +5,4 @@ export * from './geonology/geonology.component';
 export * from './ecu-wallet/ecu-wallet.component';
 export * from './auth/auth.component';
 export * from './auth/auth-form/auth-form.component';
-export * from './LeadershipSupport/leadership-support.component';
+export * from './leadership-support/leadership-support.component';

@@ -21,7 +21,7 @@
 </mat-sidenav-container>
 
 <ng-template #titlePortal>
-  <ng-container *ngIf="portal()">
+  @if(portal()) {
     <app-page-title></app-page-title>
-  </ng-container>
+  }
 </ng-template>

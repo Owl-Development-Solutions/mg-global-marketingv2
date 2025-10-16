@@ -1,14 +1,8 @@
+
+<!-- REFACTOR USER ANGULAR MATERIAL TABS AND TABLE -->
 <div
   class="p-10 bg-gradient-to-br from-primary/5 via-white to-accent/10 rounded-3xl shadow-xl min-h-[85vh] transition-all duration-700 ease-in-out"
 >
-  <!-- Title -->
-  <h2
-    class="text-4xl font-extrabold text-primary flex items-center gap-3 mb-8 animate-fadeIn"
-  >
-    <span class="i-lucide-wallet text-primary-700 text-4xl"></span>
-    Leadership Support
-  </h2>
-
   <!-- Tabs -->
   <div
     class="flex gap-4 border-b border-gray-200 mb-8 relative"
@@ -32,7 +26,7 @@
     <button
       class="relative px-6 py-3 text-lg font-semibold text-gray-600 transition-all duration-500 rounded-t-xl"
       [class.text-primary]="activeTab === 'history'"
-      [class.bg-white/70]="activeTab === 'history'"
+      [class.bg-white-70]="activeTab === 'history'"
       [class.shadow-md]="activeTab === 'history'"
       (click)="activeTab = 'history'"
     >
@@ -162,3 +156,9 @@
     </div>
   </section>
 </div>
+
+<ng-container *cdkPortal>
+  <div class="flex gap-4 items-center">
+    <h5 class="text-2xl font-semibold">Leadership Support</h5>
+  </div>
+</ng-container>
