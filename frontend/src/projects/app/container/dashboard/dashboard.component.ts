@@ -9,12 +9,7 @@ import { CdkPortal } from '@angular/cdk/portal';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [
-    ProfileCardComponent,
-    ProfileTabsComponent,
-    CdkPortal,
-    AddWalletButtonComponent,
-  ],
+  imports: [ProfileCardComponent, ProfileTabsComponent, CdkPortal],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })

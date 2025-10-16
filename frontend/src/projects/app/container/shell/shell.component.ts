@@ -1,4 +1,4 @@
-import { CommonModule, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   Component,
   computed,
@@ -21,13 +21,14 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { PageTitleComponent } from '../../components';
 import { PageTitlePortalService } from '../../services';
 
 @Component({
   selector: 'app-shell-component',
+  standalone: true,
   imports: [
     AppSysSidenavComponent,
     RouterModule,
@@ -38,7 +39,6 @@ import { PageTitlePortalService } from '../../services';
     MatButtonModule,
     MatDividerModule,
     NgTemplateOutlet,
-    MatExpansionModule,
     PageTitleComponent,
   ],
   templateUrl: './shell-component.html',

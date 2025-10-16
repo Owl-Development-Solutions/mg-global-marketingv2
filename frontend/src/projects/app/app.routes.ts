@@ -5,6 +5,7 @@ import {
   EcuWalletComponent,
   GeonologyComponent,
   ShellComponent,
+  LeadershipSupportComponent,
   UnilevelComponent,
 } from './container';
 import { Routes } from '@angular/router';
@@ -34,6 +35,10 @@ export const routes: Routes = [
       {
         path: 'ecu-wallet',
         component: EcuWalletComponent,
+      },
+      {
+        path: 'leadership-support',
+        component: LeadershipSupportComponent,
       },
     ],
   },
