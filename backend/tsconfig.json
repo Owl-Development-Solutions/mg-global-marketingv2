@@ -4,6 +4,8 @@
     // File Layout
     // "rootDir": "./src",
     // "outDir": "./dist",
+    "outDir": "dist",
+    "rootDir": "src",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
@@ -39,7 +41,7 @@
     // "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
