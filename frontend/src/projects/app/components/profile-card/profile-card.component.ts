@@ -17,15 +17,9 @@ export class ProfileCardComponent {
   email = 'nenasaramosing@yahoo.com';
 
   balances = [
-    { amount: '339.18P PHP', label: 'ALL UISD Balance' },
-    {
-      amount: '54.54 PHP',
-      label: 'F4049950 Balance',
-    },
+    { amount: '339.18P PHP', label: 'PHP Balance' },
     { amount: '145.00 PHP', label: 'EC Wallet' },
-    { amount: '0.00 PHP', label: 'MG Pay' },
     { amount: '0', label: 'Travel GC' },
-    { amount: '0', label: 'Product GC' },
   ];
 
   imgUrl = 'person-img.jpg';
