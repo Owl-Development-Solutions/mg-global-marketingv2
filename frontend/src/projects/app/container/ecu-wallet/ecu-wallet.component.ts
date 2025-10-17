@@ -2,6 +2,7 @@ import { Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PageTitlePortalService } from '../../services';
 import { CdkPortal } from '@angular/cdk/portal';
+import { AddWalletButtonComponent } from '../../components';
 
 interface Transaction {
   ref: string;
@@ -63,7 +64,7 @@ export class EcuWalletComponent {
 
   // ✅ Modal State
   showReloadModal = false;
-  amounts = [100, 500, 1000, 5000, 10000, 20000, 50000, 100000];
+  amounts = [500, 1000, 5000, 10000, 20000, 50000, 100000];
   selectedAmount = 0;
   operation: '+' | '-' = '+';
 
