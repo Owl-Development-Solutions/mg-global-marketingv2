@@ -1,9 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 
-//routes import
-import geonology from "./routes/geonology";
 import bodyParser from "body-parser";
+
+//routes import
+import { getGeonology, loginUserController } from "./controller";
+import { registerUserController } from "./controller";
 
 const app = express();
 dotenv.config();
@@ -12,7 +14,11 @@ dotenv.config();
 app.use(bodyParser.json());
 
 //routes
-app.use("/api/geonology", geonology);
+app.use("/api/geonology", getGeonology);
+
+//router for user
+app.use("/api/registerUser", registerUserController);
+app.use("/api/loginUser", loginUserController);
 
 const port = process.env.PORT;
 
