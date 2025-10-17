@@ -2,6 +2,7 @@ import { Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PageTitlePortalService } from '../../services';
 import { CdkPortal } from '@angular/cdk/portal';
+import { AddWalletButtonComponent } from '../../components';
 
 interface Transaction {
   ref: string;

@@ -9,10 +9,7 @@
         <mat-icon>menu</mat-icon>
       </button>
 
-      <div class="flex gap-4">
-        <span>
-          <img src="logo/logo.png" alt="logo" width="100px" height="10px" />
-        </span>
+      <div class="flex ml-3">
         <ng-container *ngTemplateOutlet="titlePortal"></ng-container>
       </div>
     </mat-toolbar>
@@ -24,7 +21,7 @@
 </mat-sidenav-container>
 
 <ng-template #titlePortal>
-  @if (portal()) {
+  @if(portal()) {
     <app-page-title></app-page-title>
   }
 </ng-template>
