@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-
+import cors from "cors";
 import bodyParser from "body-parser";
 
 //routes import
@@ -9,6 +9,8 @@ import { registerUserController } from "./controller";
 
 const app = express();
 dotenv.config();
+
+app.use(cors());
 
 //middleware
 app.use(bodyParser.json());
