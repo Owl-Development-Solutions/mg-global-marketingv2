@@ -12,6 +12,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimations(),
     provideStore(),
-    provideEffects()
-],
+    provideEffects(),
+  ],
 };

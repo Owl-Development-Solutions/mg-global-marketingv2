@@ -142,7 +142,7 @@ export const loginUserIn = async (
         success: false,
         error: {
           errorMessage: "Incorrect password",
-          statusCode: 401,
+          statusCode: 424,
         },
       };
     }
@@ -161,6 +161,7 @@ export const loginUserIn = async (
       attributes: {
         first_name: user.first_name,
         last_name: user.last_name,
+        name: user.name,
         email: user.email,
         role: user.role,
       } as any,

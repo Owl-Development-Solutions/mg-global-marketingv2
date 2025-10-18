@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
+import { StripPrefixPipe } from 'projects/app/pipes';
 
 @Component({
   selector: 'app-notification',
-  imports: [CommonModule, MatIcon],
+  imports: [CommonModule, MatIcon, StripPrefixPipe],
   template: `
     <div
       class="bg-gray-800 border-l-4 border-solid p-2 items-center flex gap-4"
@@ -19,23 +20,23 @@ import { MatIcon } from '@angular/material/icon';
         <div class="w-9">
           @switch (notification.errorType) {
             @case ('error') {
-              <mat-icon class="text-alert">error</mat-icon>
+              <mat-icon class="!text-alert">error</mat-icon>
             }
             @case ('success') {
-              <mat-icon class="text-green-500">check_circle</mat-icon>
+              <mat-icon class="!text-green-500">check_circle</mat-icon>
             }
             @case ('warning') {
-              <mat-icon class="text-warning">warning</mat-icon>
+              <mat-icon class="!text-warning">warning</mat-icon>
             }
             @default {
-              <mat-icon class="text-accent-200">info</mat-icon>
+              <mat-icon class="!text-accent-200">info</mat-icon>
             }
           }
         </div>
         <div class="flex gap-1">
           <p class="text-gray-50 text-sm">
             <span class="font-bold">{{ notification.title }}:</span>
-            {{ notification.message }}
+            {{ notification.message | stripPrefix }}
           </p>
         </div>
       </div>
@@ -51,7 +52,6 @@ import { MatIcon } from '@angular/material/icon';
       }
     </div>
   `,
-  styleUrl: './notification.component.scss',
 })
 export class NotificationComponent {
   @Input() notification: any = {

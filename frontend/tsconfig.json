@@ -3,10 +3,10 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "src",
     "paths": {
-      "app-store": [
-        "./dist/app-store"
-      ]
+      "app-store": ["./dist/app-store"],
+      "@app-store/*": ["app-store/src/*"]
     },
     "outDir": "./dist/out-tsc",
     "strict": true,
@@ -24,10 +24,7 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "lib": [
-      "ES2022",
-      "dom"
-    ]
+    "lib": ["ES2022", "dom"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -1,10 +1,7 @@
 <div>
   @if (loading) {
     <div class="spinner-container">
-      <mat-spinner
-        color="primary"
-        mode="indeterminate">
-      </mat-spinner>
+      <mat-spinner color="primary" mode="indeterminate"> </mat-spinner>
     </div>
   } @else {
     <form #authForm="ngForm" (ngSubmit)="login(authForm)">
@@ -23,7 +20,7 @@
 
         @if (email.invalid) {
           <mat-error>
-            @if (email.hasError('required')) {
+            @if (email.hasError("required")) {
               <span>Email is required</span>
             }
           </mat-error>
@@ -37,43 +34,44 @@
         [label]="'Password'"
         [isDisabled]="loading"
         [error]="password"
-        [(ngModel)]="input!.password">
+        [(ngModel)]="input!.password"
+      >
       </app-password-field>
 
-
       <div class="flex justify-between items-center">
-              <span
-        class="mb-5 mt-4 cursor-pointer hover:underline"
-        (click)="forgottenPassword(authForm.value?.username)">
-        Forgot Password?
-      </span>
+        <span
+          class="mb-5 mt-4 cursor-pointer hover:underline"
+          (click)="forgottenPassword(authForm.value?.username)"
+        >
+          Forgot Password?
+        </span>
 
-      <span
-         class="mb-5 mt-4 cursor-pointer hover:underline text-primary"
-         (click)="signUpHere()"
-      >Register Here</span>
-
+        <span
+          class="mb-5 mt-4 cursor-pointer hover:underline text-primary"
+          (click)="signUpHere()"
+          >Register Here</span
+        >
       </div>
 
-      @if (error) {
+      @if (authError()) {
         <app-notification
           class="mb-8"
           [notification]="{
             title: 'Error',
-            message: error,
+            message: authError(),
             showClose: false,
-            errorType: 'error'
-          }">
+            errorType: 'error',
+          }"
+        >
         </app-notification>
       }
 
-      <button
-        mat-flat-button
-        color="primary"
-        type="submit"
-        [disabled]="authForm.invalid">
-        Login
-      </button>
+      <app-submit-button
+        [isDisabled]="authForm.invalid || authLoading()!"
+        [isLoading]="authLoading()!"
+        [text]="'Login'"
+      >
+      </app-submit-button>
     </form>
   }
 </div>
