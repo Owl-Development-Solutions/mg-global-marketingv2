@@ -1,15 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import {
-  Actions,
-  createEffect,
-  ofType,
-  ROOT_EFFECTS_INIT,
-} from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthRepository, UserRepository } from '../../../repositories';
 import * as fromAuth from '../../actions/auth/auth-actions';
-import * as fromUser from '../../actions/user/user-actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { AuthUserResponse, UserResponseModel } from '../../../models';
+import { AuthUserResponse } from '../../../models';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -24,15 +18,19 @@ export class AuthEffects {
   initiateAuthAttempted$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(fromAuth.initiateAuthAttempted),
-
       switchMap((action) => {
         const { data } = action;
 
         return this.authRepository.initiateAuth(data).pipe(
           map((data: AuthUserResponse) => fromAuth.initiateSucceeded({ data })),
-
           catchError((error) => {
-            return [fromAuth.initiateAuthFailed({ data, error })];
+            this.snackBar.open(error, 'x', {
+              horizontalPosition: 'right',
+              verticalPosition: 'top',
+              duration: 5 * 1000,
+            });
+
+            return of(fromAuth.initiateAuthFailed({ data, error }));
           }),
         );
       }),
