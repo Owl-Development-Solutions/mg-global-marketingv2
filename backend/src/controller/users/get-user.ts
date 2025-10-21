@@ -1,15 +1,20 @@
-import { getAllUsersGeonology } from "../../infrastructure";
-import { ErrorResponse, Result, SuccessResponse, User } from "../../utils";
 import { Request, Response } from "express";
+import {
+  ErrorResponse,
+  Result,
+  SuccessResponse,
+  UserResponse,
+} from "../../utils";
+import { getUserByAccessToken } from "../../infrastructure";
 
-export const getGeonology = async (
+export const getUserByAccessTokenController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   const result: Result<
-    SuccessResponse<User[]>,
+    SuccessResponse<UserResponse>,
     ErrorResponse
-  > = await getAllUsersGeonology();
+  > = await getUserByAccessToken(req.body.token);
 
   if (!result.success) {
     res.status(result.error.statusCode).json({

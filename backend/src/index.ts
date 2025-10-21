@@ -4,23 +4,27 @@ import cors from "cors";
 import bodyParser from "body-parser";
 
 //routes import
-import { getGeonology, loginUserController } from "./controller";
-import { registerUserController } from "./controller";
+import authRouter from "./routes/users/auth.routes";
+import userRouter from "./routes/users/get-user.routes";
+import { connection } from "./config/mysql.db";
 
 const app = express();
 dotenv.config();
 
 app.use(cors());
+app.use(express.json());
 
 //middleware
 app.use(bodyParser.json());
 
 //routes
-app.use("/api/geonology", getGeonology);
+// app.use("/api/geonology", getGeonology);
 
-//router for user
-app.use("/api/registerUser", registerUserController);
-app.use("/api/loginUser", loginUserController);
+// Base path
+app.use("/api/auth", authRouter);
+
+//Base path for getting user/s
+app.use("/api/getUser", userRouter);
 
 const port = process.env.PORT;
 

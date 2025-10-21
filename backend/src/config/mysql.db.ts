@@ -3,14 +3,24 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-//create the connection to the database
-export const connection = mysql.createConnection({
-  host: process.env.DB_HOST!,
-  user: process.env.DB_USER!,
-  password: process.env.DB_PASSWORD!,
-  database: process.env.DB_DATABASE!,
-  port: Number(process.env.DB_PORT),
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+let pool: mysql.Pool;
+
+export const connection = () => {
+  if (!pool) {
+    pool = mysql.createPool({
+      host: process.env.DB_HOST!,
+      user: process.env.DB_USER!,
+      password: process.env.DB_PASSWORD!,
+      database: process.env.DB_DATABASE!,
+      port: Number(process.env.DB_PORT),
+      ssl: {
+        rejectUnauthorized: false,
+      },
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
+    });
+  }
+
+  return pool;
+};

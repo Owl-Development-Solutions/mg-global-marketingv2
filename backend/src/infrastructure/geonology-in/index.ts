@@ -1,5 +1,5 @@
-import { ErrorResponse, Result, SuccessResponse, User } from '../../utils';
-import { sampleUsers } from '../../utils/sampleDatasz';
+import { ErrorResponse, Result, SuccessResponse, User } from "../../utils";
+import { sampleUsers } from "../../utils/sampleDatasz";
 
 export const getAllUsersGeonology = async (): Promise<
   Result<SuccessResponse<User[]>, ErrorResponse>
@@ -11,7 +11,7 @@ export const getAllUsersGeonology = async (): Promise<
       success: true,
       data: {
         statusCode: 200,
-        message: 'user successfully get',
+        message: "user successfully get",
         data: sampleUsers,
       },
     };
