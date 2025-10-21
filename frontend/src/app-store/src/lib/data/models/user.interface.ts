@@ -1,0 +1,6 @@
+import { Observable } from 'rxjs';
+import { UserResponseModel } from './user.attributes.model';
+
+export interface UserDatasourceInterface {
+  getUser(token: string): Observable<UserResponseModel>;
+}

@@ -1,6 +1,6 @@
-import { getAllUsersGeonology } from '../../infrastructure';
-import { ErrorResponse, Result, SuccessResponse, User } from '../../utils';
-import { Request, Response } from 'express';
+import { getAllUsersGeonology } from "../../infrastructure";
+import { ErrorResponse, Result, SuccessResponse, User } from "../../utils";
+import { Request, Response } from "express";
 
 export const getGeonology = async (
   req: Request,

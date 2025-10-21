@@ -1,7 +1,10 @@
 import { ResultSetHeader } from "mysql2";
-import { connection } from "../../config/mysql.db";
+
 import {
+  AuthResponse,
   ErrorResponse,
+  generateAccessToken,
+  generateRefreshToken,
   generateUniqueIdentifier,
   Result,
   SuccessResponse,
@@ -11,6 +14,7 @@ import {
 import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto";
 import jwt from "jsonwebtoken";
+import { connection } from "../../config/mysql.db";
 
 export const registerUserIn = async (
   user: User
@@ -37,7 +41,7 @@ export const registerUserIn = async (
       };
     }
 
-    const db = await connection;
+    const db = connection();
 
     const [rows] = await db.execute("SELECT * FROM `users` WHERE `email` = ?", [
       user.email,
@@ -58,7 +62,6 @@ export const registerUserIn = async (
     //has the password
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(user.password, salt);
-    const uniqueId = generateUniqueIdentifier();
 
     //hardcoded for now for registering user  => role is user
     const role = "admin";
@@ -101,7 +104,7 @@ export const registerUserIn = async (
 
 export const loginUserIn = async (
   data: User
-): Promise<Result<SuccessResponse<UserResponse>, ErrorResponse>> => {
+): Promise<Result<SuccessResponse<AuthResponse>, ErrorResponse>> => {
   try {
     if (!data.email || !data.password) {
       return {
@@ -113,7 +116,7 @@ export const loginUserIn = async (
       };
     }
 
-    const db = await connection;
+    const db = connection();
 
     //check if the user exists
     const [rows] = await db.execute("SELECT * FROM users where email = ?", [
@@ -147,25 +150,12 @@ export const loginUserIn = async (
       };
     }
 
-    const secret = process.env.JWT_SECRET;
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
 
-    //generate JWT Token
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      secret!
-    );
-
-    const response: UserResponse = {
-      id: user.id,
-      type: user.role,
-      attributes: {
-        first_name: user.first_name,
-        last_name: user.last_name,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      } as any,
-      token: token,
+    const response: AuthResponse = {
+      accessToken,
+      refreshToken,
     };
 
     return {
@@ -173,7 +163,7 @@ export const loginUserIn = async (
       data: {
         statusCode: 200,
         message: "Login successfull",
-        data: response as any,
+        data: response,
       },
     };
   } catch (error) {
@@ -186,3 +176,5 @@ export const loginUserIn = async (
     };
   }
 };
+
+export const logout = async () => {};

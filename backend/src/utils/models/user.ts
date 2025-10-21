@@ -11,13 +11,23 @@ export interface User {
   city: string;
   contact_number: string;
   role: string;
+  refresh_token: string;
   created_at: Date;
   update_at: Date;
 }
 
-export interface UserResponse {
+export interface AuthResponse {
+  accessToken?: string;
+  refreshToken?: string;
+}
+
+export interface UserResponse extends AuthResponse {
   id: string;
   type: string;
   attributes: User;
-  token: string;
+}
+
+export interface JWTProps {
+  id: string;
+  email: string;
 }

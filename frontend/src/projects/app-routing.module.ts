@@ -10,11 +10,13 @@ import {
   UnilevelComponent,
 } from './app/container';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuardFn, verifyAuthenticatedGuardFn } from './app/guards';
 
 export const routes: Routes = [
   {
     path: '',
     component: ShellComponent,
+    canActivate: [AuthGuardFn],
     children: [
       {
         path: '',
@@ -46,6 +48,7 @@ export const routes: Routes = [
   {
     path: 'auth',
     component: AuthComponent,
+    canActivate: [verifyAuthenticatedGuardFn],
     children: [
       {
         path: 'credentials',

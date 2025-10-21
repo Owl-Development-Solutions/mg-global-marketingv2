@@ -16,4 +16,8 @@ export class AuthRepository implements AuthRepositoryInterface {
   }): Observable<AuthUserResponse> {
     return this.authDatasource.initiateAuth(data);
   }
+
+  refreshToken(refreshToken: string): Observable<AuthUserResponse> {
+    return this.authDatasource.refreshToken(refreshToken);
+  }
 }

@@ -1,6 +1,6 @@
 import { DomainError } from './domain.error';
 
-export namespace AuthErrors {
+export namespace AppErrors {
   export class NotAuthorized extends Error implements DomainError {
     override readonly message: string;
 

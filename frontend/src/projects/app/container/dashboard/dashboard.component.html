@@ -10,7 +10,7 @@
   <div class="flex gap-4 items-center">
     <span class="underline text-xl decoration-primary">
       {{ getTitleBasedOnTime() }},
-      {{ currentUser.firstName }}
+      {{ getAuthName()?.firstName }}
     </span>
   </div>
 </ng-container>

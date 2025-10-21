@@ -1,25 +1,27 @@
 import { createReducer, on } from '@ngrx/store';
-import { AuthUserResponse } from '../../../models';
+import { AuthUserResponse, UserResponseModel } from '../../../models';
 import * as fromAuth from '../../actions/auth/auth-actions';
-
 export const authFeatureKey = 'authz';
 
 export interface AuthState {
-  data: AuthUserResponse | null;
+  data?: AuthUserResponse;
+  userData?: UserResponseModel;
   loading: boolean;
   loaded: boolean;
   error?: string | null;
+  isAuthenticated?: boolean;
 }
 
-export const initialState: AuthState = {
-  data: null,
+export const initialAuthState: AuthState = {
+  data: undefined,
   loading: false,
   loaded: false,
   error: null,
+  isAuthenticated: false,
 };
 
 export const initiateAuthReducer = createReducer(
-  initialState,
+  initialAuthState,
   on(fromAuth.initiateAuthAttempted, (state) => {
     return {
       ...state,
@@ -28,18 +30,25 @@ export const initiateAuthReducer = createReducer(
       error: null,
     };
   }),
-  on(fromAuth.initiateSucceeded, (state, { data }) => ({
-    ...state,
-    data: data,
-    loaded: true,
-    loading: false,
-    error: null,
-  })),
+  on(fromAuth.initiateSucceeded, (state, { data }) => {
+    return {
+      ...state,
+      data,
+      loaded: true,
+      loading: false,
+      error: null,
+      isAuthenticated: true,
+    };
+  }),
   on(fromAuth.initiateAuthFailed, (state, { data, error }) => ({
     ...state,
     data: data as any,
     error: error,
     loading: false,
     loaded: false,
+    isAuthenticated: false,
+  })),
+  on(fromAuth.logoutAttempted, () => ({
+    ...initialAuthState,
   })),
 );

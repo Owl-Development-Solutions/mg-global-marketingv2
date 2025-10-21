@@ -6,4 +6,5 @@ export interface AuthProfileInterface {
     email: string;
     password: string;
   }): Observable<AuthUserResponse>;
+  refreshToken(refreshToken: string): Observable<AuthUserResponse>;
 }
