@@ -3,12 +3,10 @@ import { AuthProfileInterface, AuthUserResponse, Document } from '../../models';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment.development';
-import { AuthErrors } from '../../errors';
-import NotAuthorized = AuthErrors.NotAuthorized;
-import UnexpectedError = AuthErrors.UnexpectedError;
-import InvalidCredentials = AuthErrors.InvalidCredentials;
-import EmailRequired = AuthErrors.EmailRequired;
-import UserNotFound = AuthErrors.UserNotFound;
+import { AppErrors } from '../../errors';
+import UnexpectedError = AppErrors.UnexpectedError;
+import InvalidCredentials = AppErrors.InvalidCredentials;
+import UserNotFound = AppErrors.UserNotFound;
 
 @Injectable({
   providedIn: 'root',
@@ -28,17 +26,31 @@ export class AuthDatasource implements AuthProfileInterface {
     }
   }
 
+  private executeAuthRequest<T, R>(endpoint: string, data: T): Observable<R> {
+    const url = `${this.baseUrl}/${endpoint}`;
+
+    return this.http.post<Document<R>>(url, data).pipe(
+      map((response: Document<R>) => {
+        return response.data as R;
+      }),
+      catchError((error) => this.authErrorReport(error)),
+    );
+  }
+
   initiateAuth(data: {
     email: string;
     password: string;
   }): Observable<AuthUserResponse> {
-    return this.http
-      .post<
-        Document<AuthUserResponse>
-      >(`${this.baseUrl}/api/loginUser/v1`, data)
-      .pipe(
-        map((data: Document<AuthUserResponse>) => data as AuthUserResponse),
-        catchError((error) => this.authErrorReport(error)),
-      );
+    return this.executeAuthRequest<
+      { email: string; password: string },
+      AuthUserResponse
+    >('api/auth/login', data);
+  }
+
+  refreshToken(refreshToken: string): Observable<AuthUserResponse> {
+    return this.executeAuthRequest<string, AuthUserResponse>(
+      'api/auth/refresh-token',
+      refreshToken,
+    );
   }
 }

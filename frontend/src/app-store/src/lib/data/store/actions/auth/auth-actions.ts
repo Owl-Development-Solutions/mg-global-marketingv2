@@ -15,3 +15,15 @@ export const initiateSucceeded = createAction(
   '[Auth] Initiate Auth Succeeded',
   props<{ data: AuthUserResponse }>(),
 );
+
+export const rehydrateAuth = createAction(
+  '[Auth] Rehydrate Auth',
+  props<{ accessToken: string; refreshToken: string }>(),
+);
+
+export const refreshTokenSucceed = createAction(
+  '[Auth] Initiate Refresh Token Succeeded',
+  props<{ data: AuthUserResponse }>(),
+);
+
+export const logoutAttempted = createAction('[Auth] Logout Attempted');

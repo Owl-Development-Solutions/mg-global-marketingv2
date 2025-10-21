@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import * as fromStore from './data/store';
 import { EffectsModule } from '@ngrx/effects';
 
@@ -12,7 +12,14 @@ import { EffectsModule } from '@ngrx/effects';
       fromStore.authFeatureKey,
       fromStore.initiateAuthReducer,
     ),
-    EffectsModule.forFeature([fromStore.AuthEffects]),
+    StoreModule.forFeature(
+      fromStore.userFeatureKey,
+      fromStore.initiateUserReducer,
+    ),
+    EffectsModule.forFeature([
+      fromStore.AuthEffects,
+      fromStore.UserTokenEffects,
+    ]),
   ],
 })
 export class AppStoreModule {}

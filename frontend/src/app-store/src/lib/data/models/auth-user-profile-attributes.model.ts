@@ -18,10 +18,7 @@ export interface User {
   created_at: Date;
   update_at: Date;
 }
-
 export interface AuthUserResponse {
-  id: string;
-  type: string;
-  attributes: User;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
 }
