@@ -3,21 +3,18 @@ import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   GeonologyTreeComponent,
   AddWalletButtonComponent,
+  AddMemberModalComponent,
 } from '../../components';
 import { GeonolyResult } from '../../mock';
 import { MatIcon } from '@angular/material/icon';
 import { CdkPortal } from '@angular/cdk/portal';
 import { PageTitlePortalService } from '../../services';
+import { MatDialog } from '@angular/material/dialog';
+import { GeonologyUsecase } from '@app-store/lib/usecases';
 
 @Component({
   selector: 'app-geonology',
-  imports: [
-    CommonModule,
-    GeonologyTreeComponent,
-    MatIcon,
-    CdkPortal,
-    AddWalletButtonComponent,
-  ],
+  imports: [CommonModule, GeonologyTreeComponent, MatIcon, CdkPortal],
   styleUrl: './geonology.component.scss',
   templateUrl: './geonology.component.html',
 })
@@ -25,13 +22,20 @@ export class GeonologyComponent implements OnInit, OnDestroy {
   userNode = GeonolyResult;
 
   private pageTitlePortal = inject(PageTitlePortalService);
+  private dialog = inject(MatDialog);
+  private geonologyData = inject(GeonologyUsecase);
 
   @ViewChild(CdkPortal) pageTitle!: CdkPortal;
 
-  handleAddMember(event: any) {
-    console.log('click parent');
+  data = this.geonologyData.geonologyData$;
 
-    console.log(event);
+  handleAddMember(geonologyData: { data: any; side: string }) {
+    this.dialog.open(AddMemberModalComponent, {
+      data: {
+        data: geonologyData.data,
+        side: geonologyData.side,
+      },
+    });
   }
 
   ngOnInit(): void {

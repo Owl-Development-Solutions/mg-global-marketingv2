@@ -20,3 +20,9 @@ export interface LowOrHigh {
   low: number;
   high: number;
 }
+
+export interface AddUserGeonologyData {
+  parentUserName: string;
+  side: string;
+  child: GeonologyNode;
+}

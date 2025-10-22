@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  inject,
-  input,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { GeonologyNode } from '../../models';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
@@ -22,10 +15,14 @@ import { AddMemberModalComponent } from '../add-member-modal/add-member-modal.co
 export class GeonologyTreeComponent {
   private dialog = inject(MatDialog);
 
-  userNode = input.required<GeonologyNode>();
+  userNode = input.required<GeonologyNode | null>();
 
-  @Output() addMember = new EventEmitter<{
-    userNode: any;
+  @Output() handleAddMember: EventEmitter<{
+    data: any;
+    side: any;
+  }> = new EventEmitter<{
+    data: any;
+    side: any;
   }>();
 
   getAvatarInitials(node: GeonologyNode) {
@@ -33,9 +30,9 @@ export class GeonologyTreeComponent {
   }
 
   get currentDepth() {
-    if (this.userNode().side === 'root') return 0;
+    if (this.userNode()!.side === 'root') return 0;
 
-    return this.userNode().side.length / 3;
+    return this.userNode()!.side.length / 3;
   }
 
   get isSmallNode(): boolean {
@@ -43,12 +40,10 @@ export class GeonologyTreeComponent {
   }
 
   //refactor
-  handleAddMember(userNode: any) {
-    // console.log('clicl');
-    // this.addMember.emit({ userNode });
-    this.dialog.open(AddMemberModalComponent, {
-      width: '500px',
-      data: {},
+  addMember(data: any, side: string) {
+    this.handleAddMember.emit({
+      data,
+      side,
     });
   }
 }

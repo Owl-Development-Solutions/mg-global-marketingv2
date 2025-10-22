@@ -16,9 +16,14 @@ import { EffectsModule } from '@ngrx/effects';
       fromStore.userFeatureKey,
       fromStore.initiateUserReducer,
     ),
+    StoreModule.forFeature(
+      fromStore.geonologyKey,
+      fromStore.initiateGeonologyReducer,
+    ),
     EffectsModule.forFeature([
       fromStore.AuthEffects,
       fromStore.UserTokenEffects,
+      fromStore.GeonologyEffects,
     ]),
   ],
 })

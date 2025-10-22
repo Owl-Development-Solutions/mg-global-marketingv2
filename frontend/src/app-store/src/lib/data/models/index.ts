@@ -3,3 +3,6 @@ export * from './auth-user-profile.interface';
 export * from './json-api.interface';
 export * from './user.interface';
 export * from './user.attributes.model';
+export * from './geonology.model';
+export * from './geonology.interface';
+export * from './callbacks.model';
