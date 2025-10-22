@@ -6,9 +6,9 @@
       >
         <div class="relative">
           <img
-            class="relative inline-flex 
-               {{ isSmallNode ? 'h-8 w-8' : 'h-12 w-12' }} 
-               items-center justify-center mt-2 rounded-full ring-2 ring-primary"
+            class="relative inline-flex
+{{ isSmallNode ? 'h-8 w-8' : 'h-12 w-12' }}
+items-center justify-center mt-2 rounded-full ring-2 ring-primary"
             src="person-img.jpg"
           />
         </div>
@@ -16,9 +16,9 @@
         <div class="mt-2 space-y-1 text-center">
           <div
             class="{{ isSmallNode ? 'text-xs' : 'text-sm' }} 
-               font-medium font-semibold text-blue-600 transition-colors"
+        font-medium font-semibold text-blue-600 transition-colors"
           >
-            {{ userNode().userName }}
+            {{ userNode()!.userName }}
           </div>
 
           <div
@@ -26,7 +26,7 @@
               isSmallNode ? 'text-[10px]' : 'text-xs'
             }}"
           >
-            {{ userNode().firstName }} {{ userNode().lastName }}
+            {{ userNode()!.firstName }} {{ userNode()!.lastName }}
           </div>
 
           <div
@@ -34,7 +34,7 @@
               isSmallNode ? 'text-[10px]' : 'text-xs'
             }}"
           >
-            {{ userNode().leftPoints }} • {{ userNode().rightPoints }}
+            {{ userNode()!.leftPoints }} • {{ userNode()!.rightPoints }}
           </div>
 
           <div
@@ -43,11 +43,11 @@
             }}"
           >
             <span class="font-medium text-green-600">
-              {{ userNode().leftDownline }}</span
+              {{ userNode()!.leftDownline }}</span
             >
             <span class="text-muted-foreground mx-1">|</span>
             <span class="font-medium text-purple-600">{{
-              userNode().rightDownline
+              userNode()!.rightDownline
             }}</span>
           </div>
         </div>
@@ -62,10 +62,7 @@
           }
 
           <div
-            *ngIf="
-              currentDepth < 4 &&
-              (userNode().leftChild || userNode().rightChild)
-            "
+            *ngIf="currentDepth < 4"
             class="flex w-full justify-center relative gap-12"
           >
             <div class="absolute top-0 h-px bg-gray-300 w-full"></div>
@@ -76,9 +73,10 @@
               </div>
 
               <div class="pt-6 flex justify-center">
-                <ng-container *ngIf="userNode().leftChild; else leftEmptySlot">
+                <ng-container *ngIf="userNode()!.leftChild; else leftEmptySlot">
                   <app-geonology-tree
-                    [userNode]="userNode().leftChild!"
+                    [userNode]="userNode()!.leftChild!"
+                    (handleAddMember)="handleAddMember.emit($event)"
                   ></app-geonology-tree>
                 </ng-container>
 
@@ -105,7 +103,7 @@
                     <div class="relative">
                       <div
                         class="flex cursor-pointer flex-col items-center"
-                        (click)="handleAddMember(userNode())"
+                        (click)="addMember(userNode(), 'left')"
                       >
                         <span
                           class="border-border relative flex size-10 shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-blue-400 group-hover:opacity-80"
@@ -135,10 +133,11 @@
 
               <div class="pt-6 flex justify-center">
                 <ng-container
-                  *ngIf="userNode().rightChild; else rightEmptySlot"
+                  *ngIf="userNode()!.rightChild; else rightEmptySlot"
                 >
                   <app-geonology-tree
-                    [userNode]="userNode().rightChild!"
+                    [userNode]="userNode()!.rightChild!"
+                    (handleAddMember)="handleAddMember.emit($event)"
                   ></app-geonology-tree>
                 </ng-container>
 
@@ -165,7 +164,7 @@
                     <div class="relative">
                       <div
                         class="flex cursor-pointer flex-col items-center"
-                        (click)="handleAddMember(userNode())"
+                        (click)="addMember(userNode(), 'right')"
                       >
                         <span
                           class="border-border relative flex size-10 shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-blue-400 group-hover:opacity-80"

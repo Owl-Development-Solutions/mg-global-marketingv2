@@ -1,7 +1,7 @@
 <div>
   <app-geonology-tree
-    [userNode]="userNode"
-    (addMember)="handleAddMember($event)"
+    [userNode]="data | async"
+    (handleAddMember)="handleAddMember($event)"
   ></app-geonology-tree>
   <div class="text-gray-400 px-6 py-3 mt-3">
     <div class="flex items-center justify-center gap-6 text-xs">

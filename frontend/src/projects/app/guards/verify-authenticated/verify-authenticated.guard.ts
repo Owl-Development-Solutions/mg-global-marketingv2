@@ -1,14 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthUsecase, GetTokenUsecase } from '@app-store/lib/usecases';
-import * as fromUserStore from '@app-store/lib/data/store';
-import { Store } from '@ngrx/store';
-import { catchError, map, Observable, of, take, tap } from 'rxjs';
+import { AuthUsecase } from '@app-store/lib/usecases';
+import { map, Observable, take, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class verifyAuthenticatedGuard {
+export class VerifyAuthenticatedGuard {
   private authUsecase = inject(AuthUsecase);
   private router = inject(Router);
 
@@ -26,6 +24,6 @@ export class verifyAuthenticatedGuard {
   }
 }
 
-export const verifyAuthenticatedGuardFn: CanActivateFn = () => {
-  return inject(verifyAuthenticatedGuard).canActivate();
+export const VerifyAuthenticatedGuardFn: CanActivateFn = () => {
+  return inject(VerifyAuthenticatedGuard).canActivate();
 };
