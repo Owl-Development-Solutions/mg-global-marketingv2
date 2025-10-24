@@ -7,6 +7,8 @@ export const geonologyKey = 'geonology';
 
 export interface GeonologyState {
   tree: GeonologyNode | null;
+  loadingAttempted: boolean;
+  loadingSuccess: boolean;
   loading: boolean;
   loaded: boolean;
   error: string | null;
@@ -16,6 +18,8 @@ export const initialReducerState: GeonologyState = {
   tree: GeonolyResult,
   loading: false,
   loaded: false,
+  loadingAttempted: false,
+  loadingSuccess: false,
   error: null,
 };
 
@@ -29,7 +33,8 @@ const updateChildRecursive = (
 
   if (node.userName.toLowerCase() === parentUserName.toLowerCase()) {
     const parentSide = node.side === 'root' ? '' : node.side;
-    const newSide = `${parentSide}[${side === 'left' ? 'L' : 'R'}]`;
+    const newSide = `${parentSide}[${side === '[L]' ? 'L' : 'R'}]`;
+    const sideChild = side === '[L]' ? 'left' : 'right';
 
     return {
       ...node,
@@ -39,7 +44,7 @@ const updateChildRecursive = (
         side === 'right'
           ? (node.rightDownline || 0) + 1
           : node.rightDownline || 0,
-      [`${side}Child`]: {
+      [`${sideChild}Child`]: {
         ...child,
         side: newSide,
       },
@@ -71,11 +76,36 @@ const updateChildRecursive = (
 
 export const initiateGeonologyReducer = createReducer(
   initialReducerState,
-  on(fromGeonology.addUserGeonologyAttempted, (state) => {
+  on(fromGeonology.getGenealogyAttempted, (state) => {
     return {
       ...state,
       loading: true,
       loaded: false,
+      error: null,
+    };
+  }),
+  on(fromGeonology.getGenealogyFailed, (state, { error }) => {
+    return {
+      ...state,
+      loading: false,
+      loaded: false,
+      error,
+    };
+  }),
+  on(fromGeonology.getGenealogySucceeded, (state, { data }) => {
+    return {
+      ...state,
+      loading: false,
+      loaded: false,
+      error: null,
+      tree: data,
+    };
+  }),
+  on(fromGeonology.addUserGeonologyAttempted, (state) => {
+    return {
+      ...state,
+      loadingAttempted: true,
+      loadingSuccess: false,
       error: null,
     };
   }),
@@ -90,7 +120,7 @@ export const initiateGeonologyReducer = createReducer(
   on(
     fromGeonology.addUserGeonologySucceded,
     (state, { parentUserName, side, child }) => {
-      console.log('succeded called');
+      console.log(`called`);
 
       return {
         ...state,

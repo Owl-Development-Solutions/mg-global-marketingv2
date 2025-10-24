@@ -1,6 +1,11 @@
 import { Observable } from 'rxjs';
-import { AddUserGeonologyData } from './geonology.model';
+import {
+  AddUserGeonologyData,
+  GeonologyNode,
+  GeonologyResponse,
+} from './geonology.model';
 
 export interface GeonologyInterface {
-  addUserGeonology(data: AddUserGeonologyData): Observable<any>;
+  addUserGeonology(data: AddUserGeonologyData): Observable<GeonologyResponse>;
+  getGeanology(userId: string): Observable<GeonologyNode>;
 }

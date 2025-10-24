@@ -16,6 +16,7 @@ export class GeonologyTreeComponent {
   private dialog = inject(MatDialog);
 
   userNode = input.required<GeonologyNode | null>();
+  loading = input<boolean | null>();
 
   @Output() handleAddMember: EventEmitter<{
     data: any;

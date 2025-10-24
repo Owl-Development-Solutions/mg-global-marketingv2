@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { AuthUserResponse } from '../../../models';
+import { AuthUserResponse, UserResponseModel } from '../../../models';
 
 export const initiateAuthAttempted = createAction(
   '[Auth] Initiate Auth Attempted',

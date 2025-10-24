@@ -21,10 +21,15 @@ export const getUserName = createSelector(
   (user: UserResponseModel | undefined) => {
     if (user) {
       return {
-        firstName: user!.attributes!.first_name,
-        lastName: user!.attributes!.last_name,
+        firstName: user.attributes.firstName,
+        lastName: user.attributes.lastName,
       };
     }
     return null;
   },
+);
+
+export const getUserid = createSelector(
+  getUserProfile,
+  (user: UserResponseModel | undefined) => user && user.id,
 );

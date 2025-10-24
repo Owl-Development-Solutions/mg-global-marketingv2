@@ -1,19 +1,24 @@
 export interface User {
   id: string;
-  first_name: string;
-  last_name: string;
-  username: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
   name: string;
   email: string;
   password: string;
   address: string;
   country: string;
   city: string;
-  contact_number: string;
+  contactNumber: string;
   role: string;
-  refresh_token: string;
-  created_at: Date;
-  update_at: Date;
+  token: string;
+  refreshToken: string;
+  createdAt: Date;
+  updated_at: Date;
+  parentId: string;
+  leftChildId: string;
+  rightChildId: string;
+  activationCode: string;
 }
 
 export interface AuthResponse {
@@ -30,4 +35,19 @@ export interface UserResponse extends AuthResponse {
 export interface JWTProps {
   id: string;
   email: string;
+}
+
+export interface UserStats {
+  userId: string;
+  balance: number;
+  leftPoints: number;
+  rightPoints: number;
+  leftDownline: number;
+  rightDownline: number;
+  rankPoints: number;
+  level: any;
+  sidePath: string;
+  hasDeduction: boolean;
+  createdAt: Date;
+  updated_at: Date;
 }

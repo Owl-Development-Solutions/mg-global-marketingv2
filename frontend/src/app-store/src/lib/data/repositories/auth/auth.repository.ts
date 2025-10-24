@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthUserResponse } from '../../models';
+import { AuthUserResponse, UserResponseModel } from '../../models';
 import { AuthDatasource } from '../../datasources';
 import { AuthRepositoryInterface } from '../../../domain';
 

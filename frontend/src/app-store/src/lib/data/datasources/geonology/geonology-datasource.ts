@@ -1,16 +1,76 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   AddUserGeonologyData,
+  Document,
   GeonologyInterface,
   GeonologyNode,
+  GeonologyResponse,
 } from '../../models';
-import { delay, Observable, of } from 'rxjs';
+import { catchError, delay, map, Observable, of, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment.development';
+import { AppErrors } from '../../errors';
+import NotAuthorized = AppErrors.NotAuthorized;
+import UnexpectedError = AppErrors.UnexpectedError;
+import NotFoundError = AppErrors.NotFoundError;
+import ForbiddenError = AppErrors.ForbiddenError;
 
 @Injectable({
   providedIn: 'root',
 })
 export class GeonologyDatasource implements GeonologyInterface {
-  addUserGeonology(data: AddUserGeonologyData): Observable<any> {
-    return of(data).pipe(delay(1000));
+  private http = inject(HttpClient);
+  private baseUrl = environment.apiBaseUrl;
+
+  stored = localStorage.getItem('authz');
+  parsed = this.stored ? JSON.parse(this.stored) : null;
+  accessToken = this.parsed?.data?.accessToken;
+
+  private errorReport(error: any) {
+    switch (error.status) {
+      case 401:
+        return throwError(() => new NotAuthorized());
+      case 403:
+        return throwError(() => new ForbiddenError());
+      case 404:
+        return throwError(() => new NotFoundError());
+      default:
+        return throwError(() => new UnexpectedError());
+    }
+  }
+
+  getGeanology(userId: string): Observable<GeonologyNode> {
+    return this.http
+      .get<Document<GeonologyNode>>(
+        `${this.baseUrl}/api/geonology/getGeonology?user=${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        },
+      )
+      .pipe(
+        map((resp: Document<GeonologyNode>) => resp.data as GeonologyNode),
+        catchError((error) => this.errorReport(error)),
+      );
+  }
+
+  addUserGeonology(data: AddUserGeonologyData): Observable<GeonologyResponse> {
+    return this.http
+      .post<Document<GeonologyResponse>>(
+        `${this.baseUrl}/api/geonology/addGeonology`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        },
+      )
+      .pipe(
+        map(
+          (resp: Document<GeonologyResponse>) => resp.data as GeonologyResponse,
+        ),
+        catchError((error) => this.errorReport(error)),
+      );
   }
 }

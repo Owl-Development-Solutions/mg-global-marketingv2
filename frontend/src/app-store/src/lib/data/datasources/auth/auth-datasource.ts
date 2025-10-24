@@ -1,5 +1,10 @@
 import { inject, Inject, Injectable } from '@angular/core';
-import { AuthProfileInterface, AuthUserResponse, Document } from '../../models';
+import {
+  AuthProfileInterface,
+  AuthUserResponse,
+  Document,
+  UserResponseModel,
+} from '../../models';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment.development';

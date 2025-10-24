@@ -4,7 +4,7 @@ export const GeonolyResult: GeonologyNode = {
   userName: 'richchristine01',
   firstName: 'Garniv Palm',
   lastName: 'Ching',
-  balance: 570,
+  balance: '570',
   leftPoints: 2,
   rightPoints: 88,
   leftDownline: 27,
@@ -12,7 +12,7 @@ export const GeonolyResult: GeonologyNode = {
   rankPoints: 5,
   level: 0,
   side: 'root',
-  hasDeduction: false,
+  hasDeduction: 0,
   // leftChild: {
   //   userName: 'richchristine02',
   //   firstName: 'Benito Alex',

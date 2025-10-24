@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { AuthUserResponse } from '../../data/models';
+import { AuthUserResponse, UserResponseModel } from '../../data/models';
 
 export interface AuthRepositoryInterface {
   initiateAuth(data: {

@@ -8,10 +8,16 @@ import { PageTitlePortalService } from '../../services';
 import { CdkPortal } from '@angular/cdk/portal';
 import { AuthUsecase } from '@app-store/lib/usecases';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ProfileCardComponent, ProfileTabsComponent, CdkPortal],
+  imports: [
+    ProfileCardComponent,
+    ProfileTabsComponent,
+    CdkPortal,
+    CommonModule,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })

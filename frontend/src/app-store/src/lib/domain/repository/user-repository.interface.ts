@@ -1,4 +1,4 @@
-import { UserResponseModel } from '@app-store/lib/data/models/user.attributes.model';
+import { UserResponseModel } from '../../data/models';
 import { Observable } from 'rxjs';
 
 export interface UserRepositoryInterface {
