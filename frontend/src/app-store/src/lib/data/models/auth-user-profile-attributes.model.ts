@@ -4,8 +4,8 @@
 
 export interface User {
   id: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   username: string;
   name: string;
   email: string;
@@ -13,10 +13,10 @@ export interface User {
   address: string;
   country: string;
   city: string;
-  contact_number: string;
+  contactNumber: string;
   role: string;
-  created_at: Date;
-  update_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 export interface AuthUserResponse {
   accessToken: string;

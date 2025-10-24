@@ -10,3 +10,18 @@ export const geonologyData = createSelector(
   geonologyState,
   (state: fromGeonology.GeonologyState) => state && state.tree,
 );
+
+export const genealogyTreeLoaded = createSelector(
+  geonologyState,
+  (state) => state?.loaded,
+);
+
+export const genealogyTreeLoading = createSelector(
+  geonologyState,
+  (state) => state.loading,
+);
+
+export const genealogyLoadingAddedAttempted = createSelector(
+  geonologyState,
+  (state) => state.loadingAttempted,
+);

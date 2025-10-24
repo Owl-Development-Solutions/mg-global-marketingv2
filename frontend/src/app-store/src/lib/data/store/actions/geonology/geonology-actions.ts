@@ -1,4 +1,4 @@
-import { GeonologyNode } from '@app-store/public-api';
+import { Callbacks, GeonologyNode } from '../../../models';
 import { createAction, props } from '@ngrx/store';
 
 export const addUserGeonologyAttempted = createAction(
@@ -7,6 +7,8 @@ export const addUserGeonologyAttempted = createAction(
     parentUserName: string;
     side: string;
     child: GeonologyNode;
+    activationCodeId: string;
+    callBacks: Callbacks;
   }>(),
 );
 
@@ -22,4 +24,19 @@ export const addUserGeonologySucceded = createAction(
     side: string;
     child: GeonologyNode;
   }>(),
+);
+
+export const getGenealogyAttempted = createAction(
+  '[Genealogy] Get Genealogy By UserId Attempted',
+  props<{ userId: string }>(),
+);
+
+export const getGenealogyFailed = createAction(
+  '[Genealogy] Get Genealogy By UserId Failed',
+  props<{ error: string }>(),
+);
+
+export const getGenealogySucceeded = createAction(
+  '[Genealogy] Get Genealogy By UserId Succeeded',
+  props<{ data: GeonologyNode }>(),
 );

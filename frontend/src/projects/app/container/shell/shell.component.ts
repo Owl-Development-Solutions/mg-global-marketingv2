@@ -59,6 +59,9 @@ export class ShellComponent {
   private authUsecase = inject(AuthUsecase);
 
   getAuthName$ = this.authUsecase.getAuthName$;
+  getUserId$ = this.authUsecase.getUserId$;
+
+  getUserId = toSignal(this.getUserId$);
 
   breakpoint: Signal<BreakpointState | undefined> = toSignal(
     this.breakpointObserver.observe([Breakpoints.XSmall, Breakpoints.Small]),

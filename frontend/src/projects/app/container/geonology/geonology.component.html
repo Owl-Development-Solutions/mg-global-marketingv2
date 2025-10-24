@@ -1,6 +1,7 @@
 <div>
   <app-geonology-tree
-    [userNode]="data | async"
+    [userNode]="geonologyData$ | async"
+    [loading]="genealogyTreeLoading$ | async"
     (handleAddMember)="handleAddMember($event)"
   ></app-geonology-tree>
   <div class="text-gray-400 px-6 py-3 mt-3">

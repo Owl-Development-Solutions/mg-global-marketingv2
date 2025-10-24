@@ -15,6 +15,7 @@ import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto";
 import jwt from "jsonwebtoken";
 import { connection } from "../../config/mysql.db";
+import { v4 as uuidv4 } from "uuid";
 
 export const registerUserIn = async (
   user: User
@@ -57,18 +58,26 @@ export const registerUserIn = async (
       };
     }
 
-    const id = randomUUID();
-
     //has the password
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(user.password, salt);
+    const newUserId = uuidv4();
 
     //hardcoded for now for registering user  => role is user
     const role = "admin";
 
     const [result] = await db.execute(
-      "INSERT INTO users (`id`, `name`, `email`, `password`, `role`) VALUES (?, ?, ?, ?, ?)",
-      [id, user.name, user.email, hash, role]
+      "INSERT INTO users (`id`, `firstName`, `lastName`, `userName`, `name`, `email`, `password`, `role`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [
+        newUserId,
+        user.firstName,
+        user.lastName,
+        user.userName,
+        user.name,
+        user.email,
+        hash,
+        role,
+      ]
     );
 
     //error when inserting in the database
@@ -83,6 +92,13 @@ export const registerUserIn = async (
         },
       };
     }
+
+    await db.execute(
+      `INSERT INTO user_stats (
+      userId, balance, leftPoints, rightPoints, leftDownline, rightDownline, rankPoints, level, sidePath, hasDeduction
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [newUserId, 0.0, 0, 0, 0, 0, 0, 0, "root", false]
+    );
 
     return {
       success: true,

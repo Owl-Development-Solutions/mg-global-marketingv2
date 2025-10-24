@@ -1,6 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { GeonologyRepositoryInterface } from '../../../domain';
-import { AddUserGeonologyData } from '@app-store/public-api';
+import {
+  AddUserGeonologyData,
+  GeonologyNode,
+  GeonologyResponse,
+} from '../../models';
 import { Observable } from 'rxjs';
 import { GeonologyDatasource } from '../../datasources';
 
@@ -10,7 +14,11 @@ import { GeonologyDatasource } from '../../datasources';
 export class GeonologyRepository implements GeonologyRepositoryInterface {
   private geonologyDatasource = inject(GeonologyDatasource);
 
-  addUserGeonology(data: AddUserGeonologyData): Observable<any> {
+  addUserGeonology(data: AddUserGeonologyData): Observable<GeonologyResponse> {
     return this.geonologyDatasource.addUserGeonology(data);
+  }
+
+  getGeanology(userId: string): Observable<GeonologyNode> {
+    return this.geonologyDatasource.getGeanology(userId);
   }
 }

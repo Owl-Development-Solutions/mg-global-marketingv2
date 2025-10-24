@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 //routes import
 import authRouter from "./routes/users/auth.routes";
 import userRouter from "./routes/users/get-user.routes";
-import { connection } from "./config/mysql.db";
+import geonologyRouter from "./routes/geonology/geonology.routes";
 
 const app = express();
 dotenv.config();
@@ -17,8 +17,8 @@ app.use(express.json());
 //middleware
 app.use(bodyParser.json());
 
-//routes
-// app.use("/api/geonology", getGeonology);
+//routes for geonology
+app.use("/api/geonology", geonologyRouter);
 
 // Base path
 app.use("/api/auth", authRouter);

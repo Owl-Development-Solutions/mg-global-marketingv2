@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthRepository, UserRepository } from '../../../repositories';
 import * as fromAuth from '../../actions/auth/auth-actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
-import { AuthUserResponse } from '../../../models';
+import { AuthUserResponse, UserResponseModel } from '../../../models';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 

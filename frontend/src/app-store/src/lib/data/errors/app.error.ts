@@ -54,4 +54,22 @@ export namespace AppErrors {
       this.message = message || 'Email is required.';
     }
   }
+
+  export class NotFoundError extends Error implements DomainError {
+    override readonly message: string;
+
+    constructor(message?: string) {
+      super(message || 'Not found.');
+      this.message = message || 'Not found.';
+    }
+  }
+
+  export class ForbiddenError extends Error implements DomainError {
+    override readonly message: string;
+
+    constructor(message?: string) {
+      super(message || 'You do not have access.');
+      this.message = message || 'You do not have access.';
+    }
+  }
 }

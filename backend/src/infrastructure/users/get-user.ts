@@ -58,14 +58,14 @@ export const getUserByAccessToken = async (
       id: user!.id,
       type: user!.role,
       attributes: {
-        first_name: user!.first_name,
-        last_name: user!.last_name,
+        firstName: user!.firstName,
+        lastName: user!.lastName,
         name: user!.name,
         email: user!.email,
         role: user!.role,
       } as any,
       accessToken: token,
-      refreshToken: user!.refresh_token,
+      refreshToken: user!.refreshToken,
     };
 
     return {

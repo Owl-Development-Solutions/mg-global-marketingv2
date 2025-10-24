@@ -10,7 +10,11 @@ import {
   UnilevelComponent,
 } from './app/container';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuardFn, VerifyAuthenticatedGuardFn } from './app/guards';
+import {
+  AuthGuardFn,
+  VerifyAuthenticatedGuardFn,
+  GetGenealogyGuardFn,
+} from './app/guards';
 
 export const routes: Routes = [
   {
@@ -32,7 +36,8 @@ export const routes: Routes = [
         component: UnilevelComponent,
       },
       {
-        path: 'geonology',
+        path: 'geonology/:user',
+        canActivate: [GetGenealogyGuardFn],
         component: GeonologyComponent,
       },
       {

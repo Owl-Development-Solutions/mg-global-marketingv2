@@ -1,6 +1,9 @@
 <mat-sidenav-container fullscreen>
   <mat-sidenav #sidenav mode="side" opened class="sidenav">
-    <app-sys-sidenav (toggleSidenav)="toggleExpansion()"></app-sys-sidenav>
+    <app-sys-sidenav
+      (toggleSidenav)="toggleExpansion()"
+      [userId]="getUserId()"
+    ></app-sys-sidenav>
   </mat-sidenav>
 
   <mat-sidenav-content>
@@ -19,7 +22,6 @@
           >
           </app-user-identity>
         </button>
-
         <mat-menu #userMenu xPosition="before">
           <button mat-menu-item class="group">
             <mat-icon class="!text-primary-300 group-hover:!text-primary"

@@ -25,7 +25,7 @@ import { SubmitButtonComponent } from '../submit-button/submit-button.component'
 import { CommonModule } from '@angular/common';
 
 export interface AddMemberModalData {
-  data: any;
+  data: GeonologyNode;
   side: string;
   onSubmit: ({
     data,
@@ -33,7 +33,6 @@ export interface AddMemberModalData {
     onFailure,
   }: {
     data: any;
-    side: any;
     onSuccess: Function;
     onFailure: Function;
   }) => void;
@@ -59,7 +58,6 @@ export interface AddMemberModalData {
 export class AddMemberModalComponent {
   constructor(
     public dialogRef: MatDialogRef<AddMemberModalComponent>,
-    private geonologyUsecase: GeonologyUsecase,
     @Inject(MAT_DIALOG_DATA) public data: AddMemberModalData,
   ) {}
 
@@ -97,9 +95,6 @@ export class AddMemberModalComponent {
   }
 
   performAddMember(form: NgForm) {
-    console.log(form.value);
-    console.log();
-
     const { firstName, lastName, userName, activationCode } = form.value;
     const side = this.data.side;
 
@@ -118,23 +113,17 @@ export class AddMemberModalComponent {
       hasDeduction: false,
     };
 
-    this.geonologyUsecase.addUserGeonology({
+    const data = {
       parentUserName: this.data.data.userName,
-      side: this.data.side,
+      side: side === 'left' ? '[L]' : '[R]',
       child: newNode,
+      activationCodeId: activationCode,
+    };
+
+    this.data.onSubmit({
+      onSuccess: this.handleSuccess.bind(this),
+      onFailure: this.handleError.bind(this),
+      data: data,
     });
-
-    this.dialogRef.close();
-
-    // if (form.valid) {
-    //   this.submitting$.next(true);
-    //   this.error$.next(null);
-    //   this.data.onSubmit({
-    //     data: {
-    //       ...form.value
-    //     },
-
-    //   })
-    // }
   }
 }
