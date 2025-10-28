@@ -1,21 +1,11 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  input,
-  NgModule,
-  Output,
-} from '@angular/core';
-import { FormControl, FormsModule, NgForm, NgModel } from '@angular/forms';
+import { Component, EventEmitter, Input, input, Output } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInput } from '@angular/material/input';
 import { PasswordFieldComponent } from '../password-field/password-field.component';
-import { MatButton } from '@angular/material/button';
-import { NotificationComponent } from '../notification/notification.component';
 import { SignInAttributes } from '../../models';
-import { AuthUserResponse } from '@app-store/public-api';
 import { SubmitButtonComponent } from '../submit-button/submit-button.component';
 
 @Component({
@@ -29,8 +19,6 @@ import { SubmitButtonComponent } from '../submit-button/submit-button.component'
     MatFormField,
     MatInput,
     PasswordFieldComponent,
-    MatButton,
-    NotificationComponent,
     MatInput,
     SubmitButtonComponent,
   ],

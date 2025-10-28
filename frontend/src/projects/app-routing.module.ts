@@ -40,6 +40,7 @@ export const routes: Routes = [
         path: 'geonology/:user',
         canActivate: [GetGenealogyGuardFn, GetUserByIdGuard],
         component: GeonologyComponent,
+        data: { title: 'Genealogy' },
       },
       {
         path: 'ecu-wallet',
