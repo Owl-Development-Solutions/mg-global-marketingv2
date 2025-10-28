@@ -1,4 +1,4 @@
-import { UserResponseModel } from '@app-store/public-api';
+import { UserResponseModel, UserResponseState } from '../../../models';
 import { createReducer, on } from '@ngrx/store';
 import * as fromUser from '../../actions/user/user-actions';
 
@@ -21,8 +21,6 @@ export const initialUserState: UserState = {
 export const initiateUserReducer = createReducer(
   initialUserState,
   on(fromUser.getUserByTokenSucceeded, (state, { data }) => {
-    console.log(data);
-
     return {
       ...state,
       data,

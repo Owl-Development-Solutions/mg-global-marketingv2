@@ -26,4 +26,9 @@ export const refreshTokenSucceed = createAction(
   props<{ data: AuthUserResponse }>(),
 );
 
+export const refreshTokenFailed = createAction(
+  '[Auth] Initiate Refresh Token Failed',
+  props<{ error: any }>(),
+);
+
 export const logoutAttempted = createAction('[Auth] Logout Attempted');

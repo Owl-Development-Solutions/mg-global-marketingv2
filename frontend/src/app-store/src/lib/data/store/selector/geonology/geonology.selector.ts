@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import * as fromGeonology from '../../reducer/geonology/geonology.reducer';
+import { GeonologyNode } from '../../../models';
 
 export const geonologyState =
   createFeatureSelector<fromGeonology.GeonologyState>(
@@ -24,4 +25,10 @@ export const genealogyTreeLoading = createSelector(
 export const genealogyLoadingAddedAttempted = createSelector(
   geonologyState,
   (state) => state.loadingAttempted,
+);
+
+export const rootFullName = createSelector(
+  geonologyData,
+  (tree: GeonologyNode | null) =>
+    tree && tree.side === 'root' ? `${tree.firstName} ${tree.lastName}` : null,
 );

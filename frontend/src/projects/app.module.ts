@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, provideAppInitializer } from '@angular/core';
 import { AppComponent } from './app.component';
 import { MetaReducer, StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
@@ -16,6 +16,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { localStorageSync } from 'ngrx-store-localstorage';
 import { reducers } from '@app-store/public-api';
+import { TokenInterceptor } from '@app-store/lib/data/interceptors';
 
 export const extModules = [
   StoreDevtoolsModule.instrument({
@@ -24,14 +25,23 @@ export const extModules = [
   }),
 ];
 
-const PERSISTED_KEYS = ['user', 'authz']; // <-- This is the KEY you want to persist! ('user')
-
+const PERSISTED_KEYS = [
+  {
+    user: {
+      filter: ['data'],
+    },
+  },
+  {
+    authz: {
+      filter: ['data', 'isAuthenticated'],
+    },
+  },
+];
 export function localStorageSyncReducer(reducer: any): any {
   return localStorageSync({
-    keys: PERSISTED_KEYS,
-    rehydrate: true, // Auto-load state from storage on app start
-    storage: localStorage, // Use localStorage (or sessionStorage)
-    // You can also add 'removeOnUndefined: true' for cleanup
+    keys: PERSISTED_KEYS as any,
+    rehydrate: true,
+    storage: localStorage,
   })(reducer);
 }
 
@@ -54,11 +64,12 @@ const metaReducers: MetaReducer<any>[] = [localStorageSyncReducer];
     extModules,
   ],
   providers: [
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: TokenInterceptor,
-    //   multi: true,
-    // },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
+    provideAppInitializer(() => new Promise((resolve) => setTimeout(resolve))),
     provideHttpClient(withInterceptorsFromDi()),
   ],
 })

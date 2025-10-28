@@ -95,6 +95,7 @@ export class AddMemberModalComponent {
   }
 
   performAddMember(form: NgForm) {
+    this.submitting$.next(true);
     const { firstName, lastName, userName, activationCode } = form.value;
     const side = this.data.side;
 

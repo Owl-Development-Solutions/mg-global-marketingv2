@@ -203,6 +203,7 @@
       </mat-card-content>
     </mat-card>
   </div>
+
   <div mat-dialog-actions class="p-4 flex gap-2">
     <button
       mat-stroked-button
@@ -217,7 +218,7 @@
       [isDisabled]="!addMemberForm.valid"
       text="Create Member"
       icon="person_add"
-      [isLoading]="(submitting$ | async) ?? false"
+      [isLoading]="submitting$ | async"
       color="primary"
     >
     </app-submit-button>

@@ -5,7 +5,7 @@ import {
   Document,
   UserResponseModel,
 } from '../../models';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment.development';
 import { AppErrors } from '../../errors';
@@ -53,9 +53,11 @@ export class AuthDatasource implements AuthProfileInterface {
   }
 
   refreshToken(refreshToken: string): Observable<AuthUserResponse> {
-    return this.executeAuthRequest<string, AuthUserResponse>(
+    return this.executeAuthRequest<{ refreshToken: string }, AuthUserResponse>(
       'api/auth/refresh-token',
-      refreshToken,
+      {
+        refreshToken,
+      },
     );
   }
 }

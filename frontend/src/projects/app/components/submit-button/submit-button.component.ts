@@ -20,7 +20,7 @@ export class SubmitButtonComponent {
   isHandset: boolean = false;
 
   @Input()
-  isLoading: boolean = false;
+  isLoading: boolean | null = false;
 
   @Input()
   icon?: string;

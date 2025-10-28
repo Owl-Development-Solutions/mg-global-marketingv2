@@ -10,3 +10,5 @@ export * from './sign-up/sign-up.component';
 export * from './add-wallet-button/add-wallet-button.component';
 export * from './submit-button/submit-button.component';
 export * from './user-identity/user-identity.component';
+export * from './skeleton-text/skeleton-text.component';
+export * from './skeleton-user-node/skeleton-user-node.component';

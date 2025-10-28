@@ -68,17 +68,17 @@ export const processUplineRewards = async (
 export const buildNodeTree = async (
   db: any,
   currentNodeData: any,
-  isViewRoot: boolean = false
+  level: number,
+  relativeSide: string
 ): Promise<GeonologyNode> => {
   const MAX_LEVEL_DEPTH = 5;
 
-  const mapLevel = (level: number): LowOrHigh => ({
-    low: level,
+  const mapLevel = (lvl: number): LowOrHigh => ({
+    low: lvl,
     high: 0,
   });
 
-  const currentLevel = isViewRoot ? 0 : currentNodeData.level;
-  const shouldRecurse = currentLevel < MAX_LEVEL_DEPTH;
+  const shouldRecurse = level < MAX_LEVEL_DEPTH;
 
   const node: GeonologyNode = {
     id: currentNodeData.id,
@@ -91,8 +91,10 @@ export const buildNodeTree = async (
     leftDownline: currentNodeData.leftDownline,
     rightDownline: currentNodeData.rightDownline,
     rankPoints: currentNodeData.rankPoints,
-    level: mapLevel(currentLevel),
-    side: isViewRoot ? "root" : currentNodeData.sidePath,
+    // 2. Use the passed level
+    level: mapLevel(level),
+    // 3. Use the passed relative side
+    side: relativeSide,
     hasDeduction: currentNodeData.hasDeduction,
     leftChild: null,
     rightChild: null,
@@ -115,7 +117,12 @@ export const buildNodeTree = async (
     const leftChildData = leftChildDatas[0];
 
     if (leftChildData) {
-      node.leftChild = await buildNodeTree(db, leftChildData, false);
+      node.leftChild = await buildNodeTree(
+        db,
+        leftChildData,
+        level + 1, // Next level
+        relativeSide === "root" ? "[L]" : `${relativeSide}[L]`
+      );
     }
   }
 
@@ -136,7 +143,12 @@ export const buildNodeTree = async (
     const rightChildData = rightChildDatas[0];
 
     if (rightChildData) {
-      node.rightChild = await buildNodeTree(db, rightChildData, false);
+      node.rightChild = await buildNodeTree(
+        db,
+        rightChildData,
+        level + 1, // Next level
+        relativeSide === "root" ? "[R]" : `${relativeSide}[R]`
+      );
     }
   }
 

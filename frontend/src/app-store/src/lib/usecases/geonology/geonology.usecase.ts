@@ -15,6 +15,8 @@ export class GeonologyUsecase {
     select(fromStore.genealogyTreeLoading),
   );
 
+  geonoloyRootFullName$ = this.store.pipe(select(fromStore.rootFullName));
+
   addUserGeonology(data: AddUserGeonologyData, callBacks: Callbacks) {
     this.store.dispatch(
       fromStore.addUserGeonologyAttempted({
