@@ -3,7 +3,7 @@ import { AppComponent } from './app.component';
 import { MetaReducer, StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { CommonModule } from '@angular/common';
-import { provideRouter, RouterOutlet, withHashLocation } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppStoreModule } from '@app-store/lib/app-store.module';
 import {
@@ -70,7 +70,6 @@ const metaReducers: MetaReducer<any>[] = [localStorageSyncReducer];
     },
     provideAppInitializer(() => new Promise((resolve) => setTimeout(resolve))),
     provideHttpClient(withInterceptorsFromDi()),
-    provideRouter(routes, withHashLocation()),
   ],
 })
 export class AppModule {}
