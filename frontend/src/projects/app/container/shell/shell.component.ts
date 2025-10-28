@@ -81,7 +81,6 @@ export class ShellComponent {
 
   readLocalStorageSidenavSetting(): boolean {
     const item = localStorage.getItem(this.localStorageKey);
-    console.log(item);
 
     return item !== null ? item === 'true' : true;
   }
@@ -89,8 +88,6 @@ export class ShellComponent {
   isExpanded = signal(this.readLocalStorageSidenavSetting());
 
   toggleExpansion() {
-    console.log('works');
-
     const updatedExpanded = !this.isExpanded();
     this.writeLocalStorageSidenavSetting(updatedExpanded);
     window.dispatchEvent(new Event('resize'));

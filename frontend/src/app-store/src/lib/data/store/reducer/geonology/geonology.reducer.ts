@@ -120,8 +120,6 @@ export const initiateGeonologyReducer = createReducer(
   on(
     fromGeonology.addUserGeonologySucceded,
     (state, { parentUserName, side, child }) => {
-      console.log(`called`);
-
       return {
         ...state,
         tree: state.tree

@@ -32,8 +32,6 @@ export const getGeonologyTreeIn = async (
     const rootUser = rootUsers[0] as User &
       UserStats & { lefChild: string | null; rightChild: string | null };
 
-    console.log(`rootUser`, rootUser);
-
     if (!rootUser) {
       return {
         success: false,

@@ -19,13 +19,7 @@ export const addGeonologyUserIn = async (
 ): Promise<Result<SuccessResponse<GeonologyResponse>, ErrorResponse>> => {
   const { parentUserName, side, child, activationCodeId } = data;
 
-  console.log(parentUserName, side, child, activationCodeId);
-
   const sideColumn = side === "[L]" ? "leftChildId" : "rightChildId";
-
-  console.log(`side`, side);
-
-  console.log(`sideColumn`, sideColumn);
 
   if (side !== "[L]" && side !== "[R]") {
     return {
@@ -47,8 +41,6 @@ export const addGeonologyUserIn = async (
 
     const codeRecords = codes as ActivationCode[];
     const code = codeRecords[0];
-
-    console.log(code);
 
     if (!code) {
       return {
@@ -79,14 +71,10 @@ export const addGeonologyUserIn = async (
     const users = parent as User[];
     const user = users[0];
 
-    console.log(`user`, user);
-    console.log(`user[sideColumn]`, user?.[sideColumn]);
-
     if (!user || user[sideColumn]) {
       const message = !user
         ? "Parent user not found."
         : `The ${side.replace(/\[|\]/g, "")} slot of the parent is already occupied.`;
-      console.log(`message`, message);
 
       return {
         success: false,
@@ -101,8 +89,6 @@ export const addGeonologyUserIn = async (
 
     const newUserId = uuidv4();
 
-    console.log(`parentId`, parentId);
-
     //  INSERT NEW USER (CHILD)
     // Pass the activationCodeId into the users table
     const [userResult] = await db.execute(
@@ -116,10 +102,6 @@ export const addGeonologyUserIn = async (
         activationCodeIdFromDB,
       ]
     );
-
-    console.log(`userResult`, userResult);
-
-    console.log(`newUserId`, newUserId);
 
     const [parentStats] = await db.execute(
       `SELECT sidePath, level FROM user_stats WHERE userId = ?`,
