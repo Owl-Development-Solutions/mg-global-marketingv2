@@ -6,14 +6,9 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
-import {
-  MatFormField,
-  MatFormFieldModule,
-  MatLabel,
-} from '@angular/material/form-field';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { GeonologyUsecase } from '@app-store/lib/usecases';
 import { BehaviorSubject } from 'rxjs';
 import {
   CallbackOnFailureModel,
@@ -53,7 +48,6 @@ export interface AddMemberModalData {
     CommonModule,
   ],
   templateUrl: './add-member-modal.component.html',
-  styleUrl: './add-member-modal.component.scss',
 })
 export class AddMemberModalComponent {
   constructor(

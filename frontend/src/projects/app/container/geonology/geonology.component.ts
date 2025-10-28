@@ -62,7 +62,11 @@ export class GeonologyComponent implements OnInit, OnDestroy {
   fullName = toSignal(this.geonoloyRootFullName$);
   userId = toSignal(this.getUserId$);
 
-  handleAddMember(geonologyData: { data: GeonologyNode; side: string }) {
+  async handleAddMember(geonologyData: { data: GeonologyNode; side: string }) {
+    const { AddMemberModalComponent } = await import(
+      '../../components/add-member-modal/add-member-modal.component'
+    );
+
     this.dialog.open(AddMemberModalComponent, {
       data: {
         data: geonologyData.data,
