@@ -48,6 +48,17 @@ export const initiateAuthReducer = createReducer(
     loaded: false,
     isAuthenticated: false,
   })),
+  on(fromAuth.refreshTokenSucceed, (state, { data }) => {
+    return {
+      ...state,
+      data,
+    };
+  }),
+  on(fromAuth.refreshTokenFailed, (state, { error }) => {
+    return {
+      ...state,
+    };
+  }),
   on(fromAuth.logoutAttempted, () => ({
     ...initialAuthState,
   })),

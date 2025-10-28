@@ -27,15 +27,18 @@ export class GeonologyDatasource implements GeonologyInterface {
   accessToken = this.parsed?.data?.accessToken;
 
   private errorReport(error: any) {
+    console.log(`error`, error.error.error);
+    const message = error?.error?.error;
+
     switch (error.status) {
       case 401:
-        return throwError(() => new NotAuthorized());
+        return throwError(() => new NotAuthorized(message));
       case 403:
-        return throwError(() => new ForbiddenError());
+        return throwError(() => new ForbiddenError(message));
       case 404:
-        return throwError(() => new NotFoundError());
+        return throwError(() => new NotFoundError(message));
       default:
-        return throwError(() => new UnexpectedError());
+        return throwError(() => new UnexpectedError(message));
     }
   }
 
@@ -44,9 +47,7 @@ export class GeonologyDatasource implements GeonologyInterface {
       .get<Document<GeonologyNode>>(
         `${this.baseUrl}/api/geonology/getGeonology?user=${userId}`,
         {
-          headers: {
-            Authorization: `Bearer ${this.accessToken}`,
-          },
+          withCredentials: true,
         },
       )
       .pipe(
@@ -61,9 +62,7 @@ export class GeonologyDatasource implements GeonologyInterface {
         `${this.baseUrl}/api/geonology/addGeonology`,
         data,
         {
-          headers: {
-            Authorization: `Bearer ${this.accessToken}`,
-          },
+          withCredentials: true,
         },
       )
       .pipe(

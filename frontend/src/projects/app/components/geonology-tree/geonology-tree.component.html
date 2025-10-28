@@ -1,25 +1,32 @@
 @if (loading()) {
-  <div>Loading ....</div>
+  <app-skeleton-user-node
+    [isSmallNode]="isSmallNode"
+    [currentDepth]="2"
+    style="display: flex; align-items: center; justify-content: center"
+  />
 } @else {
   <div class="w-full overflow-x-auto">
     <div class="min-w-max flex justify-center">
       <div class="flex w-full flex-col items-center">
         <div
-          class="group flex cursor-default flex-col items-center transition-all duration-200"
+          class="cursor-pointer group flex cursor-default flex-col items-center transition-all duration-200 relative z-20"
+          (click)="handleClickMember(userNode()?.id)"
         >
           <div class="relative">
             <img
-              class="relative inline-flex
-{{ isSmallNode ? 'h-8 w-8' : 'h-12 w-12' }}
-items-center justify-center mt-2 rounded-full ring-2 ring-primary"
+              class="relative inline-flex items-center justify-center mt-2 rounded-full ring-2 ring-primary {{
+                isSmallNode ? 'h-8 w-8' : 'h-12 w-12'
+              }}"
               src="person-img.jpg"
             />
           </div>
 
+          <!-- User Details -->
           <div class="mt-2 space-y-1 text-center">
             <div
-              class="{{ isSmallNode ? 'text-xs' : 'text-sm' }} 
-        font-medium font-semibold text-blue-600 transition-colors"
+              class="font-medium font-semibold text-blue-600 transition-colors {{
+                isSmallNode ? 'text-xs' : 'text-sm'
+              }}"
             >
               {{ userNode()!.userName }}
             </div>
@@ -32,14 +39,7 @@ items-center justify-center mt-2 rounded-full ring-2 ring-primary"
               {{ userNode()!.firstName }} {{ userNode()!.lastName }}
             </div>
 
-            <div
-              class="text-muted-foreground {{
-                isSmallNode ? 'text-[10px]' : 'text-xs'
-              }}"
-            >
-              {{ userNode()!.leftPoints }} • {{ userNode()!.rightPoints }}
-            </div>
-
+            <!-- Downline Counter -->
             <div
               class="bg-muted/50 rounded border px-2 py-1 {{
                 isSmallNode ? 'text-[10px]' : 'text-xs'
@@ -49,153 +49,175 @@ items-center justify-center mt-2 rounded-full ring-2 ring-primary"
                 {{ userNode()!.leftDownline }}</span
               >
               <span class="text-muted-foreground mx-1">|</span>
-              <span class="font-medium text-purple-600">{{
-                userNode()!.rightDownline
-              }}</span>
+              <span class="font-medium text-purple-600">
+                {{ userNode()!.rightDownline }}
+              </span>
             </div>
           </div>
         </div>
 
+        <!-- Children/Linkers Container -->
         <div class="flex w-full flex-col items-center">
           <div
             class="group flex cursor-default flex-col items-center transition-all duration-200"
           >
+            <!-- Vertical Line to Children -->
             @if (currentDepth !== 4) {
               <div class="bg-gray-300 h-6 w-px"></div>
             }
 
-            <div
-              *ngIf="currentDepth < 4"
-              class="flex w-full justify-center relative gap-12"
-            >
-              <div class="absolute top-0 h-px bg-gray-300 w-full"></div>
+            @if (currentDepth < 4) {
+              <div class="flex w-full justify-center relative gap-12">
+                <!-- Horizontal Line connecting children (Ensure z-index is low here) -->
+                <div class="absolute top-0 h-px bg-gray-300 w-full z-0"></div>
 
-              <div class="flex flex-col items-center">
-                <div class="relative w-full flex justify-end">
-                  <div
-                    class="absolute top-0 left-1/2 w-px h-6 bg-gray-300"
-                  ></div>
-                </div>
+                <!-- Left Child Slot (Fixed: Added relative z-10 for stacking context) -->
+                <div class="flex flex-col items-center relative z-10">
+                  <div class="relative w-full flex justify-end">
+                    <!-- Vertical line down to left child -->
+                    <div
+                      class="absolute top-0 left-1/2 w-px h-6 bg-gray-300"
+                    ></div>
+                  </div>
 
-                <div class="pt-6 flex justify-center">
-                  <ng-container
-                    *ngIf="userNode()!.leftChild; else leftEmptySlot"
-                  >
-                    <app-geonology-tree
-                      [userNode]="userNode()!.leftChild!"
-                      (handleAddMember)="handleAddMember.emit($event)"
-                    ></app-geonology-tree>
-                  </ng-container>
+                  <div class="pt-6 flex justify-center">
+                    <ng-container
+                      *ngIf="userNode()!.leftChild; else leftEmptySlot"
+                    >
+                      <app-geonology-tree
+                        [userNode]="userNode()!.leftChild!"
+                        (handleAddMember)="handleAddMember.emit($event)"
+                        (routeToMember)="routeToMember.emit($event)"
+                      ></app-geonology-tree>
+                    </ng-container>
 
-                  <ng-template #leftEmptySlot>
-                    @if (currentDepth === 3) {
-                      <div class="relative">
-                        <div class="group flex flex-col items-center">
-                          <span
-                            class="border-border relative flex size-8 shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50"
+                    <ng-template #leftEmptySlot>
+                      @if (currentDepth === 3) {
+                        <!-- Leaf node (depth 3) showing question mark placeholder -->
+                        <div class="relative">
+                          <div class="group flex flex-col items-center">
+                            <span
+                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 size-8"
+                            >
+                              <span
+                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full"
+                              >
+                                <mat-icon>question_mark</mat-icon>
+                              </span>
+                            </span>
+                            <div class="text-muted-foreground mt-2 text-xs">
+                              Empty
+                            </div>
+                            <div class="text-muted-foreground text-xs">
+                              0 | 0
+                            </div>
+                          </div>
+                        </div>
+                      } @else {
+                        <!-- Add Member Slot -->
+                        <div class="relative">
+                          <div
+                            class="flex cursor-pointer flex-col items-center group"
+                            (click)="addMember(userNode(), 'left')"
                           >
                             <span
-                              class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full"
+                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-blue-400 group-hover:opacity-80 size-10"
                             >
-                              <mat-icon>question_mark</mat-icon></span
+                              <span
+                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-blue-600"
+                              >
+                                <mat-icon>add</mat-icon>
+                              </span>
+                            </span>
+                            <div
+                              class="mt-2 text-xs text-blue-600 group-hover:text-blue-700"
                             >
-                          </span>
-                          <div class="text-muted-foreground mt-2 text-xs">
-                            Empty
+                              Add Member
+                            </div>
+                            <div class="text-muted-foreground text-xs">
+                              0 | 0
+                            </div>
                           </div>
-                          <div class="text-muted-foreground text-xs">0 | 0</div>
                         </div>
-                      </div>
-                    } @else {
-                      <div class="relative">
-                        <div
-                          class="flex cursor-pointer flex-col items-center"
-                          (click)="addMember(userNode(), 'left')"
-                        >
-                          <span
-                            class="border-border relative flex size-10 shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-blue-400 group-hover:opacity-80"
-                            ><span
-                              class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-blue-600"
+                      }
+                    </ng-template>
+                  </div>
+                </div>
+
+                <!-- Right Child Slot (Fixed: Added relative z-10 for stacking context) -->
+                <div class="flex flex-col items-center relative z-10">
+                  <div class="relative w-full flex justify-start">
+                    <!-- Vertical line down to right child -->
+                    <div
+                      class="absolute top-0 left-1/2 w-px h-6 bg-gray-300"
+                    ></div>
+                  </div>
+
+                  <div class="pt-6 flex justify-center">
+                    <ng-container
+                      *ngIf="userNode()!.rightChild; else rightEmptySlot"
+                    >
+                      <app-geonology-tree
+                        [userNode]="userNode()!.rightChild!"
+                        (handleAddMember)="handleAddMember.emit($event)"
+                        (routeToMember)="routeToMember.emit($event)"
+                      ></app-geonology-tree>
+                    </ng-container>
+
+                    <ng-template #rightEmptySlot>
+                      @if (currentDepth === 3) {
+                        <!-- Leaf node (depth 3) showing question mark placeholder -->
+                        <div class="relative">
+                          <div class="group flex flex-col items-center">
+                            <span
+                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 size-8"
                             >
-                              <mat-icon>add</mat-icon></span
-                            ></span
-                          >
+                              <span
+                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full"
+                              >
+                                <mat-icon>question_mark</mat-icon>
+                              </span>
+                            </span>
+                            <div class="text-muted-foreground mt-2 text-xs">
+                              Empty
+                            </div>
+                            <div class="text-muted-foreground text-xs">
+                              0 | 0
+                            </div>
+                          </div>
+                        </div>
+                      } @else {
+                        <!-- Add Member Slot -->
+                        <div class="relative">
                           <div
-                            class="mt-2 text-xs text-blue-600 group-hover:text-blue-700"
-                          >
-                            Add Member
-                          </div>
-                          <div class="text-muted-foreground text-xs">0 | 0</div>
-                        </div>
-                      </div>
-                    }
-                  </ng-template>
-                </div>
-              </div>
-
-              <div class="flex flex-col items-center">
-                <div class="relative w-full flex justify-start">
-                  <div
-                    class="absolute top-0 left-1/2 w-px h-6 bg-gray-300"
-                  ></div>
-                </div>
-
-                <div class="pt-6 flex justify-center">
-                  <ng-container
-                    *ngIf="userNode()!.rightChild; else rightEmptySlot"
-                  >
-                    <app-geonology-tree
-                      [userNode]="userNode()!.rightChild!"
-                      (handleAddMember)="handleAddMember.emit($event)"
-                    ></app-geonology-tree>
-                  </ng-container>
-
-                  <ng-template #rightEmptySlot>
-                    @if (currentDepth === 3) {
-                      <div class="relative">
-                        <div class="group flex flex-col items-center">
-                          <span
-                            class="border-border relative flex size-8 shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50"
+                            class="flex cursor-pointer flex-col items-center group"
+                            (click)="addMember(userNode(), 'right')"
                           >
                             <span
-                              class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full"
+                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-blue-400 group-hover:opacity-80 size-10"
                             >
-                              <mat-icon>question_mark</mat-icon></span
+                              <span
+                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-blue-600"
+                              >
+                                <mat-icon>add</mat-icon>
+                              </span>
+                            </span>
+                            <div
+                              class="mt-2 text-xs text-blue-600 group-hover:text-blue-700"
                             >
-                          </span>
-                          <div class="text-muted-foreground mt-2 text-xs">
-                            Empty
+                              Add Member
+                            </div>
+                            <div class="text-muted-foreground text-xs">
+                              0 | 0
+                            </div>
                           </div>
-                          <div class="text-muted-foreground text-xs">0 | 0</div>
                         </div>
-                      </div>
-                    } @else {
-                      <div class="relative">
-                        <div
-                          class="flex cursor-pointer flex-col items-center"
-                          (click)="addMember(userNode(), 'right')"
-                        >
-                          <span
-                            class="border-border relative flex size-10 shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-blue-400 group-hover:opacity-80"
-                            ><span
-                              class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-blue-600"
-                            >
-                              <mat-icon>add</mat-icon></span
-                            ></span
-                          >
-                          <div
-                            class="mt-2 text-xs text-blue-600 group-hover:text-blue-700"
-                          >
-                            Add Member
-                          </div>
-                          <div class="text-muted-foreground text-xs">0 | 0</div>
-                        </div>
-                      </div>
-                    }
-                  </ng-template>
+                      }
+                    </ng-template>
+                  </div>
                 </div>
               </div>
-            </div>
+            }
           </div>
         </div>
       </div>

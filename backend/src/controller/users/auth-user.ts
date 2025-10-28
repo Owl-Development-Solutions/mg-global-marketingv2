@@ -69,14 +69,9 @@ export const refreshTokenController = async (req: Request, res: Response) => {
     }
 
     const decoded = verifyRefreshToken(refreshToken);
-    const storedToken = await getRefreshToken(decoded!.id);
+    console.log(`decoded`, decoded);
 
-    if (storedToken !== refreshToken) {
-      res.status(403).json({
-        message: "Invalid refresh token",
-      });
-      return;
-    }
+    const storedToken = await getRefreshToken(decoded!.id);
 
     //issue new token
     const user = { id: decoded!.id, email: decoded!.email };
@@ -87,8 +82,10 @@ export const refreshTokenController = async (req: Request, res: Response) => {
     await saveRefreshToken(user.id, newRefreshToken);
 
     return res.status(200).json({
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
+      data: {
+        newAccessToken,
+        newRefreshToken,
+      },
     });
   } catch (error) {
     return res.status(403).json({

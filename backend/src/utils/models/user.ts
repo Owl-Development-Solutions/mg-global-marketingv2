@@ -23,7 +23,6 @@ export interface User {
 
 export interface AuthResponse {
   accessToken?: string;
-  refreshToken?: string;
 }
 
 export interface UserResponse extends AuthResponse {

@@ -14,6 +14,7 @@ import {
   AuthGuardFn,
   VerifyAuthenticatedGuardFn,
   GetGenealogyGuardFn,
+  GetUserByIdGuard,
 } from './app/guards';
 
 export const routes: Routes = [
@@ -37,7 +38,7 @@ export const routes: Routes = [
       },
       {
         path: 'geonology/:user',
-        canActivate: [GetGenealogyGuardFn],
+        canActivate: [GetGenealogyGuardFn, GetUserByIdGuard],
         component: GeonologyComponent,
       },
       {

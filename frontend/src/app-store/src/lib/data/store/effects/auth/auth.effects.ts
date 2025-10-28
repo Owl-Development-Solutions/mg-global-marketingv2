@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthRepository, UserRepository } from '../../../repositories';
 import * as fromAuth from '../../actions/auth/auth-actions';
+import * as fromUser from '../../actions/user/user-actions';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { AuthUserResponse, UserResponseModel } from '../../../models';
 import { Router } from '@angular/router';
@@ -45,6 +46,22 @@ export class AuthEffects {
       ),
     { dispatch: false },
   );
+
+  // initiateRefreshToken$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(fromUser.getUserByTokenSucceeded),
+  //     switchMap((action) => {
+  //       const { refreshToken, accessToken } = action.data;
+
+  //       return this.authRepository.refreshToken(accessToken).pipe(
+  //         map((data: AuthUserResponse) =>
+  //           fromAuth.refreshTokenSucceed({ data }),
+  //         ),
+  //         catchError((error) => of(fromAuth.refreshTokenFailed({ error }))),
+  //       );
+  //     }),
+  //   ),
+  // );
 
   logout$ = createEffect(
     () =>

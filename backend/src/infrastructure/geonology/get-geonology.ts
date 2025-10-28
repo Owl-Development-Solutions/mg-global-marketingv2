@@ -29,8 +29,6 @@ export const getGeonologyTreeIn = async (
 
     const rootUsers = rootRows as any;
 
-    console.log(`rootUsers`, rootUsers);
-
     const rootUser = rootUsers[0] as User &
       UserStats & { lefChild: string | null; rightChild: string | null };
 
@@ -46,9 +44,7 @@ export const getGeonologyTreeIn = async (
       };
     }
 
-    const tree = await buildNodeTree(db, rootUser, true);
-
-    console.log(`tree`, tree);
+    const tree = await buildNodeTree(db, rootUser, 0, "root");
 
     return {
       success: true,

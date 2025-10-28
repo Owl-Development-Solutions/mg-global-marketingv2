@@ -13,5 +13,20 @@ export const getUserByTokenFailed = createAction(
 
 export const getUserByTokenSucceeded = createAction(
   '[User] Initiate User Succeeded',
-  props<{ data: any }>(),
+  props<{ data: UserResponseModel }>(),
+);
+
+export const getUserByIdAttempted = createAction(
+  '[User] Initiate User Attempted',
+  props<{ userId: string }>(),
+);
+
+export const getUserByIdFailed = createAction(
+  '[User] Initiate User Failed',
+  props<{ error: string }>(),
+);
+
+export const getUserByIdSucceeded = createAction(
+  '[User] Initiate User Succeeded',
+  props<{ data: UserResponseModel }>(),
 );

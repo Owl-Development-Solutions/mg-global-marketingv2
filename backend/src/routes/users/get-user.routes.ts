@@ -1,5 +1,8 @@
 import express from "express";
-import { getUserByAccessTokenController } from "../../controller";
+import {
+  getUserByAccessTokenController,
+  getUserByIdController,
+} from "../../controller";
 import { verifyToken } from "../../utils";
 
 const router = express.Router();
@@ -9,5 +12,7 @@ router.post(
   verifyToken,
   getUserByAccessTokenController
 );
+
+router.post("/getUserById", verifyToken, getUserByIdController);
 
 export default router;

@@ -3,20 +3,43 @@
     [userNode]="geonologyData$ | async"
     [loading]="genealogyTreeLoading$ | async"
     (handleAddMember)="handleAddMember($event)"
+    (routeToMember)="handleRouteToMember($event)"
   ></app-geonology-tree>
   <div class="text-gray-400 px-6 py-3 mt-3">
-    <div class="flex items-center justify-center gap-6 text-xs">
-      <div class="flex items-center gap-1">
-        <mat-icon style="color: rgba(241, 44, 44, 0.719)">bolt</mat-icon>
-        <span>Deduction Active</span>
+    @if (!loading()) {
+      <div class="flex items-center justify-center gap-6 text-xs">
+        <div class="flex items-center gap-1">
+          <mat-icon style="color: rgba(241, 44, 44, 0.719)">bolt</mat-icon>
+          <span>Deduction Active</span>
+        </div>
+        <span>Click avatars to navigate</span>
       </div>
-      <span>Click avatars to navigate</span>
-    </div>
+    }
   </div>
 </div>
 
 <ng-container *cdkPortal>
   <div class="flex gap-4 items-center">
-    <h5 class="text-2xl font-semibold">Genealogy</h5>
+    <button
+      matIconButton
+      color="primary"
+      class="cursor-pointer"
+      matTooltip="Go Back"
+      (click)="goBack($event)"
+    >
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h5 class="flex items-center text-2xl font-semibold">
+      Genealogy for
+      @if (loading()) {
+        <app-skeleton-text
+          [lines]="1"
+          [lineHeight]="20"
+          class="ml-2"
+        ></app-skeleton-text>
+      } @else {
+        <span class="ml-2 text-primary">{{ fullName() }}</span>
+      }
+    </h5>
   </div>
 </ng-container>

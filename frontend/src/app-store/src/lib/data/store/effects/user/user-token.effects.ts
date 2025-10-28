@@ -1,15 +1,16 @@
 import { inject, Injectable } from '@angular/core';
-import { UserRepository } from '../../../repositories';
+import { AuthRepository, UserRepository } from '../../../repositories';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as fromUser from '../../actions/user/user-actions';
 import * as fromAuth from '../../actions/auth/auth-actions';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { UserResponseModel } from '@app-store/public-api';
+import { AuthUserResponse, UserResponseModel } from '../../../models';
 
 @Injectable()
 export class UserTokenEffects {
   private actions$ = inject(Actions);
   private userRepository = inject(UserRepository);
+  private authRepository = inject(AuthRepository);
 
   getUserUponLogin$ = createEffect(() =>
     this.actions$.pipe(

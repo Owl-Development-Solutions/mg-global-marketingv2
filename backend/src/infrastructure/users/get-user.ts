@@ -65,7 +65,70 @@ export const getUserByAccessToken = async (
         role: user!.role,
       } as any,
       accessToken: token,
-      refreshToken: user!.refreshToken,
+    };
+
+    return {
+      success: true,
+      data: {
+        statusCode: 200,
+        message: "User fetched successfully",
+        data: response,
+      },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: {
+        statusCode: 500,
+        errorMessage: error instanceof Error ? error.message : String(error),
+      },
+    };
+  }
+};
+
+export const getUserById = async (
+  userId: string | number
+): Promise<Result<SuccessResponse<UserResponse>, ErrorResponse>> => {
+  try {
+    if (!userId) {
+      return {
+        success: false,
+        error: {
+          statusCode: 400,
+          errorMessage: "Missing user ID",
+        },
+      };
+    }
+
+    const db = connection();
+
+    const [rows] = await db.execute("SELECT * FROM users WHERE id = ?", [
+      userId,
+    ]);
+    const users = rows as User[];
+
+    if (users.length === 0) {
+      return {
+        success: false,
+        error: {
+          statusCode: 404,
+          errorMessage: "User not found",
+        },
+      };
+    }
+
+    const user = users[0];
+
+    const response: UserResponse = {
+      id: user!.id,
+      type: user!.role,
+      attributes: {
+        firstName: user!.firstName,
+        lastName: user!.lastName,
+        name: user!.name,
+        email: user!.email,
+        role: user!.role,
+      } as any,
     };
 
     return {

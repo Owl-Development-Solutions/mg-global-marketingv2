@@ -40,9 +40,7 @@ export class UserDatasource implements UserDatasourceInterface {
         `${this.baseUrl}/api/getUser/getUserByAccessToken`,
         { token },
         {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          withCredentials: true,
         },
       )
       .pipe(
@@ -50,6 +48,23 @@ export class UserDatasource implements UserDatasourceInterface {
           (data: Document<UserResponseModel>) => data.data as UserResponseModel,
         ),
         catchError((error) => this.userErrorReport(error)),
+      );
+  }
+
+  getUserById(userId?: string): Observable<UserResponseModel> {
+    return this.http
+      .post<Document<UserResponseModel>>(
+        `${this.baseUrl}/api/getUser/getUserById`,
+        {
+          userId,
+        },
+        { withCredentials: true },
+      )
+      .pipe(
+        map(
+          (data: Document<UserResponseModel>) => data.data as UserResponseModel,
+        ),
+        catchError((err) => this.userErrorReport(err)),
       );
   }
 }
