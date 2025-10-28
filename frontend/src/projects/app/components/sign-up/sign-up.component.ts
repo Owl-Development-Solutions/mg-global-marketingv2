@@ -34,7 +34,7 @@ export class SignUpComponent {
 
   @Input() signUpInput!: SignUpAttributes;
 
-  @Output() submit = new EventEmitter<NgForm>();
+  @Output() handleSubmit = new EventEmitter<NgForm>();
 
   @Output() signIn = new EventEmitter<boolean>();
 
@@ -46,7 +46,7 @@ export class SignUpComponent {
   }
 
   signUp(form: NgForm) {
-    this.submit.emit(form);
+    this.handleSubmit.emit(form);
   }
 
   clickSignIn() {

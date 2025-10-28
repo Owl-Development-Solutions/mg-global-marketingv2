@@ -1,41 +1,42 @@
 @if (!hasForgottenPassword) {
-  @if(extraRouteData()) {
-     <div class="flex flex-col gap-4 justify-center items-center mb-8">
-    <div
-      class="bg-gray-100 rounded-full w-32 h-32 flex items-center justify-center"
-    >
-      <mat-icon class="scale-[3.0]">private_connectivity</mat-icon>
-    </div>
+  @if (extraRouteData()) {
+    <div class="flex flex-col gap-4 justify-center items-center mb-8">
+      <div
+        class="bg-gray-100 rounded-full w-32 h-32 flex items-center justify-center"
+      >
+        <mat-icon class="scale-[3.0]">private_connectivity</mat-icon>
+      </div>
 
-    <div class="text-center w-10/12">
-      <h4>
-        Sign in to <span class="font-bold">NivJenz</span> to continue
+      <div class="text-center w-10/12">
+        <h4>
+          Sign in to <span class="font-bold">NivJenz</span> to continue
 
-        <span class="font-bold"
-          >{{ extraRouteData()?.name }} Authentication</span
-        >
-      </h4>
+          <span class="font-bold"
+            >{{ extraRouteData()?.name }} Authentication</span
+          >
+        </h4>
+      </div>
     </div>
-  </div>
   }
 
-  @if(!showSignUp) {
+  @if (!showSignUp) {
     <app-login
       [input]="inputSignIn"
+      [authError]="authError()"
+      [authLoading]="authLoading()"
       (forgotPassword)="switchToForgotPassword(inputSignIn.email)"
       (signUp)="switchToSignup($event)"
       (submit)="submitSignIn($event)"
     >
     </app-login>
-  }@else {
+  } @else {
     <app-sign-up
       [signUpInput]="inputSignUp"
       (signIn)="switchToSignIn($event)"
-      (submit)="submitSignUp($event)"
+      (handleSubmit)="submitSignUp($event)"
     >
     </app-sign-up>
   }
-
 } @else {
   <!-- show forgot password here -->
 }

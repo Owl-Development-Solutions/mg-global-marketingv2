@@ -1,4 +1,4 @@
-import { NgTemplateOutlet } from '@angular/common';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import {
   Component,
   computed,
@@ -23,8 +23,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { PageTitleComponent } from '../../components';
+import { PageTitleComponent, UserIdentityComponent } from '../../components';
 import { PageTitlePortalService } from '../../services';
+import { AuthUsecase } from '@app-store/lib/usecases';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-shell-component',
@@ -40,6 +42,11 @@ import { PageTitlePortalService } from '../../services';
     MatDividerModule,
     NgTemplateOutlet,
     PageTitleComponent,
+    MatMenuTrigger,
+    UserIdentityComponent,
+    MatMenu,
+    MatMenuItem,
+    CommonModule,
   ],
   templateUrl: './shell-component.html',
   styleUrls: ['./shell-component.scss'],
@@ -48,6 +55,13 @@ export class ShellComponent {
   localStorageKey = 'system-sidenav-setting';
 
   protected breakpointObserver = inject(BreakpointObserver);
+
+  private authUsecase = inject(AuthUsecase);
+
+  getAuthName$ = this.authUsecase.getAuthName$;
+  getUserId$ = this.authUsecase.getUserId$;
+
+  getUserId = toSignal(this.getUserId$);
 
   breakpoint: Signal<BreakpointState | undefined> = toSignal(
     this.breakpointObserver.observe([Breakpoints.XSmall, Breakpoints.Small]),
@@ -129,4 +143,8 @@ export class ShellComponent {
   private pageTitlePortal = inject(PageTitlePortalService);
 
   portal = toSignal(this.pageTitlePortal.portal$);
+
+  logout() {
+    this.authUsecase.logout();
+  }
 }

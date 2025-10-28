@@ -26,24 +26,26 @@ export interface SidenavMenuItem {
 }
 
 @Component({
-    selector: 'app-sys-sidenav',
-    imports: [
-        MatExpansionModule,
-        MatIconModule,
-        RouterModule,
-        MatTooltipModule,
-        MatBadgeModule,
-        CommonModule,
-        MatDividerModule,
-        MatListModule,
-    ],
-    templateUrl: './app-sys-sidenav.component.html',
-    styleUrl: './app-sys-sidenav.component.scss',
-    host: { class: 'flex flex-col justify-betweeb gap-4' },
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-sys-sidenav',
+  imports: [
+    MatExpansionModule,
+    MatIconModule,
+    RouterModule,
+    MatTooltipModule,
+    MatBadgeModule,
+    CommonModule,
+    MatDividerModule,
+    MatListModule,
+  ],
+  templateUrl: './app-sys-sidenav.component.html',
+  styleUrl: './app-sys-sidenav.component.scss',
+  host: { class: 'flex flex-col justify-betweeb gap-4' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppSysSidenavComponent {
   isExpanded = input<boolean>(false);
+
+  userId = input<string>();
 
   @Input() menuItems: SidenavMenuItem[] = [];
 

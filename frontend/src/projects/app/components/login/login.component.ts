@@ -15,6 +15,8 @@ import { PasswordFieldComponent } from '../password-field/password-field.compone
 import { MatButton } from '@angular/material/button';
 import { NotificationComponent } from '../notification/notification.component';
 import { SignInAttributes } from '../../models';
+import { AuthUserResponse } from '@app-store/public-api';
+import { SubmitButtonComponent } from '../submit-button/submit-button.component';
 
 @Component({
   selector: 'app-login',
@@ -30,14 +32,17 @@ import { SignInAttributes } from '../../models';
     MatButton,
     NotificationComponent,
     MatInput,
+    SubmitButtonComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  @Input() input!: SignInAttributes;
+  authLoading = input<boolean>();
 
-  @Input() error!: string | null;
+  authError = input<string | undefined | null>();
+
+  @Input() input!: SignInAttributes;
 
   @Input() isHandset!: boolean;
 

@@ -8,3 +8,5 @@ export * from './breakpoint-observer/breakpoint-observer.component';
 export * from './login/login.component';
 export * from './sign-up/sign-up.component';
 export * from './add-wallet-button/add-wallet-button.component';
+export * from './submit-button/submit-button.component';
+export * from './user-identity/user-identity.component';

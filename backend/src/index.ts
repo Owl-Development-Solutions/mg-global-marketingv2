@@ -1,24 +1,30 @@
 import express from "express";
 import dotenv from "dotenv";
-
+import cors from "cors";
 import bodyParser from "body-parser";
 
 //routes import
-import { getGeonology, loginUserController } from "./controller";
-import { registerUserController } from "./controller";
+import authRouter from "./routes/users/auth.routes";
+import userRouter from "./routes/users/get-user.routes";
+import geonologyRouter from "./routes/geonology/geonology.routes";
 
 const app = express();
 dotenv.config();
 
+app.use(cors());
+app.use(express.json());
+
 //middleware
 app.use(bodyParser.json());
 
-//routes
-app.use("/api/geonology", getGeonology);
+//routes for geonology
+app.use("/api/geonology", geonologyRouter);
 
-//router for user
-app.use("/api/registerUser", registerUserController);
-app.use("/api/loginUser", loginUserController);
+// Base path
+app.use("/api/auth", authRouter);
+
+//Base path for getting user/s
+app.use("/api/getUser", userRouter);
 
 const port = process.env.PORT;
 

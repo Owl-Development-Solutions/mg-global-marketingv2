@@ -1,7 +1,8 @@
 <div>
   <app-geonology-tree
-    [userNode]="userNode"
-    (addMember)="handleAddMember($event)"
+    [userNode]="geonologyData$ | async"
+    [loading]="genealogyTreeLoading$ | async"
+    (handleAddMember)="handleAddMember($event)"
   ></app-geonology-tree>
   <div class="text-gray-400 px-6 py-3 mt-3">
     <div class="flex items-center justify-center gap-6 text-xs">
@@ -16,6 +17,6 @@
 
 <ng-container *cdkPortal>
   <div class="flex gap-4 items-center">
-    <h5 class="text-2xl font-semibold">Geonology</h5>
+    <h5 class="text-2xl font-semibold">Genealogy</h5>
   </div>
 </ng-container>

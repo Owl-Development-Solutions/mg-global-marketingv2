@@ -6,15 +6,28 @@ import {
 import { ProfileTabsComponent } from '../../components/profile-tabs/profile-tabs.component';
 import { PageTitlePortalService } from '../../services';
 import { CdkPortal } from '@angular/cdk/portal';
+import { AuthUsecase } from '@app-store/lib/usecases';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ProfileCardComponent, ProfileTabsComponent, CdkPortal],
+  imports: [
+    ProfileCardComponent,
+    ProfileTabsComponent,
+    CdkPortal,
+    CommonModule,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnDestroy, OnInit {
   private pageTitlePortal = inject(PageTitlePortalService);
+  private authUsecase = inject(AuthUsecase);
+
+  getAuthName$ = this.authUsecase.getAuthName$;
+
+  getAuthName = toSignal(this.getAuthName$);
 
   @ViewChild(CdkPortal) pageTitle!: CdkPortal;
 

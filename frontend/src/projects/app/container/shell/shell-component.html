@@ -1,6 +1,9 @@
 <mat-sidenav-container fullscreen>
   <mat-sidenav #sidenav mode="side" opened class="sidenav">
-    <app-sys-sidenav (toggleSidenav)="toggleExpansion()"></app-sys-sidenav>
+    <app-sys-sidenav
+      (toggleSidenav)="toggleExpansion()"
+      [userId]="getUserId()"
+    ></app-sys-sidenav>
   </mat-sidenav>
 
   <mat-sidenav-content>
@@ -9,8 +12,30 @@
         <mat-icon>menu</mat-icon>
       </button>
 
-      <div class="flex ml-3">
+      <div class="flex ml-3 justify-between items-center w-full">
         <ng-container *ngTemplateOutlet="titlePortal"></ng-container>
+
+        <button [matMenuTriggerFor]="userMenu" class="p-2">
+          <app-user-identity
+            [userName]="getAuthName$ | async"
+            [enableContainerQuery]="true"
+          >
+          </app-user-identity>
+        </button>
+        <mat-menu #userMenu xPosition="before">
+          <button mat-menu-item class="group">
+            <mat-icon class="!text-primary-300 group-hover:!text-primary"
+              >password</mat-icon
+            >
+            My Account
+          </button>
+          <button mat-menu-item (click)="logout()" class="group">
+            <mat-icon class="!text-red-300 group-hover:!text-red-500"
+              >logout</mat-icon
+            >
+            Log Out
+          </button>
+        </mat-menu>
       </div>
     </mat-toolbar>
 
@@ -21,7 +46,7 @@
 </mat-sidenav-container>
 
 <ng-template #titlePortal>
-  @if(portal()) {
+  @if (portal()) {
     <app-page-title></app-page-title>
   }
 </ng-template>
