@@ -11,7 +11,10 @@ import geonologyRouter from "./routes/geonology/geonology.routes";
 const app = express();
 dotenv.config();
 
-const allowedOrigins = ["http://localhost:4200"];
+const allowedOrigins = [
+  "http://localhost:4200",
+  "https://mg-global-marketingv2.vercel.app",
+];
 
 app.use(
   cors({
@@ -19,6 +22,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, origin);
       } else {
+        console.error("CORS blocked origin:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
