@@ -27,7 +27,6 @@ export class GeonologyDatasource implements GeonologyInterface {
   accessToken = this.parsed?.data?.accessToken;
 
   private errorReport(error: any) {
-    console.log(`error`, error.error.error);
     const message = error?.error?.error;
 
     switch (error.status) {
