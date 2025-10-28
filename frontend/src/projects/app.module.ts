@@ -9,7 +9,6 @@ import { AppStoreModule } from '@app-store/lib/app-store.module';
 import {
   HTTP_INTERCEPTORS,
   provideHttpClient,
-  withInterceptors,
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
