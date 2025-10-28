@@ -24,3 +24,13 @@ export const getAuthenticated = createSelector(
   selectAuthState,
   (state) => state.isAuthenticated,
 );
+
+export const getRefreshToken = createSelector(
+  selectAuthState,
+  (state) => state.data?.refreshToken,
+);
+
+export const getAccessTokenz = createSelector(
+  selectAuthState,
+  (state) => state.data?.accessToken,
+);

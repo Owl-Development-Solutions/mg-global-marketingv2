@@ -46,6 +46,8 @@ export class GeonologyEffects {
             });
           }),
           catchError((error) => {
+            console.log(`error`, error);
+
             callBacks.onFailure?.({ errorMsg: error });
             return of(
               fromGeonology.addUserGeonologyFailed({

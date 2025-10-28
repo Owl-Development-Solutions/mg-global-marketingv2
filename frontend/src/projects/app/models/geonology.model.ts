@@ -11,6 +11,7 @@ export interface GeonologyNode {
   rankPoints: number;
   level: number | LowOrHigh;
   side: string;
+  image?: string;
   hasDeduction: number | boolean;
   leftChild?: GeonologyNode | null;
   rightChild?: GeonologyNode | null;

@@ -18,7 +18,7 @@ export const findUserByEmail = async (
 export const saveRefreshToken = async (userId: string, token: string) => {
   const db = connection();
 
-  await db.query("UPDATE users SET refresh_token = ? WHERE id = ?", [
+  await db.query("UPDATE users SET refreshToken = ? WHERE id = ?", [
     token,
     userId,
   ]);
@@ -29,9 +29,9 @@ export const getRefreshToken = async (
 ): Promise<User | undefined> => {
   const db = connection();
   const [rows] = await db.query<User & RowDataPacket[]>(
-    "SELECT refresh_token FROM users WHERE id = ?",
+    "SELECT refreshToken FROM users WHERE id = ?",
     [userId]
   );
 
-  return rows[0]?.refresh_token;
+  return rows[0]?.refreshToken;
 };

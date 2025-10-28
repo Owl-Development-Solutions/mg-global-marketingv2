@@ -7,6 +7,7 @@ import {
   generateRefreshToken,
   generateUniqueIdentifier,
   Result,
+  saveRefreshToken,
   SuccessResponse,
   User,
   UserResponse,
@@ -169,9 +170,10 @@ export const loginUserIn = async (
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
+    await saveRefreshToken(user.id, refreshToken);
+
     const response: AuthResponse = {
       accessToken,
-      refreshToken,
     };
 
     return {

@@ -5,10 +5,11 @@ import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { AddMemberModalComponent } from '../add-member-modal/add-member-modal.component';
+import { SkeletonUserNodeComponent } from '../skeleton-user-node/skeleton-user-node.component';
 
 @Component({
   selector: 'app-geonology-tree',
-  imports: [CommonModule, MatIcon, MatButton, AddMemberModalComponent],
+  imports: [CommonModule, MatIcon, SkeletonUserNodeComponent],
   templateUrl: './geonology-tree.component.html',
   styleUrl: './geonology-tree.component.scss',
 })
@@ -25,6 +26,11 @@ export class GeonologyTreeComponent {
     data: any;
     side: any;
   }>();
+
+  @Output() routeToMember: EventEmitter<{ userId: string | undefined }> =
+    new EventEmitter<{
+      userId: string | undefined;
+    }>();
 
   getAvatarInitials(node: GeonologyNode) {
     return node.firstName.charAt(0) + node.lastName.charAt(0).toUpperCase();
@@ -46,5 +52,9 @@ export class GeonologyTreeComponent {
       data,
       side,
     });
+  }
+
+  handleClickMember(userId: string | undefined) {
+    this.routeToMember.emit({ userId });
   }
 }

@@ -5,3 +5,14 @@ export interface UserResponseModel extends AuthUserResponse {
   type: string;
   attributes: User;
 }
+
+export interface UserLocalStorage {
+  data: UserResponseModel;
+}
+
+export interface UserResponseState {
+  loading: boolean;
+  loaded: boolean;
+  error: null | string;
+  data?: UserResponseModel;
+}

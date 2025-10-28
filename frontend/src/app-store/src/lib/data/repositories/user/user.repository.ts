@@ -13,4 +13,7 @@ export class UserRepository implements UserRepositoryInterface {
   getUser(token?: string): Observable<UserResponseModel> {
     return this.userDatasource.getUser(token);
   }
+  getUserById(userId?: string): Observable<UserResponseModel> {
+    return this.userDatasource.getUserById(userId);
+  }
 }
