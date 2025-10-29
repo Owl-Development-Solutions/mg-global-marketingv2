@@ -27,7 +27,6 @@ export class GeonologyDatasource implements GeonologyInterface {
   accessToken = this.parsed?.data?.accessToken;
 
   private errorReport(error: any) {
-    console.log(`error`, error.error.error);
     const message = error?.error?.error;
 
     switch (error.status) {
@@ -56,7 +55,7 @@ export class GeonologyDatasource implements GeonologyInterface {
       );
   }
 
-  addUserGeonology(data: AddUserGeonologyData): Observable<GeonologyResponse> {
+  addUserGeonology(data: AddUserGeonologyData): Observable<any> {
     return this.http
       .post<Document<GeonologyResponse>>(
         `${this.baseUrl}/api/geonology/addGeonology`,

@@ -3,7 +3,7 @@ import { GeonologyRepository } from '../../../repositories';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as fromGeonology from '../../../store/actions/geonology/geonology-actions';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { GeonologyNode } from '../../../models';
+import { GeonologyNode, GeonologyResponse } from '../../../models';
 
 @Injectable()
 export class GeonologyEffects {
@@ -37,9 +37,10 @@ export class GeonologyEffects {
         const data = { parentUserName, side, child, activationCodeId };
 
         return this.geonologyRepository.addUserGeonology(data).pipe(
-          map(() => {
+          map((response: GeonologyResponse) => {
             callBacks.onSuccess();
             return fromGeonology.addUserGeonologySucceded({
+              data: response,
               parentUserName,
               side,
               child,
