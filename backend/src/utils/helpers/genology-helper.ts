@@ -5,8 +5,6 @@ export const processUplineRewards = async (
   startUplineId: string,
   newChildId: string
 ) => {
-  console.log(`connection`, connection);
-
   const RPP = 100;
   const PAIRING_BONUS = 150.0;
 

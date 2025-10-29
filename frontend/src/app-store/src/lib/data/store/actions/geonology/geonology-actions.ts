@@ -1,4 +1,4 @@
-import { Callbacks, GeonologyNode } from '../../../models';
+import { Callbacks, GeonologyNode, GeonologyResponse } from '../../../models';
 import { createAction, props } from '@ngrx/store';
 
 export const addUserGeonologyAttempted = createAction(
@@ -20,6 +20,7 @@ export const addUserGeonologyFailed = createAction(
 export const addUserGeonologySucceded = createAction(
   '[Geonology] Add User Geonology Succeeded',
   props<{
+    data: GeonologyResponse;
     parentUserName: string;
     side: string;
     child: GeonologyNode;

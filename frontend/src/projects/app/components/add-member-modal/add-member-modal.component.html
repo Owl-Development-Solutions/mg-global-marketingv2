@@ -51,7 +51,7 @@
         <div class="flex-1 h-px bg-border"></div>
       </div>
       <div class="grid grid-cols-2 gap-4">
-        <mat-form-field class="w-full">
+        <mat-form-field class="w-full" SubscriptSizing>
           <mat-label>First Name</mat-label>
           <input
             required
@@ -103,54 +103,98 @@
         <div class="flex-1 h-px bg-border"></div>
       </div>
 
-      <mat-form-field class="w-full">
-        <mat-label>Username</mat-label>
-        <input
-          matInput
-          placeholder=""
-          minlength="3"
-          required
-          name="userName"
-          id="userName"
-          #userName="ngModel"
-          [(ngModel)]="addNewMemberInputProps.userName"
-        />
+      <div class="relative flex flex-col">
+        <mat-form-field class="w-full" SubscriptSizing>
+          <mat-label>Username</mat-label>
+          <input
+            matInput
+            placeholder=""
+            minlength="4"
+            required
+            name="userName"
+            id="userName"
+            #userName="ngModel"
+            [(ngModel)]="addNewMemberInputProps.userName"
+          />
 
-        @if (userName.invalid) {
-          <mat-error>
-            @if (userName.hasError("required")) {
-              <span>Username is required</span>
+          @if (userName.invalid && (userName.dirty || userName.touched)) {
+            <mat-error>
+              @if (userName.hasError("required")) {
+                <span>Username is required</span>
+              }
+              @if (userName.hasError("minlength")) {
+                <span>Username must be at least 4 characters</span>
+              }
+              @if (userName.hasError("usernameTaken")) {
+                <span>{{ userName.getError("usernameTaken").message }}</span>
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        @if (filteredOptions$ | async; as checkResult) {
+          @if ("isAvailable" in checkResult) {
+            @if (checkResult.isAvailable === true) {
+              <span
+                class="text-xs absolute top-[60px] text-green-700 ml-[17px]"
+              >
+                {{ checkResult.message }}
+              </span>
             }
-          </mat-error>
+          }
         }
-      </mat-form-field>
+      </div>
 
-      <mat-form-field class="w-full">
-        <mat-label>Activation Code</mat-label>
-        <input
-          matInput
-          id="activationCode"
-          placeholder="Enter 8+ character activation code"
-          minlength="8"
-          required
-          name="activationCode"
-          id="activationCode"
-          #activationCode="ngModel"
-          [(ngModel)]="addNewMemberInputProps.activationCode"
-        />
+      <div class="relative flex flex-col">
+        <mat-form-field class="w-full">
+          <mat-label>Activation Code</mat-label>
+          <input
+            matInput
+            id="activationCode"
+            placeholder="Enter 8+ character activation code"
+            minlength="8"
+            required
+            name="activationCode"
+            id="activationCode"
+            #activationCode="ngModel"
+            [(ngModel)]="addNewMemberInputProps.activationCode"
+          />
 
-        @if (activationCode.invalid) {
-          <mat-error>
-            @if (activationCode.hasError("required")) {
-              <span>Activation is required</span>
+          @if (
+            activationCode.invalid &&
+            (activationCode.dirty || activationCode.touched)
+          ) {
+            <mat-error>
+              @if (activationCode.hasError("required")) {
+                <span>Activation code is required</span>
+              }
+              @if (activationCode.hasError("minlength")) {
+                <span>Activation code must be at least 8 characters</span>
+              }
+              @if (activationCode.hasError("invalidActivationCode")) {
+                <span>{{
+                  activationCode.getError("invalidActivationCode").message
+                }}</span>
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+        @if (filteredOptionsForActivationCode$ | async; as checkResult) {
+          @if ("isAvailable" in checkResult) {
+            @if (checkResult.isAvailable === true) {
+              <span
+                class="text-xs absolute top-[60px] text-green-700 ml-[17px]"
+              >
+                {{ checkResult.message }}
+              </span>
             }
-          </mat-error>
+          }
         }
-      </mat-form-field>
+      </div>
     </div>
 
     <!-- Network Placement -->
-    <div class="space-y-3">
+    <div class="space-y-3 mt-4">
       <div class="flex items-center gap-2 pb-2">
         <h3 class="text-foreground text-sm font-medium">Network Placement</h3>
         <div class="flex-1 h-px bg-border"></div>
@@ -215,7 +259,7 @@
       Cancel
     </button>
     <app-submit-button
-      [isDisabled]="!addMemberForm.valid"
+      [isDisabled]="addMemberForm.invalid || addMemberForm.pending!"
       text="Create Member"
       icon="person_add"
       [isLoading]="submitting$ | async"

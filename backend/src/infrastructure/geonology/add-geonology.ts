@@ -19,13 +19,7 @@ export const addGeonologyUserIn = async (
 ): Promise<Result<SuccessResponse<GeonologyResponse>, ErrorResponse>> => {
   const { parentUserName, side, child, activationCodeId } = data;
 
-  console.log(parentUserName, side, child, activationCodeId);
-
   const sideColumn = side === "[L]" ? "leftChildId" : "rightChildId";
-
-  console.log(`side`, side);
-
-  console.log(`sideColumn`, sideColumn);
 
   if (side !== "[L]" && side !== "[R]") {
     return {
@@ -47,8 +41,6 @@ export const addGeonologyUserIn = async (
 
     const codeRecords = codes as ActivationCode[];
     const code = codeRecords[0];
-
-    console.log(code);
 
     if (!code) {
       return {
@@ -101,8 +93,6 @@ export const addGeonologyUserIn = async (
 
     const newUserId = uuidv4();
 
-    console.log(`parentId`, parentId);
-
     //  INSERT NEW USER (CHILD)
     // Pass the activationCodeId into the users table
     const [userResult] = await db.execute(
@@ -117,9 +107,10 @@ export const addGeonologyUserIn = async (
       ]
     );
 
-    console.log(`userResult`, userResult);
-
-    console.log(`newUserId`, newUserId);
+    await db.execute(
+      `INSERT INTO code_usages (id, activationCodeId, userId) VALUES (?, ?, ?)`,
+      [uuidv4(), activationCodeIdFromDB, newUserId]
+    );
 
     const [parentStats] = await db.execute(
       `SELECT sidePath, level FROM user_stats WHERE userId = ?`,
@@ -157,11 +148,6 @@ export const addGeonologyUserIn = async (
     ]);
 
     await processUplineRewards(db, parentId, newUserId);
-
-    await db.execute(
-      `UPDATE activation_codes SET status = 'redeemed', redeemedById = ?, redeemedAt = CURRENT_TIMESTAMP WHERE id = ?`,
-      [newUserId, activationCodeIdFromDB]
-    );
 
     const geonologyLevel: LowOrHigh = { low: newDbLevel, high: 0 };
 

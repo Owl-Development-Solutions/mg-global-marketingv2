@@ -2,11 +2,15 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { v4 as uuidv4 } from "uuid";
 
 //routes import
 import authRouter from "./routes/users/auth.routes";
 import userRouter from "./routes/users/get-user.routes";
 import geonologyRouter from "./routes/geonology/geonology.routes";
+import activationCodeRouter from "./routes/activation-code/activation-code.routes";
+import { generateUniqueIdentifier } from "./utils";
+import { connection } from "./config/mysql.db";
 
 const app = express();
 dotenv.config();
@@ -34,14 +38,17 @@ app.use(express.json());
 //middleware
 app.use(bodyParser.json());
 
-//routes for geonology
+//Base path for geonology
 app.use("/api/geonology", geonologyRouter);
 
-// Base path
+// Base path for auth
 app.use("/api/auth", authRouter);
 
 //Base path for getting user/s
 app.use("/api/getUser", userRouter);
+
+//Base path for activation-codes
+app.use("/api/activationCode", activationCodeRouter);
 
 const port = process.env.PORT;
 
