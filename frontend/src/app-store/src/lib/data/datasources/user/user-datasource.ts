@@ -18,23 +18,18 @@ export class UserDatasource implements UserDatasourceInterface {
   private baseUrl = environment.apiBaseUrl;
 
   private userErrorReport(error: any) {
+    const message = error?.error?.error;
     switch (error.status) {
       case 424:
-        return throwError(() => new InvalidCredentials());
+        return throwError(() => new InvalidCredentials(message));
       case 404:
-        return throwError(() => new UserNotFound());
+        return throwError(() => new UserNotFound(message));
       default:
-        return throwError(() => new UnexpectedError());
+        return throwError(() => new UnexpectedError(message));
     }
   }
 
   getUser(token?: string): Observable<UserResponseModel> {
-    const stored = localStorage.getItem('authData');
-    const parsed = stored ? JSON.parse(stored) : null;
-    const accessToken = parsed?.accessToken || token;
-
-    console.log('Access token:', accessToken);
-
     return this.http
       .post<Document<UserResponseModel>>(
         `${this.baseUrl}/api/getUser/getUserByAccessToken`,
@@ -64,6 +59,23 @@ export class UserDatasource implements UserDatasourceInterface {
         map(
           (data: Document<UserResponseModel>) => data.data as UserResponseModel,
         ),
+        catchError((err) => this.userErrorReport(err)),
+      );
+  }
+
+  searchUserName(userName: string): Observable<string> {
+    return this.http
+      .post<Document<string>>(
+        `${this.baseUrl}/api/getUser/isUsernameUsed`,
+        {
+          userName,
+        },
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map((data: Document<string>) => data.data as any),
         catchError((err) => this.userErrorReport(err)),
       );
   }

@@ -55,7 +55,7 @@ export class GeonologyDatasource implements GeonologyInterface {
       );
   }
 
-  addUserGeonology(data: AddUserGeonologyData): Observable<GeonologyResponse> {
+  addUserGeonology(data: AddUserGeonologyData): Observable<any> {
     return this.http
       .post<Document<GeonologyResponse>>(
         `${this.baseUrl}/api/geonology/addGeonology`,

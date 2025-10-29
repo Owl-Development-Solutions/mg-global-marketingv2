@@ -103,6 +103,11 @@ export const addGeonologyUserIn = async (
       ]
     );
 
+    await db.execute(
+      `INSERT INTO code_usages (id, activationCodeId, userId) VALUES (?, ?, ?)`,
+      [uuidv4(), activationCodeIdFromDB, newUserId]
+    );
+
     const [parentStats] = await db.execute(
       `SELECT sidePath, level FROM user_stats WHERE userId = ?`,
       [parentId]
@@ -139,11 +144,6 @@ export const addGeonologyUserIn = async (
     ]);
 
     await processUplineRewards(db, parentId, newUserId);
-
-    await db.execute(
-      `UPDATE activation_codes SET status = 'redeemed', redeemedById = ?, redeemedAt = CURRENT_TIMESTAMP WHERE id = ?`,
-      [newUserId, activationCodeIdFromDB]
-    );
 
     const geonologyLevel: LowOrHigh = { low: newDbLevel, high: 0 };
 
