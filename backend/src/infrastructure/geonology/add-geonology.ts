@@ -71,14 +71,10 @@ export const addGeonologyUserIn = async (
     const users = parent as User[];
     const user = users[0];
 
-    console.log(`user`, user);
-    console.log(`user[sideColumn]`, user?.[sideColumn]);
-
     if (!user || user[sideColumn]) {
       const message = !user
         ? "Parent user not found."
         : `The ${side.replace(/\[|\]/g, "")} slot of the parent is already occupied.`;
-      console.log(`message`, message);
 
       return {
         success: false,

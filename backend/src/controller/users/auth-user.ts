@@ -69,7 +69,6 @@ export const refreshTokenController = async (req: Request, res: Response) => {
     }
 
     const decoded = verifyRefreshToken(refreshToken);
-    console.log(`decoded`, decoded);
 
     const storedToken = await getRefreshToken(decoded!.id);
 
