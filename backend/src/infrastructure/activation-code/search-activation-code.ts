@@ -35,24 +35,38 @@ export const isActivationCodeValid = async (
         success: false,
         error: {
           statusCode: 404,
-          errorMessage: "Activation code is not valid or available.",
+          errorMessage: "Activation code is not valid.",
         },
       };
     }
 
-    const codeInfo = codesFound[0];
-    const expiryDate = codeInfo.expiresAt ? new Date(codeInfo.expiresAt) : null;
+    const codeInfos = codesFound as ActivationCode[];
+    const codeInfo = codeInfos[0];
+    const expiryDate = codeInfo?.expiresAt
+      ? new Date(codeInfo.expiresAt)
+      : null;
 
-    if (
-      codeInfo.status === "notActive" ||
-      codeInfo.price === 0 ||
-      (expiryDate !== null && expiryDate < now)
-    ) {
+    /* commented this for now if expiryDate is available */
+    // if (
+    //   codeInfo?.status === "notActive" ||
+    //   codeInfo?.price === 0 ||
+    //   (expiryDate !== null && expiryDate < now)
+    // ) {
+    //   return {
+    //     success: false,
+    //     error: {
+    //       statusCode: 404,
+    //       errorMessage: "Activation code is expired or not available.",
+    //     },
+    //   };
+    // }
+
+    if (codeInfo?.status === "Used") {
       return {
         success: false,
         error: {
           statusCode: 404,
-          errorMessage: "Activation code is expired or not available.",
+          errorMessage: "Activation code is already in used.",
         },
       };
     }

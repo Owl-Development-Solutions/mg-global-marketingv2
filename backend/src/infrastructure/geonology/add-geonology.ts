@@ -108,6 +108,11 @@ export const addGeonologyUserIn = async (
       [uuidv4(), activationCodeIdFromDB, newUserId]
     );
 
+    await db.execute(`UPDATE activation_codes SET status = ? WHERE id = ?`, [
+      "Used",
+      activationCodeIdFromDB,
+    ]);
+
     const [parentStats] = await db.execute(
       `SELECT sidePath, level FROM user_stats WHERE userId = ?`,
       [parentId]
