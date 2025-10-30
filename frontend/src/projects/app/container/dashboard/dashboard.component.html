@@ -1,8 +1,8 @@
 <div class="p-6 space-y-6">
-  <app-profile-card></app-profile-card>
+  <app-profile-card [userInfo]="getUserInfo()"></app-profile-card>
 
   <div class="mt-15 bg-white p-5">
-    <app-profile-tabs></app-profile-tabs>
+    <app-profile-tabs [userInfo]="getUserInfo()"></app-profile-tabs>
   </div>
 </div>
 
