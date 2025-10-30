@@ -29,6 +29,21 @@ export const getUserName = createSelector(
   },
 );
 
+export const getUserInfo = createSelector(
+  getUserProfile,
+  (user: UserResponseModel | undefined) => {
+    if (user) {
+      return {
+        firstName: user.attributes.firstName,
+        lastName: user.attributes.lastName,
+        username: user.attributes.username,
+        email: user.attributes.email,
+      };
+    }
+    return null;
+  },
+);
+
 export const getUserid = createSelector(
   getUserProfile,
   (user: UserResponseModel | undefined) => user && user.id,

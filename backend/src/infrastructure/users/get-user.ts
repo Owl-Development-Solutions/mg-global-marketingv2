@@ -62,6 +62,7 @@ export const getUserByAccessToken = async (
         lastName: user!.lastName,
         name: user!.name,
         email: user!.email,
+        username: user!.userName,
         role: user!.role,
       } as any,
       accessToken: token,

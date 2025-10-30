@@ -26,6 +26,9 @@ export class DashboardComponent implements OnDestroy, OnInit {
   private authUsecase = inject(AuthUsecase);
 
   getAuthName$ = this.authUsecase.getAuthName$;
+  getUserInfo$ = this.authUsecase.getUserInfo$;
+
+  getUserInfo = toSignal(this.getUserInfo$);
 
   getAuthName = toSignal(this.getAuthName$);
 
@@ -36,11 +39,6 @@ export class DashboardComponent implements OnDestroy, OnInit {
       this.pageTitlePortal.setPortal(this.pageTitle);
     });
   }
-
-  currentUser = {
-    firstName: 'Nena',
-    lastName: 'Saramosing',
-  };
 
   getTitleBasedOnTime(): string {
     const currentHour = new Date().getHours();

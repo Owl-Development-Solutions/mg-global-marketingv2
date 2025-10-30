@@ -19,6 +19,7 @@ export class AuthUsecase {
   //move this to user
   getAuthName$ = this.store.pipe(select(fromStore.getUserName));
   getUserId$ = this.store.pipe(select(fromStore.getUserid));
+  getUserInfo$ = this.store.pipe(select(fromStore.getUserInfo));
 
   initiateAuth(data: { email: string; password: string }) {
     this.store.dispatch(fromStore.initiateAuthAttempted({ data }));
