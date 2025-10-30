@@ -1,20 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
-    selector: 'app-profile-card',
-    imports: [MatIcon],
-    templateUrl: './profile-card.component.html',
-    styleUrl: './profile-card.component.scss'
+  selector: 'app-profile-card',
+  imports: [MatIcon],
+  templateUrl: './profile-card.component.html',
+  styleUrl: './profile-card.component.scss',
 })
 export class ProfileCardComponent {
-  name = 'NENA SARAMOSING';
+  userInfo = input.required<
+    | {
+        firstName: string;
+        lastName: string;
+        username: string;
+        email: string;
+      }
+    | undefined
+    | null
+  >();
+
   reminderLink = 'https://shop.empoweredconsumerism.com/?epid=FA049950';
   reminderText =
     'PMA Reminder for FA049950: Qualified for next month’s benefits...';
-
-  id = 'FA049960';
-  email = 'nenasaramosing@yahoo.com';
 
   balances = [
     { amount: '339.18P PHP', label: 'PHP Balance' },

@@ -6,14 +6,17 @@
   />
 
   <div class="flex-1">
-    <h5 class="font-bold hover:text-blue-500">{{ name }}</h5>
+    <h5 class="font-bold hover:text-blue-500">
+      {{ userInfo()?.firstName }} {{ userInfo()?.lastName }}
+    </h5>
 
     <div class="flex gap-4 text-sm text-gray-500">
       <span class="items-center gap-1 flex hover:text-blue-500"
-        ><mat-icon class="text-sm">person</mat-icon> {{ id }}</span
+        ><mat-icon class="text-sm">person</mat-icon>
+        {{ userInfo()?.username }}</span
       >
       <span class="items-center gap-1 flex hover:text-blue-500"
-        ><mat-icon>alternate_email</mat-icon> {{ email }}</span
+        ><mat-icon>alternate_email</mat-icon> {{ userInfo()?.email }}</span
       >
     </div>
 

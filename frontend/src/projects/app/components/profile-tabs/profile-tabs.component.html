@@ -2,7 +2,9 @@
   <!-- Tab 1 -->
   <mat-tab label="Reminders">
     <div class="bg-white rounded-xl shadow-md p-6">
-      <h6 class="text-base font-bold mb-2">Welcome {{ name }}!</h6>
+      <h6 class="text-base font-bold mb-2">
+        Welcome {{ userInfo()?.firstName }} {{ userInfo()?.lastName }}!
+      </h6>
       <p>
         Your EC R2ME link is
         <a [href]="reminderLink" class="text-red-500 underline">{{
@@ -20,10 +22,10 @@
     </div>
   </mat-tab>
 
-
   <!-- Tab 4 -->
   <mat-tab label="Package Points">
     <div class="bg-white rounded-xl shadow-md p-6">
       Package Points go here...
     </div>
   </mat-tab>
+</mat-tab-group>
