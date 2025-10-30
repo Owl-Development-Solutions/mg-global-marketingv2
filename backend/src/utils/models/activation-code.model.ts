@@ -4,9 +4,9 @@ export interface ActivationCode {
   status: string;
   codeDescription: string;
   sponsorId: string;
-  redeemedById: string;
+  expiresAt: string;
+  price: string;
   redeemedAt: Date;
-  expiresAt: Date;
   createdAt: Date;
   updated_at: Date;
 }
