@@ -12,19 +12,19 @@ export class UserTokenEffects {
   private userRepository = inject(UserRepository);
   private authRepository = inject(AuthRepository);
 
-  getUserUponLogin$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(fromAuth.initiateSucceeded),
-      switchMap((action) => {
-        const { refreshToken, accessToken } = action.data;
+  // getUserUponLogin$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(fromAuth.initiateSucceeded),
+  //     switchMap((action) => {
+  //       const { refreshToken, accessToken } = action.data;
 
-        return this.userRepository.getUser(accessToken).pipe(
-          map((data: UserResponseModel) =>
-            fromUser.getUserByTokenSucceeded({ data }),
-          ),
-          catchError((error) => of(fromUser.getUserByTokenFailed({ error }))),
-        );
-      }),
-    ),
-  );
+  //       return this.userRepository.getUser(accessToken).pipe(
+  //         map((data: UserResponseModel) =>
+  //           fromUser.getUserByTokenSucceeded({ data }),
+  //         ),
+  //         catchError((error) => of(fromUser.getUserByTokenFailed({ error }))),
+  //       );
+  //     }),
+  //   ),
+  // );
 }

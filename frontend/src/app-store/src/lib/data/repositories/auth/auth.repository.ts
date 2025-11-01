@@ -14,7 +14,7 @@ export class AuthRepository implements AuthRepositoryInterface {
   initiateAuth(data: {
     email: string;
     password: string;
-  }): Observable<AuthUserResponse> {
+  }): Observable<UserResponseModel> {
     return this.authDatasource.initiateAuth(data);
   }
 

@@ -13,7 +13,7 @@ export const initiateAuthFailed = createAction(
 
 export const initiateSucceeded = createAction(
   '[Auth] Initiate Auth Succeeded',
-  props<{ data: AuthUserResponse }>(),
+  props<{ data: UserResponseModel }>(),
 );
 
 export const rehydrateAuth = createAction(

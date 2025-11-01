@@ -4,7 +4,7 @@ import * as fromAuth from '../../actions/auth/auth-actions';
 export const authFeatureKey = 'authz';
 
 export interface AuthState {
-  data?: AuthUserResponse;
+  data?: UserResponseModel;
   userData?: UserResponseModel;
   loading: boolean;
   loaded: boolean;
@@ -48,17 +48,17 @@ export const initiateAuthReducer = createReducer(
     loaded: false,
     isAuthenticated: false,
   })),
-  on(fromAuth.refreshTokenSucceed, (state, { data }) => {
-    return {
-      ...state,
-      data,
-    };
-  }),
-  on(fromAuth.refreshTokenFailed, (state, { error }) => {
-    return {
-      ...state,
-    };
-  }),
+  // on(fromAuth.refreshTokenSucceed, (state, { data }) => {
+  //   return {
+  //     ...state,
+  //     data,
+  //   };
+  // }),
+  // on(fromAuth.refreshTokenFailed, (state, { error }) => {
+  //   return {
+  //     ...state,
+  //   };
+  // }),
   on(fromAuth.logoutAttempted, () => ({
     ...initialAuthState,
   })),
