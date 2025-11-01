@@ -40,7 +40,7 @@ export const loginUserController = async (
   res: Response
 ): Promise<void> => {
   const result: Result<
-    SuccessResponse<AuthResponse>,
+    SuccessResponse<UserResponse>,
     ErrorResponse
   > = await loginUserIn(req.body);
 

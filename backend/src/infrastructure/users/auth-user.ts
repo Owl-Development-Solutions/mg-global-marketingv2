@@ -121,7 +121,7 @@ export const registerUserIn = async (
 
 export const loginUserIn = async (
   data: User
-): Promise<Result<SuccessResponse<AuthResponse>, ErrorResponse>> => {
+): Promise<Result<SuccessResponse<UserResponse>, ErrorResponse>> => {
   try {
     if (!data.email || !data.password) {
       return {
@@ -172,8 +172,18 @@ export const loginUserIn = async (
 
     await saveRefreshToken(user.id, refreshToken);
 
-    const response: AuthResponse = {
-      accessToken,
+    const response: UserResponse = {
+      id: user!.id,
+      type: user!.role,
+      attributes: {
+        firstName: user!.firstName,
+        lastName: user!.lastName,
+        name: user!.name,
+        email: user!.email,
+        username: user!.userName,
+        role: user!.role,
+      } as any,
+      accessToken: accessToken,
     };
 
     return {

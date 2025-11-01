@@ -45,10 +45,10 @@ export class AuthDatasource implements AuthProfileInterface {
   initiateAuth(data: {
     email: string;
     password: string;
-  }): Observable<AuthUserResponse> {
+  }): Observable<UserResponseModel> {
     return this.executeAuthRequest<
       { email: string; password: string },
-      AuthUserResponse
+      UserResponseModel
     >('api/auth/login', data);
   }
 
