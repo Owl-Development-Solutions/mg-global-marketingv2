@@ -17,6 +17,8 @@ export class GeonologyUsecase {
 
   geonoloyRootFullName$ = this.store.pipe(select(fromStore.rootFullName));
 
+  rootUsername$ = this.store.pipe(select(fromStore.rootUsername));
+
   addUserGeonology(data: AddUserGeonologyData, callBacks: Callbacks) {
     this.store.dispatch(
       fromStore.addUserGeonologyAttempted({
@@ -24,6 +26,7 @@ export class GeonologyUsecase {
         side: data.side,
         child: data.child,
         activationCodeId: data.activationCodeId,
+        sponsorUsername: data.sponsorUsername,
         callBacks,
       }),
     );

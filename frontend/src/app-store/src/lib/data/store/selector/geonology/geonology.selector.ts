@@ -32,3 +32,10 @@ export const rootFullName = createSelector(
   (tree: GeonologyNode | null) =>
     tree && tree.side === 'root' ? `${tree.firstName} ${tree.lastName}` : null,
 );
+
+export const rootUsername = createSelector(
+  geonologyData,
+  (tree: GeonologyNode | null) => {
+    return tree && tree.side === 'root' ? tree.userName : null;
+  },
+);

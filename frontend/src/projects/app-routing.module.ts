@@ -38,7 +38,7 @@ export const routes: Routes = [
       },
       {
         path: 'geonology/:user',
-        canActivate: [GetGenealogyGuardFn, GetUserByIdGuard],
+        canActivate: [GetGenealogyGuardFn],
         component: GeonologyComponent,
         data: { title: 'Genealogy' },
       },

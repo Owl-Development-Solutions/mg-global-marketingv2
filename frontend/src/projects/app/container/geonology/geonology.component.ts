@@ -55,12 +55,14 @@ export class GeonologyComponent implements OnInit, OnDestroy {
   geonologyData$ = this.geonologyUsecase.geonologyData$;
   genealogyTreeLoading$ = this.geonologyUsecase.genealogyTreeLoading$;
   geonoloyRootFullName$ = this.geonologyUsecase.geonoloyRootFullName$;
+  rootUsername$ = this.geonologyUsecase.rootUsername$;
 
   getUserId$ = this.authUsecase.getUserId$;
 
   loading = toSignal(this.genealogyTreeLoading$);
   fullName = toSignal(this.geonoloyRootFullName$);
   userId = toSignal(this.getUserId$);
+  rootUsername = toSignal(this.rootUsername$);
 
   async handleAddMember(geonologyData: { data: GeonologyNode; side: string }) {
     const { AddMemberModalComponent } = await import(
@@ -70,6 +72,7 @@ export class GeonologyComponent implements OnInit, OnDestroy {
     this.dialog.open(AddMemberModalComponent, {
       data: {
         data: geonologyData.data,
+        rootUsername: this.rootUsername(),
         side: geonologyData.side,
         onSubmit: this.submitAddMember.bind(this),
       },

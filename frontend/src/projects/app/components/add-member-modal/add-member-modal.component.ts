@@ -23,6 +23,7 @@ import {
   map,
   Observable,
   of,
+  skip,
   startWith,
   switchMap,
 } from 'rxjs';
@@ -30,6 +31,7 @@ import {
   CallbackOnFailureModel,
   ErrorProps,
   GeonologyNode,
+  UserData,
 } from '@app-store/public-api';
 import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import { SubmitButtonComponent } from '../submit-button/submit-button.component';
@@ -38,9 +40,12 @@ import { UserUsecase } from '@app-store/lib/usecases';
 import { ActivationCodeUsecase } from '@app-store/lib/usecases/activation-code/activation-code.usecase';
 import { activationCodeValidValidator } from 'projects/app/helpers/activation-code.validator';
 import { usernameAvailableValidator } from 'projects/app/helpers/search-user.validator';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { NotificationComponent } from '../notification/notification.component';
 
 export interface AddMemberModalData {
   data: GeonologyNode;
+  rootUsername: string | null | undefined;
   side: string;
   onSubmit: ({
     data,
@@ -70,6 +75,8 @@ export type CheckResultResp =
     FormsModule,
     SubmitButtonComponent,
     CommonModule,
+    MatAutocompleteModule,
+    NotificationComponent,
   ],
   templateUrl: './add-member-modal.component.html',
 })
@@ -81,16 +88,25 @@ export class AddMemberModalComponent implements AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data: AddMemberModalData,
   ) {}
 
+  filteredUsernameOpts!: {
+    label: string;
+    value: string;
+    userId: string;
+  };
+
   addNewMemberInputProps = {
     firstName: '',
     lastName: '',
     userName: '',
     activationCode: '',
+    sponsorUsername: '',
   };
 
   submitting$ = new BehaviorSubject<boolean>(false);
 
   error$ = new BehaviorSubject<ErrorProps | null>(null);
+
+  isRootUsernameNotFound: boolean = false;
 
   onCancelClick() {
     if (!this.submitting$.getValue()) {
@@ -116,7 +132,8 @@ export class AddMemberModalComponent implements AfterViewInit {
 
   performAddMember(form: NgForm) {
     this.submitting$.next(true);
-    const { firstName, lastName, userName, activationCode } = form.value;
+    const { firstName, lastName, userName, activationCode, rootUsername } =
+      form.value;
     const side = this.data.side;
 
     const newNode: GeonologyNode = {
@@ -138,6 +155,7 @@ export class AddMemberModalComponent implements AfterViewInit {
       parentUserName: this.data.data.userName,
       side: side === 'left' ? '[L]' : '[R]',
       child: newNode,
+      sponsorUsername: rootUsername,
       activationCodeId: activationCode,
     };
 
@@ -150,13 +168,25 @@ export class AddMemberModalComponent implements AfterViewInit {
 
   @ViewChild('userName') userName!: NgModel;
   @ViewChild('activationCode') activationCode!: NgModel;
+  @ViewChild('rootUsername') rootUsername!: NgModel;
   filteredOptions$!: Observable<CheckResultResp>;
   filteredOptionsForActivationCode$!: Observable<CheckResultResp>;
+  filteredRootUsername$!:
+    | Observable<
+        | {
+            label: string;
+            value: string;
+            userId: string;
+          }[]
+        | null
+      >
+    | undefined;
 
   ngAfterViewInit(): void {
     this.userName.control.setAsyncValidators(
       usernameAvailableValidator(this.userUsecase, 4),
     );
+
     this.userName.control.updateValueAndValidity();
 
     this.activationCode.control.setAsyncValidators(
@@ -164,6 +194,7 @@ export class AddMemberModalComponent implements AfterViewInit {
     );
     this.activationCode.control.updateValueAndValidity();
 
+    //activation-code
     this.activationCode.valueChanges?.pipe(
       switchMap(() => {
         const control = this.activationCode.control;
@@ -183,6 +214,7 @@ export class AddMemberModalComponent implements AfterViewInit {
       }),
     ) as Observable<any>;
 
+    //username
     this.userName.valueChanges?.pipe(
       switchMap(() => {
         const control = this.userName.control;
@@ -196,6 +228,21 @@ export class AddMemberModalComponent implements AfterViewInit {
         }
 
         // Otherwise, don't show a positive message
+        return of({ inactive: true });
+      }),
+    ) as Observable<any>;
+
+    //rootusername
+    this.rootUsername.valueChanges?.pipe(
+      switchMap(() => {
+        const control = this.rootUsername.control;
+        if (control.valid && control.value && control.value.length >= 3) {
+          return of({
+            isAvailable: true,
+            message: 'Sponsor username found!',
+          });
+        }
+
         return of({ inactive: true });
       }),
     ) as Observable<any>;
@@ -222,10 +269,20 @@ export class AddMemberModalComponent implements AfterViewInit {
         return of({ inactive: true });
       }),
     ) as Observable<CheckResultResp>;
+    this.filteredRootUsername$ = this.rootUsername.valueChanges?.pipe(
+      skip(1),
+      debounceTime(250),
+      switchMap((value: any) => {
+        if (value && value.length) {
+          return this.filterTypeAhead(value);
+        }
+
+        return of(null);
+      }),
+    );
   }
 
   private filterName(value: string | any): Observable<CheckResultResp> {
-    // <-- Use the Union Type here
     const find = typeof value === 'string' ? value : value;
     const filterValue = find.toLowerCase();
 
@@ -261,6 +318,26 @@ export class AddMemberModalComponent implements AfterViewInit {
           isAvailable: false,
           message: error.error || error.message || 'Unknown error.',
         } as CheckResultResp);
+      }),
+    );
+  }
+
+  filterTypeAhead(
+    value: string,
+  ): Observable<{ label: string; value: string; userId: string }[]> {
+    const find = typeof value === 'string' ? value : value;
+    const filterValue = find.toLowerCase();
+    return this.userUsecase.userNameExist(filterValue).pipe(
+      map((resp: UserData[]) => {
+        return resp.map((i) => ({
+          label: i.userName!,
+          value: i.userName!,
+          userId: i.id,
+        }));
+      }),
+
+      catchError((error) => {
+        return of([]);
       }),
     );
   }

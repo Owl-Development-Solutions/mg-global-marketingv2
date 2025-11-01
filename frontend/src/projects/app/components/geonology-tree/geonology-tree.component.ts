@@ -2,9 +2,7 @@ import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { GeonologyNode } from '../../models';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
-import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { AddMemberModalComponent } from '../add-member-modal/add-member-modal.component';
 import { SkeletonUserNodeComponent } from '../skeleton-user-node/skeleton-user-node.component';
 
 @Component({

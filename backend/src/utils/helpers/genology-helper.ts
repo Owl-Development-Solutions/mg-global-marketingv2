@@ -52,10 +52,6 @@ export const processUplineRewards = async (
         `UPDATE user_stats SET leftPoints = leftPoints - ?, rightPoints = rightPoints - ?, balance = balance + ? WHERE userId = ?`,
         [pointsToDeduct, pointsToDeduct, commisionEarned, currentUplineId]
       );
-
-      //@TODO
-      //SHOULD WE ADD A commission_history table her ??
-      //Should also insert a record into a 'commission_history' table here.
     }
 
     currentChildId = currentUplineId;

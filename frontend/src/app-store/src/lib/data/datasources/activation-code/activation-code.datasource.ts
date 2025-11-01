@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { environment } from '../../../../environments/environment.production';
+import { environment } from '../../../../environments/environment.development';
 import { AppErrors } from '../../errors';
 import UnexpectedError = AppErrors.UnexpectedError;
 import InvalidCredentials = AppErrors.InvalidCredentials;
