@@ -8,6 +8,7 @@ export const addUserGeonologyAttempted = createAction(
     side: string;
     child: GeonologyNode;
     activationCodeId: string;
+    sponsorUsername: string;
     callBacks: Callbacks;
   }>(),
 );

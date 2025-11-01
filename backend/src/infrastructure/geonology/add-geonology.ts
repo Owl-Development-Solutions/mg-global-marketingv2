@@ -64,6 +64,25 @@ export const addGeonologyUserIn = async (
 
     const activationCodeIdFromDB = code.id;
 
+    const [sponsorResult] = await db.execute(
+      `SELECT id FROM users WHERE username = ?`,
+      [data.sponsorUsername]
+    );
+    const sponsors = sponsorResult as User[];
+    const sponsor = sponsors[0];
+
+    if (!sponsor) {
+      return {
+        success: false,
+        error: {
+          statusCode: 404,
+          errorMessage: "Sponsor username is not valid or found.",
+        },
+      };
+    }
+
+    const sponsorId = sponsor.id;
+
     const [parent] = await db.execute(
       `SELECT id, ${sideColumn} FROM users WHERE username = ?`,
       [parentUserName]
@@ -92,7 +111,7 @@ export const addGeonologyUserIn = async (
     //  INSERT NEW USER (CHILD)
     // Pass the activationCodeId into the users table
     const [userResult] = await db.execute(
-      `INSERT INTO users (id, userName, firstName, lastName, parentId, activationCodeId) VALUES (?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO users (id, userName, firstName, lastName, parentId, activationCodeId, sponsorId) VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
         newUserId,
         child.userName,
@@ -100,6 +119,7 @@ export const addGeonologyUserIn = async (
         child.lastName,
         parentId,
         activationCodeIdFromDB,
+        sponsorId,
       ]
     );
 

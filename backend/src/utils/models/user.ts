@@ -50,3 +50,5 @@ export interface UserStats {
   createdAt: Date;
   updated_at: Date;
 }
+
+export type UserData = Pick<User, "id" | "userName">;

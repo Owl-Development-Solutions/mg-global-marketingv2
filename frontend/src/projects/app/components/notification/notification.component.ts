@@ -8,7 +8,7 @@ import { StripPrefixPipe } from 'projects/app/pipes';
   imports: [CommonModule, MatIcon, StripPrefixPipe],
   template: `
     <div
-      class="bg-gray-800 border-l-4 border-solid p-2 items-center flex gap-4"
+      class="bg-gray-900 border-l-4 border-solid p-2 items-center flex gap-4"
       [ngClass]="{
         'border-alert': notification.errorType === 'error',
         'border-green-500': notification.errorType === 'success',
@@ -35,8 +35,8 @@ import { StripPrefixPipe } from 'projects/app/pipes';
         </div>
         <div class="flex gap-1">
           <p class="text-gray-50 text-sm">
-            <span class="font-bold">{{ notification.title }}:</span>
-            {{ notification.message | stripPrefix }}
+            <!-- <span class="font-bold">{{ notification.title }}:</span> -->
+            {{ notification.message }}
           </p>
         </div>
       </div>

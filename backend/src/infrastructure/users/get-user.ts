@@ -5,6 +5,7 @@ import {
   Result,
   SuccessResponse,
   User,
+  UserData,
   UserResponse,
   verifyRefreshToken,
 } from "../../utils";
@@ -141,6 +142,64 @@ export const getUserById = async (
       },
     };
   } catch (error) {
+    return {
+      success: false,
+      error: {
+        statusCode: 500,
+        errorMessage: error instanceof Error ? error.message : String(error),
+      },
+    };
+  }
+};
+
+export const getAllUsersByUsername = async (
+  username: string
+): Promise<Result<SuccessResponse<UserData[]>, ErrorResponse>> => {
+  try {
+    if (!username || username.trim() === "") {
+      return {
+        success: true,
+        data: {
+          statusCode: 200,
+          message: "No search term provided, returning empty list.",
+          data: [],
+        },
+      };
+    }
+
+    const db = connection();
+
+    const searchQuery = `%${username}%`;
+
+    const [rows] = await db.execute(
+      "SELECT id, userName FROM users WHERE userName LIKE ?",
+      [searchQuery]
+    );
+
+    const users = rows as UserData[];
+
+    if (users.length > 0) {
+      return {
+        success: true,
+        data: {
+          statusCode: 200,
+          message: `${users.length} users retrieved matching '${username}'.`,
+          data: users,
+        },
+      };
+    }
+
+    // 4. Success: No users matched the search term
+    return {
+      success: true,
+      data: {
+        statusCode: 200,
+        message: `No users found matching '${username}'.`,
+        data: [],
+      },
+    };
+  } catch (error) {
+    // 5. Error Handling
     return {
       success: false,
       error: {

@@ -26,6 +26,7 @@ export interface AddUserGeonologyData {
   side: string;
   child: GeonologyNode;
   activationCodeId: string;
+  sponsorUsername: string;
 }
 
 export interface GeonologyResponse {

@@ -4,11 +4,14 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as fromGeonology from '../../../store/actions/geonology/geonology-actions';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { GeonologyNode, GeonologyResponse } from '../../../models';
+import { rootUsername } from '@app-store/public-api';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class GeonologyEffects {
   private actions$ = inject(Actions);
   private geonologyRepository = inject(GeonologyRepository);
+  private snackBar = inject(MatSnackBar);
 
   getGenealogyAttempted$ = createEffect(() => {
     return this.actions$.pipe(
@@ -32,9 +35,21 @@ export class GeonologyEffects {
     return this.actions$.pipe(
       ofType(fromGeonology.addUserGeonologyAttempted),
       switchMap((action) => {
-        const { parentUserName, side, child, activationCodeId, callBacks } =
-          action;
-        const data = { parentUserName, side, child, activationCodeId };
+        const {
+          parentUserName,
+          side,
+          child,
+          activationCodeId,
+          sponsorUsername,
+          callBacks,
+        } = action;
+        const data = {
+          parentUserName,
+          side,
+          child,
+          sponsorUsername,
+          activationCodeId,
+        };
 
         return this.geonologyRepository.addUserGeonology(data).pipe(
           map((response: GeonologyResponse) => {
@@ -47,9 +62,8 @@ export class GeonologyEffects {
             });
           }),
           catchError((error) => {
-            console.log(`error`, error);
-
-            callBacks.onFailure?.({ errorMsg: error });
+            const cleanMessage = error.message.replace('Error: ', '');
+            callBacks.onFailure?.({ errorMsg: cleanMessage });
             return of(
               fromGeonology.addUserGeonologyFailed({
                 error,

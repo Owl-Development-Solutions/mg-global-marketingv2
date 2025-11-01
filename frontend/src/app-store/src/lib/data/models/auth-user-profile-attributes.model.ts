@@ -7,6 +7,7 @@ export interface User {
   firstName: string;
   lastName: string;
   username: string;
+  userName?: string;
   name: string;
   email: string;
   password: string;
@@ -22,3 +23,5 @@ export interface AuthUserResponse {
   accessToken: string;
   refreshToken: string;
 }
+
+export type UserData = Pick<User, 'id' | 'userName'>;

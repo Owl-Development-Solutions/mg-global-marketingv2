@@ -17,16 +17,16 @@ export const getUserByTokenSucceeded = createAction(
 );
 
 export const getUserByIdAttempted = createAction(
-  '[User] Initiate User Attempted',
+  '[User] Initiate Get User By Id User Attempted',
   props<{ userId: string }>(),
 );
 
 export const getUserByIdFailed = createAction(
-  '[User] Initiate User Failed',
+  '[User] Initiate  Get User By Id  User Failed',
   props<{ error: string }>(),
 );
 
 export const getUserByIdSucceeded = createAction(
-  '[User] Initiate User Succeeded',
+  '[User] Initiate  Get User By Id User Succeeded',
   props<{ data: UserResponseModel }>(),
 );

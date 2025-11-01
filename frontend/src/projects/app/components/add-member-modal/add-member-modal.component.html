@@ -202,27 +202,57 @@
       <div class="space-y-2">
         <div class="flex items-center justify-between text-sm">
           <span>Sponsor</span>
-          <button mat-stroked-button color="primary" disabled>
-            <mat-icon>lock</mat-icon> Locked
-          </button>
         </div>
-        <div
-          class="flex items-center justify-between rounded-md border px-3 py-2"
-        >
-          <span class="font-mono text-sm">{{ data.data.userName }}</span>
-          <span
-            class="bg-primary text-white inline-flex rounded-md px-2 py-0.5 text-xs font-medium"
-            >Default</span
-          >
-        </div>
-        <p class="text-muted-foreground text-xs mb-1">
+        <p class="text-muted-foreground text-xs mb-2">
           The sponsor will receive referral bonuses from this member.
         </p>
+        <mat-form-field class="w-full" appearance="fill">
+          <input
+            required
+            matInput
+            name="rootUsername"
+            id="rootUsername"
+            minlength="3"
+            #rootUsername="ngModel"
+            [(ngModel)]="data.rootUsername"
+            [matAutocomplete]="auto"
+          />
+
+          <mat-autocomplete #auto="matAutocomplete">
+            @if (filteredRootUsername$ | async; as options) {
+              @if (options.length > 0) {
+                @for (option of options; track option.userId) {
+                  <mat-option [value]="option.value">
+                    {{ option.label }}
+                  </mat-option>
+                }
+              } @else if (rootUsername.value && rootUsername.value.length > 2) {
+                <mat-option disabled>
+                  No sponsor found for "{{ rootUsername.value }}"
+                </mat-option>
+              }
+            }
+          </mat-autocomplete>
+
+          @if (
+            rootUsername.invalid && (rootUsername.dirty || rootUsername.touched)
+          ) {
+            <mat-error>
+              @if (rootUsername.hasError("required")) {
+                <span>Sponsor username is required</span>
+              }
+              @if (activationCode.hasError("minlength")) {}
+            </mat-error>
+          }
+        </mat-form-field>
       </div>
     </div>
 
     <!-- Placement Summary -->
-    <mat-card class="!border-blue-200 !bg-blue-100 !mb-2" appearance="outlined">
+    <mat-card
+      class="!border-blue-200 !bg-blue-100 !mb-2 mt-2"
+      appearance="outlined"
+    >
       <mat-card-content>
         <div class="flex items-start gap-3">
           <mat-icon color="primary">info</mat-icon>
@@ -248,6 +278,11 @@
     </mat-card>
   </div>
 
+  @if (error$.getValue()) {
+    <app-notification class="my-4 p-4" [notification]="error$.getValue()">
+    </app-notification>
+  }
+
   <div mat-dialog-actions class="p-4 flex gap-2">
     <button
       mat-stroked-button
@@ -259,11 +294,16 @@
       Cancel
     </button>
     <app-submit-button
-      [isDisabled]="addMemberForm.invalid || addMemberForm.pending!"
+      [isDisabled]="
+        addMemberForm.invalid ||
+        addMemberForm.pending! ||
+        isRootUsernameNotFound
+      "
       text="Create Member"
       icon="person_add"
       [isLoading]="submitting$ | async"
       color="primary"
+      [type]="'submit'"
     >
     </app-submit-button>
   </div>
