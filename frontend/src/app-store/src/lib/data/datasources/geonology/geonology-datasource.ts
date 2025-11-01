@@ -8,7 +8,7 @@ import {
 } from '../../models';
 import { catchError, delay, map, Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment.production';
+import { environment } from '../../../../environments/environment.development';
 import { AppErrors } from '../../errors';
 import NotAuthorized = AppErrors.NotAuthorized;
 import UnexpectedError = AppErrors.UnexpectedError;
@@ -55,7 +55,7 @@ export class GeonologyDatasource implements GeonologyInterface {
       );
   }
 
-  addUserGeonology(data: AddUserGeonologyData): Observable<any> {
+  addUserGeonology(data: AddUserGeonologyData): Observable<GeonologyResponse> {
     return this.http
       .post<Document<GeonologyResponse>>(
         `${this.baseUrl}/api/geonology/addGeonology`,

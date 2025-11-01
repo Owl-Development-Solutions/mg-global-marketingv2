@@ -2,7 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import * as fromStore from '../../data/store';
 import { Observable } from 'rxjs';
-import { UserRepository } from '@app-store/public-api';
+import { UserData } from '../../data/models';
+import { UserRepository } from '../../data/repositories';
 
 @Injectable({
   providedIn: 'root',
@@ -17,5 +18,9 @@ export class UserUsecase {
 
   executeGetUsername(userName: string): Observable<string> {
     return this.userRepo.searchUserName(userName);
+  }
+
+  userNameExist(username: string): Observable<UserData[]> {
+    return this.userRepo.userNameExist(username);
   }
 }
