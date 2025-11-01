@@ -26,11 +26,6 @@ export const extModules = [
 
 const PERSISTED_KEYS = [
   {
-    user: {
-      filter: ['data'],
-    },
-  },
-  {
     authz: {
       filter: ['data', 'isAuthenticated'],
     },

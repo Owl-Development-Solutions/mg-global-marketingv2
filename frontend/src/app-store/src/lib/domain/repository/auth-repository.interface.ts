@@ -5,6 +5,6 @@ export interface AuthRepositoryInterface {
   initiateAuth(data: {
     email: string;
     password: string;
-  }): Observable<AuthUserResponse>;
+  }): Observable<UserResponseModel>;
   refreshToken(refreshToken: string): Observable<AuthUserResponse>;
 }

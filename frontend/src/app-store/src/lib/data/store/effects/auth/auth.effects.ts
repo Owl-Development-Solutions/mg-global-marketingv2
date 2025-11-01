@@ -23,7 +23,9 @@ export class AuthEffects {
         const { data } = action;
 
         return this.authRepository.initiateAuth(data).pipe(
-          map((data: AuthUserResponse) => fromAuth.initiateSucceeded({ data })),
+          map((data: UserResponseModel) =>
+            fromAuth.initiateSucceeded({ data }),
+          ),
           catchError((error) => {
             this.snackBar.open(error, 'x', {
               horizontalPosition: 'right',
