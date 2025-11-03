@@ -1,0 +1,138 @@
+@use "./variables";
+@use "@angular/material" as mat;
+
+$skipped-opacity: 0.35;
+
+.app-table {
+  width: 100%;
+
+  .hide-row {
+    display: none;
+  }
+
+  h4 {
+    margin: variables.$spacing-05 0;
+  }
+
+  .mat-form-field-appearance-outline {
+    .mat-form-field-outline {
+      height: 40px;
+      top: 20px;
+    }
+
+    .mat-form-field-flex {
+      top: 5px;
+    }
+  }
+
+  &__single-item-form {
+    position: relative;
+    display: flex;
+    align-items: center;
+    .placeholder {
+      position: absolute;
+      border-bottom: 1px dashed;
+      @at-root .has-text-input,
+        .app-table__line-item:hover #{&} {
+        visibility: hidden;
+        opacity: 0;
+      }
+    }
+    form {
+      visibility: hidden;
+      opacity: 0;
+      transition:
+        visibility 0.3s linear,
+        opacity 0.3s linear;
+
+      @at-root .has-text-input,
+        .app-table__line-item:hover #{&} {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+  }
+
+  @at-root th.mat-mdc-header-cell#{&}__header {
+    padding: variables.$spacing-04;
+
+    &--hidden {
+      display: none;
+    }
+
+    &--with-badge {
+      .badge {
+        font-weight: bolder;
+        text-transform: uppercase;
+        padding: variables.$spacing-02 variables.$spacing-03;
+
+        &-container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          column-gap: 1em;
+        }
+      }
+
+      mat-icon:not(.table-no-vert) {
+        font-size: 1rem;
+        vertical-align: middle;
+      }
+    }
+
+    &--with-left-border {
+      border-left: 1px solid lightgray;
+      padding-left: 12px;
+    }
+  }
+
+  @at-root td.mat-mdc-cell#{&}-row {
+    width: 20%;
+
+    &--half-width {
+      width: 10%;
+    }
+
+    &--flag {
+      cursor: pointer;
+    }
+
+    &--number {
+      width: 45px;
+
+      > a {
+        opacity: 1;
+        //color: lightgray;
+      }
+    }
+
+    &--hide-content {
+      &:before {
+        content: "";
+      }
+    }
+
+    &--with-left-border {
+      border-left: 1px solid lightgray;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+  }
+
+  .name-container {
+    position: relative;
+  }
+
+  &__header {
+    &--with-badge {
+      .badge {
+        color: white;
+        background-color: #ef5350;
+
+        &.no-info {
+          background-color: #ffb300;
+        }
+      }
+    }
+  }
+}

@@ -90,6 +90,11 @@ export const buildNodeTree = async (
     // 3. Use the passed relative side
     side: relativeSide,
     hasDeduction: currentNodeData.hasDeduction,
+    sponsorId: currentNodeData.sponsorId,
+    sponsorName:
+      currentNodeData.sponsorFirstName && currentNodeData.sponsorLastName
+        ? `${currentNodeData.sponsorFirstName} ${currentNodeData.sponsorLastName}`
+        : null,
     leftChild: null,
     rightChild: null,
   };
@@ -100,9 +105,13 @@ export const buildNodeTree = async (
                     u.id, u.userName, u.firstName, u.lastName,
                     us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
                     us.rankPoints, us.level, us.sidePath, us.hasDeduction,
-                    u.leftChildId, u.rightChildId
+                    u.leftChildId, u.rightChildId,
+                    u.sponsorId, 
+                    s.firstName as sponsorFirstName, 
+                    s.lastName as sponsorLastName
                 FROM users u
                 JOIN user_stats us ON u.id = us.userId
+                LEFT JOIN users s ON u.sponsorId = s.id
                 WHERE u.id = ?`,
       [currentNodeData.leftChildId]
     );
@@ -126,9 +135,13 @@ export const buildNodeTree = async (
                     u.id, u.userName, u.firstName, u.lastName,
                     us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
                     us.rankPoints, us.level, us.sidePath, us.hasDeduction,
-                    u.leftChildId, u.rightChildId
+                    u.leftChildId, u.rightChildId,
+                    u.sponsorId, 
+                    s.firstName as sponsorFirstName, 
+                    s.lastName as sponsorLastName
                 FROM users u
                 JOIN user_stats us ON u.id = us.userId
+                LEFT JOIN users s ON u.sponsorId = s.id
                 WHERE u.id = ?`,
       [currentNodeData.rightChildId]
     );

@@ -16,6 +16,19 @@
       </div>
     }
   </div>
+
+  <!-- GENEALOGY HISTORY -->
+  <div class="grow shrink-0 basis-[740px] flex flex-col h-[740px] m">
+    <app-column-container class="grow" [title]="'Genealogy History'">
+      <div class="h-full p-4">
+        <app-genealogy-table-history
+          [dataSource]="geonologyData$ | async | genealogyFlattened"
+          [skeleton]="genealogyTreeLoading$ | async"
+        >
+        </app-genealogy-table-history>
+      </div>
+    </app-column-container>
+  </div>
 </div>
 
 <ng-container *cdkPortal>
