@@ -1,0 +1,40 @@
+<div
+  class="rounded-lg column-container bg-gradient-to-b from-50% from-gray-100"
+  [class.handset]="(breakpoint$ | async)?.matches"
+>
+  <div class="column-container--header" *ngIf="!removeHeader">
+    <div class="column-container--header-content">
+      <ng-container *ngIf="skeleton; else headerContent">
+        <app-skeleton-text [lines]="2"></app-skeleton-text>
+      </ng-container>
+      <ng-template #headerContent>
+        <div class="column-container--header-collapsible">
+          <button
+            *ngIf="isCollapsible"
+            mat-icon-button
+            data-test="column-container__collapse-button"
+            (click)="collapse()"
+            color="primary"
+            aria-label="Collapse"
+          >
+            <mat-icon
+              >keyboard_arrow_{{ isCollapsed ? "right" : "down" }}</mat-icon
+            >
+          </button>
+          <div>
+            <h3 data-test="column-title">{{ title }}</h3>
+            <p data-test="column-description">{{ subtitle }}</p>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+    <ng-container *ngTemplateOutlet="headerAction"></ng-container>
+  </div>
+  <mat-divider *ngIf="!removeHeader"></mat-divider>
+  <div
+    class="column-container--content"
+    *ngIf="!isCollapsible || (isCollapsible && !isCollapsed)"
+  >
+    <ng-content></ng-content>
+  </div>
+</div>

@@ -53,7 +53,7 @@
               "outputHashing": "all",
               "fileReplacements": [
                 {
-                  "replace": "src/app-store/src/environments/environment.ts",
+                  "replace": "src/app-store/src/environments/environment.development.ts",
                   "with": "src/app-store/src/environments/environment.production.ts"
                 }
               ]
@@ -64,7 +64,7 @@
               "sourceMap": false,
               "fileReplacements": [
                 {
-                  "replace": "src/app-store/src/environments/environment.ts",
+                  "replace": "src/app-store/src/environments/environment.development.ts",
                   "with": "src/app-store/src/environments/environment.development.ts"
                 }
               ]

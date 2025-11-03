@@ -1,0 +1,44 @@
+:host {
+  width: 100%;
+  height: 100%;
+}
+
+.column-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  contain: content;
+}
+
+.column-container--header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+
+  h3,
+  p {
+    margin: 0.25rem 0;
+  }
+
+  .handset & {
+    flex-direction: column;
+    align-items: flex-start;
+
+    p {
+      margin-bottom: 1rem;
+    }
+  }
+
+  &-collapsible {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+  }
+}
+
+.column-container--content {
+  overflow: scroll;
+  flex: 1;
+  position: relative;
+}

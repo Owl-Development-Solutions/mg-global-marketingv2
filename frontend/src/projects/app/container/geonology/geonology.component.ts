@@ -10,8 +10,9 @@ import {
 } from '@angular/core';
 import {
   GeonologyTreeComponent,
-  AddMemberModalComponent,
   SkeletonTextComponent,
+  ColumnContainerComponent,
+  GenealogyTableHistoryComponent,
 } from '../../components';
 import { MatIcon } from '@angular/material/icon';
 import { CdkPortal } from '@angular/cdk/portal';
@@ -23,6 +24,7 @@ import { AddUserGeonologyData, GeonologyNode } from '@app-store/public-api';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { GenealogyFlattenedPipe } from 'projects/app/pipes';
 
 @Component({
   selector: 'app-geonology',
@@ -34,6 +36,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatButtonModule,
     SkeletonTextComponent,
     MatTooltipModule,
+    ColumnContainerComponent,
+    GenealogyTableHistoryComponent,
+    GenealogyFlattenedPipe,
   ],
   styleUrl: './geonology.component.scss',
   templateUrl: './geonology.component.html',

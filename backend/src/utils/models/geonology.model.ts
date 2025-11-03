@@ -12,6 +12,8 @@ export interface GeonologyNode {
   level: number | LowOrHigh;
   side: string;
   hasDeduction: boolean;
+  sponsorId?: string;
+  sponsorName?: string | null;
   leftChild?: GeonologyNode | null;
   rightChild?: GeonologyNode | null;
 }

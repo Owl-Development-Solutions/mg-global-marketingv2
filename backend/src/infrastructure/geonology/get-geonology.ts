@@ -20,9 +20,13 @@ export const getGeonologyTreeIn = async (
             u.id, u.userName, u.firstName, u.lastName,
             us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
             us.rankPoints, us.level, us.sidePath, us.hasDeduction,
-            u.leftChildId, u.rightChildId
+            u.leftChildId, u.rightChildId, 
+            u.sponsorId, 
+            s.firstName AS sponsorFirstName, 
+            s.lastName AS sponsorLastName
         FROM users u
         JOIN user_stats us ON u.id = us.userId
+        LEFT JOIN users s ON u.sponsorId = s.id
         WHERE u.id = ?`,
       [user]
     );

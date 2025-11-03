@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../../environments/environment.production';
+import { environment } from '../../../../environments/environment.development';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { AppErrors } from '../../errors';
 import UnexpectedError = AppErrors.UnexpectedError;

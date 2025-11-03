@@ -12,3 +12,7 @@ export * from './submit-button/submit-button.component';
 export * from './user-identity/user-identity.component';
 export * from './skeleton-text/skeleton-text.component';
 export * from './skeleton-user-node/skeleton-user-node.component';
+export * from './column-container/column-container.component';
+export * from './genealogy-table-history/genealogy-table-history.component';
+export * from './notification/notification.component';
+export * from './empty-history-message/empty-history-message.component';
