@@ -2,6 +2,7 @@ export interface GeonologyNode {
   id?: string;
   userName: string;
   firstName: string;
+  middleName?: string;
   lastName: string;
   balance: number;
   leftPoints: number;

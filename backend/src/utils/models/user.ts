@@ -1,6 +1,7 @@
 export interface User {
   id: string;
   firstName: string;
+  middleName?: string;
   lastName: string;
   userName: string;
   name: string;
@@ -51,4 +52,18 @@ export interface UserStats {
   updated_at: Date;
 }
 
-export type UserData = Pick<User, "id" | "userName">;
+export type UserData = Pick<User, "id" | "userName" | "name">;
+
+export interface RegisterData {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  birthDate: string;
+  email: string;
+  username: string;
+  password: string;
+  sponsor: string;
+  position: string;
+  upline: string;
+  pin: string;
+}

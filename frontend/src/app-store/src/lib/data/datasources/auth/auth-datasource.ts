@@ -3,6 +3,7 @@ import {
   AuthProfileInterface,
   AuthUserResponse,
   Document,
+  RegisterData,
   UserResponseModel,
 } from '../../models';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
@@ -21,13 +22,14 @@ export class AuthDatasource implements AuthProfileInterface {
   private baseUrl = environment.apiBaseUrl;
 
   private authErrorReport(error: any) {
+    const message = error?.error?.error;
     switch (error.status) {
       case 424:
-        return throwError(() => new InvalidCredentials());
+        return throwError(() => new InvalidCredentials(message));
       case 404:
-        return throwError(() => new UserNotFound());
+        return throwError(() => new UserNotFound(message));
       default:
-        return throwError(() => new UnexpectedError());
+        return throwError(() => new UnexpectedError(message));
     }
   }
 
@@ -57,6 +59,15 @@ export class AuthDatasource implements AuthProfileInterface {
       'api/auth/refresh-token',
       {
         refreshToken,
+      },
+    );
+  }
+
+  registerUser(data: RegisterData): Observable<string> {
+    return this.executeAuthRequest<{ data: RegisterData }, string>(
+      'api/auth/register',
+      {
+        data,
       },
     );
   }

@@ -23,4 +23,8 @@ export class UserUsecase {
   userNameExist(username: string): Observable<UserData[]> {
     return this.userRepo.userNameExist(username);
   }
+
+  searchUserByName(name: string): Observable<UserData[]> {
+    return this.userRepo.searchUserByName(name);
+  }
 }

@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getAllUsersByNameController,
   getAllUsersByUsernameController,
   getUserByAccessTokenController,
   getUserByIdController,
@@ -17,5 +18,6 @@ router.post(
 router.post("/isUsernameUsed", verifyToken, searchUsernameController);
 router.post("/getUserById", verifyToken, getUserByIdController);
 router.post("/searchUsername", verifyToken, getAllUsersByUsernameController);
+router.post("/searchUserByName", getAllUsersByNameController);
 
 export default router;

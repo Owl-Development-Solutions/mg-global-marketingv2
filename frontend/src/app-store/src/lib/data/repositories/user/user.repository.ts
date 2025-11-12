@@ -25,4 +25,8 @@ export class UserRepository implements UserRepositoryInterface {
   userNameExist(username: string): Observable<UserData[]> {
     return this.userDatasource.userNameExist(username);
   }
+
+  searchUserByName(name: string): Observable<UserData[]> {
+    return this.userDatasource.searchUserByName(name);
+  }
 }

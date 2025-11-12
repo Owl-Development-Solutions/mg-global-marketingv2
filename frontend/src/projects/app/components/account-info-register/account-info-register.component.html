@@ -1,0 +1,264 @@
+<div
+  [ngModelGroup]="'register'"
+  appPasswordMatch
+  class="@container flex flex-col gap-4 group"
+>
+  <div class="flex justify-between items-center">
+    <h3 class="text-lg font-light">Personal Information</h3>
+  </div>
+
+  <hr />
+
+  <div class="grid grid-cols-1 @2xl:grid-cols-2 @2xl:gap-4">
+    <mat-form-field>
+      <mat-label>First Name</mat-label>
+      <input
+        type="text"
+        [(ngModel)]="register().firstName"
+        name="firstName"
+        matInput
+        required
+        #firstName="ngModel"
+      />
+      @if (firstName.touched && firstName.hasError("required")) {
+        <mat-hint
+          ><span class="text-alert">First Name is required.</span></mat-hint
+        >
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Middle Name</mat-label>
+      <input
+        type="text"
+        [(ngModel)]="register().middleName"
+        name="middleName"
+        matInput
+        #middleName="ngModel"
+      />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Last Name</mat-label>
+      <input
+        type="text"
+        [(ngModel)]="register().lastName"
+        name="lastName"
+        required
+        matInput
+        #lastName="ngModel"
+      />
+      @if (lastName.touched && lastName.hasError("required")) {
+        <mat-hint
+          ><span class="text-alert">Last Name is required.</span></mat-hint
+        >
+      }
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Birthdate</mat-label>
+      <input
+        [(ngModel)]="register().birthDate"
+        [matDatepicker]="birthDate"
+        name="birthDate"
+        matInput
+        required
+        #birthDateInput="ngModel"
+      />
+
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="birthDate"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #birthDate></mat-datepicker>
+      @if (birthDateInput.touched && birthDateInput.hasError("required")) {
+        <mat-hint
+          ><span class="text-alert">Birthdate is required.</span></mat-hint
+        >
+      }
+    </mat-form-field>
+  </div>
+
+  <div>
+    <div class="flex justify-between items-center mt-4">
+      <h3 class="text-lg font-light">Account Access</h3>
+    </div>
+
+    <hr />
+
+    <div class="grid grid-cols-1 @2xl:grid-cols-2 @2xl:gap-4">
+      <mat-form-field class="w-full mt-4">
+        <mat-label>Username</mat-label>
+        <input
+          type="text"
+          [(ngModel)]="register().username"
+          name="username"
+          required
+          matInput
+          #username="ngModel"
+        />
+        @if (username.touched && username.hasError("required")) {
+          <mat-hint
+            ><span class="text-alert">Username is required.</span></mat-hint
+          >
+        }
+      </mat-form-field>
+
+      <mat-form-field class="w-full mt-4">
+        <mat-label>Email</mat-label>
+        <input
+          type="text"
+          [(ngModel)]="register().email"
+          name="email"
+          required
+          matInput
+          #email="ngModel"
+        />
+        @if (email.touched && email.hasError("required")) {
+          <mat-hint
+            ><span class="text-alert">Email is required.</span></mat-hint
+          >
+        }
+        @if (email.hasError("email") && !email.hasError("required")) {
+          <mat-hint>
+            <span class="text-alert"> Please enter a valid email address</span>
+          </mat-hint>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input
+          type="password"
+          [(ngModel)]="register().password"
+          name="password"
+          required
+          matInput
+          #password="ngModel"
+        />
+        @if (password.touched && password.hasError("required")) {
+          <mat-hint
+            ><span class="text-alert">Password is required.</span></mat-hint
+          >
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Confirm Password</mat-label>
+        <input
+          type="password"
+          [(ngModel)]="register().cPassword"
+          name="cPassword"
+          required
+          matInput
+          #cPassword="ngModel"
+        />
+        @if (cPassword.touched && cPassword.hasError("required")) {
+          <mat-hint
+            ><span class="text-alert"
+              >Confirm Password is required.</span
+            ></mat-hint
+          >
+        }
+
+        @if (cPassword.hasError("mismatch")) {
+          <mat-hint
+            ><span class="text-alert">Passwords do not match.</span></mat-hint
+          >
+        }
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div>
+    <div class="flex justify-between items-center mt-4">
+      <h3 class="text-lg font-light">Sponsor Information</h3>
+    </div>
+
+    <hr />
+
+    <div class="grid grid-cols-1 @2xl:grid-cols-3 @2xl:gap-4 mt-4">
+      <mat-form-field>
+        <mat-label>Sponsor</mat-label>
+        <input
+          type="text"
+          [(ngModel)]="register().sponsor"
+          name="sponsor"
+          required
+          matInput
+          #sponsor="ngModel"
+          [matAutocomplete]="auto"
+        />
+
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          [displayWith]="displaySponsor"
+          (optionSelected)="onSponsorSelected($event)"
+        >
+          @if (filteredOptionSponsor$ | async; as optSponsors) {
+            @if (optSponsors.length > 0) {
+              @for (optSponsor of optSponsors; track optSponsor.userId) {
+                <mat-option [value]="optSponsor">
+                  {{ `${optSponsor.label}  -  ${optSponsor.userName}` }}
+                </mat-option>
+              }
+            }
+          }
+        </mat-autocomplete>
+
+        @if (sponsor.touched && sponsor.hasError("required")) {
+          <mat-hint
+            ><span class="text-alert">Sponsor is required.</span></mat-hint
+          >
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Upline</mat-label>
+        <input
+          type="text"
+          [(ngModel)]="register().upline"
+          name="upline"
+          required
+          matInput
+          #upline="ngModel"
+          [matAutocomplete]="autoUpline"
+        />
+
+        <mat-autocomplete
+          #autoUpline="matAutocomplete"
+          [displayWith]="displayUpline"
+          (optionSelected)="onUplineSelected($event)"
+        >
+          @if (filteredOptionUpline$ | async; as optUplines) {
+            @if (optUplines.length > 0) {
+              @for (optUpline of optUplines; track optUpline.userId) {
+                <mat-option [value]="optUpline">
+                  {{ `${optUpline.label} - ${optUpline.userName}` }}
+                </mat-option>
+              }
+            }
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Position</mat-label>
+        <mat-select
+          [(ngModel)]="register().position"
+          name="positionSelect"
+          required
+          #position="ngModel"
+        >
+          @for (opt of opts; track opt.value) {
+            <mat-option [value]="opt.value">{{ opt.name }}</mat-option>
+          }
+        </mat-select>
+
+        @if (position.touched && position.hasError("required")) {
+          <mat-error> Position is required. </mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </div>
+</div>

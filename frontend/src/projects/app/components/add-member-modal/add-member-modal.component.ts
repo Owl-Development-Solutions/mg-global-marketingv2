@@ -172,14 +172,7 @@ export class AddMemberModalComponent implements AfterViewInit {
   filteredOptions$!: Observable<CheckResultResp>;
   filteredOptionsForActivationCode$!: Observable<CheckResultResp>;
   filteredRootUsername$!:
-    | Observable<
-        | {
-            label: string;
-            value: string;
-            userId: string;
-          }[]
-        | null
-      >
+    | Observable<{ label: string; value: string; userId: string }[] | null>
     | undefined;
 
   ngAfterViewInit(): void {
