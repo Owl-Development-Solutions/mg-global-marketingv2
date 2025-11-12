@@ -209,3 +209,61 @@ export const getAllUsersByUsername = async (
     };
   }
 };
+
+export const getAllUsersByName = async (
+  name: string
+): Promise<Result<SuccessResponse<UserData[]>, ErrorResponse>> => {
+  try {
+    if (!name || name.trim() === "") {
+      return {
+        success: true,
+        data: {
+          statusCode: 200,
+          message: "No search term provided, returning empty list.",
+          data: [],
+        },
+      };
+    }
+
+    const db = connection();
+
+    const searchQuery = `%${name}%`;
+
+    const [rows] = await db.execute(
+      "SELECT id, name, userName FROM users WHERE name LIKE ?",
+      [searchQuery]
+    );
+
+    const users = rows as UserData[];
+
+    if (users.length > 0) {
+      return {
+        success: true,
+        data: {
+          statusCode: 200,
+          message: `${users.length} users retrieved matching '${name}'.`,
+          data: users,
+        },
+      };
+    }
+
+    // 4. Success: No users matched the search term
+    return {
+      success: true,
+      data: {
+        statusCode: 200,
+        message: `No users found matching '${name}'.`,
+        data: [],
+      },
+    };
+  } catch (error) {
+    // 5. Error Handling
+    return {
+      success: false,
+      error: {
+        statusCode: 500,
+        errorMessage: error instanceof Error ? error.message : String(error),
+      },
+    };
+  }
+};

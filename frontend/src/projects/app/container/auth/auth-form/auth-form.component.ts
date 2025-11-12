@@ -4,6 +4,7 @@ import { MatIcon } from '@angular/material/icon';
 import {
   BreakpointObserverComponent,
   LoginComponent,
+  RegisterModalComponent,
   SignUpComponent,
 } from '../../../components';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -12,6 +13,15 @@ import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { AuthUsecase } from '@app-store/lib/usecases';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
+import { take } from 'rxjs';
+import {
+  ActivationCode,
+  ActivationCodeEmpty,
+  RegisterEmptyForm,
+  RegisterFormGeneral,
+} from 'projects/app/models/register-form.model';
+import { UsernameSharedService } from 'projects/app/services';
 
 @Component({
   selector: 'app-auth-form',
@@ -21,10 +31,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class AuthFormComponent extends BreakpointObserverComponent {
   private authRepository = inject(AuthUsecase);
+  private dialog = inject(MatDialog);
+  private userIdShared = inject(UsernameSharedService);
 
   authProfile = toSignal(this.authRepository.authProfile$);
   authLoading = toSignal(this.authRepository.authLoading$);
   authError = toSignal(this.authRepository.authError$);
+  userSponsorValueId = toSignal(this.userIdShared.usernameSponsor$);
+  userUplineValueId = toSignal(this.userIdShared.usernameUpline$);
 
   hasForgottenPassword: boolean = false;
   showSignUp: boolean = false;
@@ -44,8 +58,43 @@ export class AuthFormComponent extends BreakpointObserverComponent {
 
   switchToSignup(event: boolean) {
     if (event) {
-      this.showSignUp = !this.showSignUp;
+      this.dialog.open(RegisterModalComponent, {
+        panelClass: 'register-dialog',
+        maxWidth: '900px',
+        maxHeight: '90vh',
+        data: {
+          registerForm: { ...RegisterEmptyForm },
+          activationForm: { ...ActivationCodeEmpty },
+          onSubmit: this.register.bind(this),
+        },
+      });
     }
+  }
+
+  register({
+    registerApplicantForm,
+    activationCodeForm,
+    onSuccess,
+    onFailure,
+  }: {
+    registerApplicantForm: RegisterFormGeneral;
+    activationCodeForm: ActivationCode;
+    onSuccess: () => void;
+    onFailure: (errors: { errorMsg: string }) => void;
+  }) {
+    const data = {
+      ...registerApplicantForm,
+      upline: this.userUplineValueId(),
+      sponsor: this.userSponsorValueId(),
+      pin: activationCodeForm.pin,
+    };
+
+    this.authRepository.registerUser(data, {
+      onSuccess: () => {
+        onSuccess();
+      },
+      onFailure,
+    });
   }
 
   switchToSignIn(event: boolean) {
@@ -62,9 +111,7 @@ export class AuthFormComponent extends BreakpointObserverComponent {
     }
   }
 
-  submitSignUp(data: NgForm) {
-    console.log(data.value);
-  }
+  submitSignUp(data: NgForm) {}
 
   constructor(
     override breakpointObserver: BreakpointObserver,

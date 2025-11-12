@@ -1,5 +1,9 @@
 import { Observable } from 'rxjs';
-import { AuthUserResponse, UserResponseModel } from '../../data/models';
+import {
+  AuthUserResponse,
+  RegisterData,
+  UserResponseModel,
+} from '../../data/models';
 
 export interface AuthRepositoryInterface {
   initiateAuth(data: {
@@ -7,4 +11,5 @@ export interface AuthRepositoryInterface {
     password: string;
   }): Observable<UserResponseModel>;
   refreshToken(refreshToken: string): Observable<AuthUserResponse>;
+  registerUser(data: RegisterData): Observable<string>;
 }

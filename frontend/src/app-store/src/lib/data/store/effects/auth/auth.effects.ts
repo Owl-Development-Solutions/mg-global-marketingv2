@@ -40,6 +40,38 @@ export class AuthEffects {
     );
   });
 
+  initiateUserRegisterAttempted$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(fromAuth.initiateRegisterUserAttempted),
+      switchMap((action) => {
+        const { data, callBacks } = action;
+
+        return this.authRepository.registerUser(data).pipe(
+          map((resp: string) => {
+            callBacks.onSuccess();
+            this.snackBar.open('User Registered Successfully', 'x', {
+              horizontalPosition: 'right',
+              verticalPosition: 'top',
+              duration: 5 * 1000,
+            });
+            return fromAuth.initiateRegisterUserSucceeded({ response: resp });
+          }),
+          catchError((error) => {
+            const cleanMessage = error.message.replace('Error: ', '');
+            callBacks.onFailure?.({ errorMsg: cleanMessage });
+            this.snackBar.open(cleanMessage, 'x', {
+              horizontalPosition: 'right',
+              verticalPosition: 'top',
+              duration: 5 * 1000,
+            });
+
+            return of(fromAuth.initiateRegisterUserFailed({ error }));
+          }),
+        );
+      }),
+    );
+  });
+
   navigateAfterSuccess$ = createEffect(
     () =>
       this.actions$.pipe(

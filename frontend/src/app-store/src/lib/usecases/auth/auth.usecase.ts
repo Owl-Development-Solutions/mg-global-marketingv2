@@ -1,6 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import * as fromStore from '../../data/store';
+import { Callbacks, RegisterData } from '../../data/models';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -27,5 +29,11 @@ export class AuthUsecase {
 
   logout() {
     this.store.dispatch(fromStore.logoutAttempted());
+  }
+
+  registerUser(data: RegisterData, callBacks: Callbacks) {
+    this.store.dispatch(
+      fromStore.initiateRegisterUserAttempted({ data, callBacks }),
+    );
   }
 }

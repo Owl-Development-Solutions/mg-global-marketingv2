@@ -39,8 +39,6 @@ export const getAccessTokenz = createSelector(
 export const getUserInfo = createSelector(
   getAuthProfile,
   (user: UserResponseModel | undefined) => {
-    console.log(`uesr`, user);
-
     if (user) {
       return {
         firstName: user.attributes?.firstName,
