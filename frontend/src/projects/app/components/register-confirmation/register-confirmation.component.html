@@ -1,0 +1,91 @@
+<div class="p-6 rounded-xl">
+  <div
+    class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6"
+  >
+    <h2 class="text-xl text-primary flex items-center mb-4 sm:mb-0">
+      <mat-icon class="mr-2 text-primary">check_circle</mat-icon>
+      Review and Confirm Registration
+    </h2>
+
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="edit.emit()"
+      class="flex items-center gap-1"
+    >
+      <mat-icon class="!text-primary">edit</mat-icon> Edit Form
+    </button>
+  </div>
+
+  <p class="mb-6 text-gray-700">
+    Please review your information below before finalizing your registration.
+    Click Edit Form if anything is incorrect.
+  </p>
+
+  <!-- Grid for Data Display -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+    <!-- Personal Information -->
+    <div class="md:col-span-2 rounded-md">
+      <h3 class="text-lg border-b pb-1 mb-2 text-gray-600">
+        Personal Information
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+        <div>
+          <span class="font-lg text-gray-500">Full Name:</span>
+          {{ data().firstName }} {{ data().middleName }} {{ data().lastName }}
+        </div>
+        <div>
+          <span class="font-lg text-gray-500">Birthdate:</span>
+          {{ data().birthDate | date: "mediumDate" }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Account Access -->
+    <div class="md:col-span-2 mt-4 rounded-md">
+      <h3 class="text-lg border-b pb-1 mb-2 text-gray-600">Account Access</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <span class="font-lg text-gray-500">Username:</span>
+          {{ data().username }}
+        </div>
+        <div>
+          <span class="font-lg text-gray-500">Email:</span>
+          {{ data().email }}
+        </div>
+        <div><span class="font-lg text-gray-500">Password:</span> *******</div>
+        <div>
+          <span class="font-lg text-gray-500">Confirmed Password:</span>
+          *******
+        </div>
+      </div>
+    </div>
+
+    <!-- Sponsor Information -->
+    <div class="md:col-span-2 mt-4 p-2 rounded-md">
+      <h3 class="text-lg border-b pb-1 mb-2 text-gray-600">
+        Sponsor Information
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <span class="font-lg text-gray-500">Sponsor ID:</span>
+          {{ data().sponsor }}
+        </div>
+        <div>
+          <span class="font-lg text-gray-500">Upline ID:</span>
+          {{ data().upline }}
+        </div>
+        <div>
+          <span class="font-lg text-gray-500">Position:</span>
+          {{
+            data().position === "[R]"
+              ? "Right"
+              : data().position === "[L]"
+                ? "Left"
+                : ""
+          }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

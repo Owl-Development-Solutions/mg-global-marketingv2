@@ -14,7 +14,7 @@ export class SubmitButtonComponent {
   text: string = 'Submit';
 
   @Input()
-  isDisabled: boolean = false;
+  isDisabled: boolean | null = false;
 
   @Input()
   isHandset: boolean = false;

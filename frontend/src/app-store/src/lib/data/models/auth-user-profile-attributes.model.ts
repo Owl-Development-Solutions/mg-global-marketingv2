@@ -24,4 +24,18 @@ export interface AuthUserResponse {
   refreshToken: string;
 }
 
-export type UserData = Pick<User, 'id' | 'userName'>;
+export type UserData = Pick<User, 'id' | 'userName' | 'name'>;
+
+export interface RegisterData {
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  birthDate: string;
+  email: string;
+  username: string;
+  password: string;
+  sponsor: string | undefined;
+  position: string;
+  upline: string | undefined;
+  pin: string;
+}

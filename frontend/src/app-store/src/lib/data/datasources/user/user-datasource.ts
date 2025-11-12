@@ -20,6 +20,7 @@ export class UserDatasource implements UserDatasourceInterface {
 
   private userErrorReport(error: any) {
     const message = error?.error?.error;
+
     switch (error.status) {
       case 424:
         return throwError(() => new InvalidCredentials(message));
@@ -89,6 +90,20 @@ export class UserDatasource implements UserDatasourceInterface {
           username,
         },
         { withCredentials: true },
+      )
+      .pipe(
+        map((data: Document<UserData[]>) => data.data as UserData[]),
+        catchError((err) => this.userErrorReport(err)),
+      );
+  }
+
+  searchUserByName(name: string): Observable<UserData[]> {
+    return this.http
+      .post<Document<UserData[]>>(
+        `${this.baseUrl}/api/getUser/searchUserByName`,
+        {
+          name,
+        },
       )
       .pipe(
         map((data: Document<UserData[]>) => data.data as UserData[]),

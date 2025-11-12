@@ -16,3 +16,4 @@ export * from './column-container/column-container.component';
 export * from './genealogy-table-history/genealogy-table-history.component';
 export * from './notification/notification.component';
 export * from './empty-history-message/empty-history-message.component';
+export * from './register-modal/register-modal.component';

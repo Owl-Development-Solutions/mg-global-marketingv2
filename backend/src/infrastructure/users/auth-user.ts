@@ -1,11 +1,12 @@
 import { ResultSetHeader } from "mysql2";
 
 import {
+  ActivationCode,
   AuthResponse,
   ErrorResponse,
   generateAccessToken,
   generateRefreshToken,
-  generateUniqueIdentifier,
+  RegisterData,
   Result,
   saveRefreshToken,
   SuccessResponse,
@@ -13,16 +14,20 @@ import {
   UserResponse,
 } from "../../utils";
 import bcrypt from "bcryptjs";
-import { randomUUID } from "crypto";
-import jwt from "jsonwebtoken";
 import { connection } from "../../config/mysql.db";
 import { v4 as uuidv4 } from "uuid";
 
 export const registerUserIn = async (
-  user: User
+  user: RegisterData
 ): Promise<Result<SuccessResponse, ErrorResponse>> => {
   try {
-    if (!user.email || !user.password) {
+    if (
+      !user.email ||
+      !user.password ||
+      !user.sponsor ||
+      !user.upline ||
+      !user.position
+    ) {
       return {
         success: false,
         error: {
@@ -45,11 +50,24 @@ export const registerUserIn = async (
 
     const db = connection();
 
-    const [rows] = await db.execute("SELECT * FROM `users` WHERE `email` = ?", [
-      user.email,
-    ]);
+    const sideColumn = user.position === "[L]" ? "LeftChildId" : "rightChildId";
 
-    if ((rows as any[]).length > 0) {
+    if (user.position !== "[L]" && user.position !== "[R]") {
+      return {
+        success: false,
+        error: {
+          errorMessage: "Invalid Position. Must be [L] or [R].",
+          statusCode: 400,
+        },
+      };
+    }
+
+    const [emailCheck] = await db.execute(
+      "SELECT * FROM `users` WHERE `email` = ?",
+      [user.email]
+    );
+
+    if ((emailCheck as any[]).length > 0) {
       return {
         success: false,
         error: {
@@ -59,25 +77,101 @@ export const registerUserIn = async (
       };
     }
 
+    const [sponsorCheck] = await db.execute(
+      "SELECT id FROM `users` WHERE `userName` = ?",
+      [user.sponsor]
+    );
+
+    if ((sponsorCheck as any[]).length === 0) {
+      return {
+        success: false,
+        error: {
+          errorMessage: `Sponsor ID (${user.sponsor}) not found`,
+          statusCode: 400,
+        },
+      };
+    }
+
+    const sponsorUsers = sponsorCheck as any[];
+    const sponsorUser = sponsorUsers[0];
+
+    const actualSponsorId = sponsorUser.id;
+
+    const [uplineCheck] = await db.execute(
+      `SELECT id, ${sideColumn} FROM users WHERE username = ? FOR UPDATE`,
+      [user.upline]
+    );
+
+    const uplines = uplineCheck as any[];
+    const upline = uplines[0];
+
+    if (!upline) {
+      return {
+        success: false,
+        error: {
+          errorMessage: `Upline ID (${user.upline}) not found`,
+          statusCode: 400,
+        },
+      };
+    }
+
+    if (upline[sideColumn]) {
+      const sideName = user.position === "[L]" ? "Left" : "Right";
+      return {
+        success: false,
+        error: {
+          statusCode: 409,
+          errorMessage: `Upline slot on the ${sideName} side is already occupied`,
+        },
+      };
+    }
+
+    const actualUplineId = upline.id;
+
+    //activation-codes
+    const [codes] = await db.execute(
+      `SELECT id, status FROM activation_codes WHERE code = ? FOR UPDATE`,
+      [user.pin]
+    );
+
+    const codeRecords = codes as ActivationCode[];
+    const code = codeRecords[0];
+
+    if (!code) {
+      return {
+        success: false,
+        error: {
+          statusCode: 404,
+          errorMessage: "Activation code is invalid or not found.",
+        },
+      };
+    }
+
+    const activationCodeIdFromDB = code.id;
+
     //has the password
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(user.password, salt);
     const newUserId = uuidv4();
 
-    //hardcoded for now for registering user  => role is user
-    const role = "admin";
+    const userFullName =
+      user.firstName + " " + user.middleName + " " + user.lastName;
 
+    //insert into users table
     const [result] = await db.execute(
-      "INSERT INTO users (`id`, `firstName`, `lastName`, `userName`, `name`, `email`, `password`, `role`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO users (`id`, `firstName`, `lastName`, `middleName`, `userName`, `name`, `email`, `password`, `birthDate`, `parentId`, `sponsorId`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         newUserId,
         user.firstName,
         user.lastName,
-        user.userName,
-        user.name,
+        user.middleName,
+        user.username,
+        userFullName,
         user.email,
         hash,
-        role,
+        user.birthDate,
+        actualUplineId,
+        actualSponsorId,
       ]
     );
 
@@ -100,6 +194,16 @@ export const registerUserIn = async (
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [newUserId, 0.0, 0, 0, 0, 0, 0, 0, "root", false]
     );
+
+    await db.execute(`UPDATE users SET ${sideColumn} = ? WHERE id = ?`, [
+      newUserId,
+      actualUplineId,
+    ]);
+
+    await db.execute(`UPDATE activation_codes SET status = ? WHERE id = ?`, [
+      "Used",
+      activationCodeIdFromDB,
+    ]);
 
     return {
       success: true,

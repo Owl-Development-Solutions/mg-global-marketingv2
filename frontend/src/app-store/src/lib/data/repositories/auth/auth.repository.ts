@@ -1,6 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthUserResponse, UserResponseModel } from '../../models';
+import {
+  AuthUserResponse,
+  RegisterData,
+  UserResponseModel,
+} from '../../models';
 import { AuthDatasource, LocalStorageDatasource } from '../../datasources';
 import { AuthRepositoryInterface } from '../../../domain';
 
@@ -22,5 +26,7 @@ export class AuthRepository implements AuthRepositoryInterface {
     return this.authDatasource.refreshToken(refreshToken);
   }
 
-  //auth-token
+  registerUser(data: RegisterData): Observable<string> {
+    return this.authDatasource.registerUser(data);
+  }
 }

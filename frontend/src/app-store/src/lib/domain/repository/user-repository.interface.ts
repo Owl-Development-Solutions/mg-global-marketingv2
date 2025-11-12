@@ -6,4 +6,5 @@ export interface UserRepositoryInterface {
   getUserById(userId: string): Observable<UserResponseModel>;
   searchUserName(userName: string): Observable<string>;
   userNameExist(username: string): Observable<UserData[]>;
+  userNameExist(username: string): Observable<UserData[]>;
 }

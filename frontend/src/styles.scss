@@ -23,3 +23,16 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+.register-dialog .mat-mdc-dialog-container {
+  max-width: 900px !important;
+  min-width: 900px !important;
+}
+
+@media (max-width: 899px) {
+  .register-dialog .mat-mdc-dialog-container {
+    min-width: 400px !important;
+    width: 95vw !important;
+    max-width: 95vw !important;
+  }
+}

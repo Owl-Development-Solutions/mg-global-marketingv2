@@ -19,24 +19,22 @@
     </div>
   }
 
-  @if (!showSignUp) {
-    <app-login
-      [input]="inputSignIn"
-      [authError]="authError()"
-      [authLoading]="authLoading()"
-      (forgotPassword)="switchToForgotPassword(inputSignIn.email)"
-      (signUp)="switchToSignup($event)"
-      (submit)="submitSignIn($event)"
-    >
-    </app-login>
-  } @else {
-    <app-sign-up
+  <app-login
+    [input]="inputSignIn"
+    [authError]="authError()"
+    [authLoading]="authLoading()"
+    (forgotPassword)="switchToForgotPassword(inputSignIn.email)"
+    (signUp)="switchToSignup($event)"
+    (submit)="submitSignIn($event)"
+  >
+  </app-login>
+
+  <!-- <app-sign-up
       [signUpInput]="inputSignUp"
       (signIn)="switchToSignIn($event)"
       (handleSubmit)="submitSignUp($event)"
     >
-    </app-sign-up>
-  }
-} @else {
+    </app-sign-up> -->
+
   <!-- show forgot password here -->
 }

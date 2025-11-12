@@ -1,0 +1,116 @@
+<div class="" mat-dialog-content>
+  <mat-stepper
+    [orientation]="stepperOrientation()"
+    class="!bg-transparent"
+    #stepper
+  >
+    <mat-step
+      [stepControl]="accountInfo.control"
+      [hasError]="accountInfo.invalid"
+      [completed]="accountInfo.valid"
+      [optional]="false"
+    >
+      <div>
+        <ng-template matStepLabel>Personal Info</ng-template>
+        <form
+          #accountInfo="ngForm"
+          class="rounded-lg shadow-md bg-white overflow-hidden relative block w-full p-8 space-y-8"
+        >
+          <app-account-info-register
+            [title]="'Personal Information'"
+            [group]="'personal'"
+            [register]="data.registerApplicantForm"
+          ></app-account-info-register>
+        </form>
+      </div>
+
+      <div class="flex justify-end">
+        <button mat-flat-button color="primary" class="mt-5" matStepperNext>
+          Next
+          <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step
+      [stepControl]="activationInfo.control"
+      [hasError]="activationInfo.invalid && activationInfo.touched"
+      [completed]="activationInfo.valid"
+      [optional]="false"
+    >
+      <div>
+        <ng-template matStepLabel>Activation Information</ng-template>
+        <form
+          #activationInfo="ngForm"
+          class="rounded-lg shadow-md bg-white overflow-hidden relative block w-full p-8 space-y-8"
+        >
+          <div class="justify-between items-center">
+            <h3 class="text-lg font-light">Enter Activation Code</h3>
+            <span class="text-gray-500 text-xs italic"
+              >Activation code can be found in the scratch card inside your
+              package</span
+            >
+          </div>
+
+          <mat-form-field class="w-full">
+            <mat-label>Activation Code Pin</mat-label>
+            <input
+              type="text"
+              [(ngModel)]="data.activationCodeForm.pin"
+              name="code"
+              matInput
+              required
+              #code="ngModel"
+            />
+            @if (code.touched && code.hasError("required")) {
+              <mat-hint
+                ><span class="text-alert"
+                  >Activation Code is required.</span
+                ></mat-hint
+              >
+            }
+          </mat-form-field>
+        </form>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button mat-flat-button color="primary" class="mt-5" matStepperPrevious>
+          Previous
+          <mat-icon iconPositionEnd>arrow_back</mat-icon>
+        </button>
+
+        <button mat-flat-button color="primary" class="mt-5" matStepperNext>
+          Next
+          <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step>
+      <div>
+        <ng-template matStepLabel>Confirmation</ng-template>
+
+        <app-register-confirmation
+          [data]="data.registerApplicantForm"
+          (edit)="editForm($event)"
+        ></app-register-confirmation>
+      </div>
+      <div class="flex justify-end items-center justify-center gap-3">
+        <button mat-flat-button color="primary" matStepperPrevious>
+          Previous
+          <mat-icon iconPositionEnd>arrow_back</mat-icon>
+        </button>
+
+        <app-submit-button
+          [text]="'Register'"
+          (click)="collectFormData(accountInfo, activationInfo)"
+          [isLoading]="submitting$ | async"
+          [isDisabled]="activationInfo.invalid || accountInfo.invalid"
+        >
+        </app-submit-button>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>
+
+<div mat-dialog-actions></div>

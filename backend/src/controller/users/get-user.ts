@@ -7,6 +7,7 @@ import {
   UserResponse,
 } from "../../utils";
 import {
+  getAllUsersByName,
   getAllUsersByUsername,
   getUserByAccessToken,
   getUserById,
@@ -66,6 +67,29 @@ export const getAllUsersByUsernameController = async (
     SuccessResponse<UserData[]>,
     ErrorResponse
   > = await getAllUsersByUsername(req.body.username);
+
+  if (!result.success) {
+    res.status(result.error.statusCode).json({
+      error: result.error.errorMessage,
+    });
+
+    return;
+  }
+
+  res.status(result.data.statusCode).json({
+    message: result.data.message,
+    data: result.data.data,
+  });
+};
+
+export const getAllUsersByNameController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const result: Result<
+    SuccessResponse<UserData[]>,
+    ErrorResponse
+  > = await getAllUsersByName(req.body.name);
 
   if (!result.success) {
     res.status(result.error.statusCode).json({
