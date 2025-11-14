@@ -36,9 +36,14 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 // Base paths
-app.use("/api/geonology", geonologyRouter);
-app.use("/api/auth", authRouter);
-app.use("/api/getUser", userRouter);
-app.use("/api/activationCode", activationCodeRouter);
+app.use("/geonology", geonologyRouter);
+app.use("/auth", authRouter);
+app.use("/getUser", userRouter);
+app.use("/activationCode", activationCodeRouter);
+
+//test if the deploy works!
+app.get("/info", (req, res) => {
+  res.json({ message: "It works!" });
+});
 
 export default app;
