@@ -10,6 +10,7 @@ import geonologyRouter from "./routes/geonology/geonology.routes";
 import activationCodeRouter from "./routes/activation-code/activation-code.routes";
 
 const app = express();
+dotenv.config();
 
 const allowedOrigins = [
   "http://localhost:4200",
@@ -29,19 +30,31 @@ app.use(
     credentials: true,
   })
 );
-
 app.use(express.json());
+
+//middleware
 app.use(bodyParser.json());
 
-// Base paths
-app.use("/geonology", geonologyRouter);
-app.use("/auth", authRouter);
-app.use("/getUser", userRouter);
-app.use("/activationCode", activationCodeRouter);
+//Base path for geonology
+app.use("/api/geonology", geonologyRouter);
 
-//test if the deploy works!
-app.get("/info", (req, res) => {
-  res.json({ message: "It works!" });
+// Base path for auth
+app.use("/api/auth", authRouter);
+
+//Base path for getting user/s
+app.use("/api/getUser", userRouter);
+
+//Base path for activation-codes
+app.use("/api/activationCode", activationCodeRouter);
+
+const port = process.env.PORT;
+
+app.get("/", (req, res) => {
+  res.json({ message: "Hello from Express on Vercel!" });
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on PORT ${port}`);
 });
 
 export default app;
