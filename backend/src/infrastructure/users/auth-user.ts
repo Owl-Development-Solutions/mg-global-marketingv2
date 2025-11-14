@@ -15,7 +15,6 @@ import {
 } from "../../utils";
 import bcrypt from "bcryptjs";
 import { connection } from "../../config/mysql.db";
-import uuid from "uuid";
 
 export const registerUserIn = async (
   user: RegisterData
@@ -152,7 +151,8 @@ export const registerUserIn = async (
     //has the password
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(user.password, salt);
-    const newUserId = uuid.v4();
+    const { v4: uuidv4 } = await import("uuid");
+    const newUserId = uuidv4();
 
     const userFullName =
       user.firstName + " " + user.middleName + " " + user.lastName;
