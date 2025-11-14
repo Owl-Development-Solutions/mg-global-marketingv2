@@ -9,8 +9,6 @@ import userRouter from "./routes/users/get-user.routes";
 import geonologyRouter from "./routes/geonology/geonology.routes";
 import activationCodeRouter from "./routes/activation-code/activation-code.routes";
 
-dotenv.config();
-
 const app = express();
 
 const allowedOrigins = [
