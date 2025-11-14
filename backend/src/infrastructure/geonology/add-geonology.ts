@@ -107,8 +107,10 @@ export const addGeonologyUserIn = async (
     const parentId = user.id;
 
     const newUserId = uuidv4();
-    const fullName =
-      child.firstName + " " + child.middleName + " " + child.lastName;
+
+    const middlename = child.middleName ?? null;
+
+    const fullName = child.firstName + " " + middlename + " " + child.lastName;
 
     //  INSERT NEW USER (CHILD)
     // Pass the activationCodeId into the users table
@@ -119,7 +121,7 @@ export const addGeonologyUserIn = async (
         child.userName,
         child.firstName,
         child.lastName,
-        child.middleName,
+        middlename,
         fullName,
         parentId,
         activationCodeIdFromDB,

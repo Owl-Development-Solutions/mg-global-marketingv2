@@ -7,8 +7,8 @@ export interface RegisterFormGeneral {
   username: string;
   password: string;
   cPassword: string;
-  sponsor: string;
-  upline: string;
+  sponsor: any;
+  upline: any;
   position: string;
 }
 
