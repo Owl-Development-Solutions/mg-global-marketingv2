@@ -2,18 +2,16 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
-import { v4 as uuidv4 } from "uuid";
 
 //routes import
 import authRouter from "./routes/users/auth.routes";
 import userRouter from "./routes/users/get-user.routes";
 import geonologyRouter from "./routes/geonology/geonology.routes";
 import activationCodeRouter from "./routes/activation-code/activation-code.routes";
-import { generateUniqueIdentifier } from "./utils";
-import { connection } from "./config/mysql.db";
+
+dotenv.config();
 
 const app = express();
-dotenv.config();
 
 const allowedOrigins = [
   "http://localhost:4200",
@@ -33,25 +31,14 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
 
-//middleware
+app.use(express.json());
 app.use(bodyParser.json());
 
-//Base path for geonology
+// Base paths
 app.use("/api/geonology", geonologyRouter);
-
-// Base path for auth
 app.use("/api/auth", authRouter);
-
-//Base path for getting user/s
 app.use("/api/getUser", userRouter);
-
-//Base path for activation-codes
 app.use("/api/activationCode", activationCodeRouter);
 
-const port = process.env.PORT;
-
-app.listen(port, () => {
-  console.log(`Server is running on PORT ${port}`);
-});
+export default app;
