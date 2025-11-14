@@ -108,7 +108,7 @@ export const addGeonologyUserIn = async (
 
     const newUserId = uuidv4();
 
-    const middlename = child.middleName ?? null;
+    const middlename = child.middleName ? null : "";
 
     const fullName = child.firstName + " " + middlename + " " + child.lastName;
 
