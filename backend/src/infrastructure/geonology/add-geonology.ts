@@ -11,7 +11,6 @@ import {
   User,
   UserStats,
 } from "../../utils";
-import uuid from "uuid";
 import { processUplineRewards } from "../../utils/helpers/genology-helper";
 
 export const addGeonologyUserIn = async (
@@ -106,7 +105,8 @@ export const addGeonologyUserIn = async (
 
     const parentId = user.id;
 
-    const newUserId = uuid.v4();
+    const { v4: uuidv4 } = await import("uuid");
+    const newUserId = uuidv4();
 
     const middlename = child.middleName === null ? "" : child.middleName;
     const fullName = child.firstName + " " + middlename + " " + child.lastName;
@@ -130,7 +130,7 @@ export const addGeonologyUserIn = async (
 
     await db.execute(
       `INSERT INTO code_usages (id, activationCodeId, userId) VALUES (?, ?, ?)`,
-      [uuid.v4(), activationCodeIdFromDB, newUserId]
+      [uuidv4(), activationCodeIdFromDB, newUserId]
     );
 
     await db.execute(`UPDATE activation_codes SET status = ? WHERE id = ?`, [
