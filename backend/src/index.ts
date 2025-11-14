@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 
 //routes import
 import authRouter from "./routes/users/auth.routes";
-import userRouter from "./routes/users/get-user.routes";
+import userRouter from "./routes/users/get-user.routes.js";
 import geonologyRouter from "./routes/geonology/geonology.routes";
 import activationCodeRouter from "./routes/activation-code/activation-code.routes";
 
