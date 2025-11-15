@@ -11,7 +11,6 @@ import {
   User,
   UserStats,
 } from "../../utils";
-import { v4 as uuidv4 } from "uuid";
 import { processUplineRewards } from "../../utils/helpers/genology-helper";
 
 export const addGeonologyUserIn = async (
@@ -106,9 +105,10 @@ export const addGeonologyUserIn = async (
 
     const parentId = user.id;
 
+    const { v4: uuidv4 } = await import("uuid");
     const newUserId = uuidv4();
 
-    const middlename = child.middleName === null ? "" : child.middleName;
+    const middlename = child.middleName === undefined ? "" : child.middleName;
     const fullName = child.firstName + " " + middlename + " " + child.lastName;
 
     //  INSERT NEW USER (CHILD)
