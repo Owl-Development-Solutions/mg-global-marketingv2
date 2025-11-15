@@ -108,7 +108,7 @@ export const addGeonologyUserIn = async (
     const { v4: uuidv4 } = await import("uuid");
     const newUserId = uuidv4();
 
-    const middlename = child.middleName === null ? "" : child.middleName;
+    const middlename = child.middleName === undefined ? "" : child.middleName;
     const fullName = child.firstName + " " + middlename + " " + child.lastName;
 
     //  INSERT NEW USER (CHILD)

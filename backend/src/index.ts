@@ -53,4 +53,8 @@ app.get("/", (req, res) => {
   res.json({ message: "Hello from Express on Vercel!" });
 });
 
+app.listen(port, () => {
+  console.log(`Server is running on PORT ${port}`);
+});
+
 export default app;
