@@ -4,6 +4,7 @@
     [loading]="genealogyTreeLoading$ | async"
     (handleAddMember)="handleAddMember($event)"
     (routeToMember)="handleRouteToMember($event)"
+    (handleDeleteMember)="handleDeleteMember($event)"
   ></app-geonology-tree>
   <div class="text-gray-400 px-6 py-3 mt-3">
     @if (!loading()) {

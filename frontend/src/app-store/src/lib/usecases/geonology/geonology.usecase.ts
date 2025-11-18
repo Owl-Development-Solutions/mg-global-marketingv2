@@ -1,7 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import * as fromStore from '../../data/store';
 import { select, Store } from '@ngrx/store';
-import { AddUserGeonologyData, Callbacks } from '../../data/models';
+import {
+  AddUserGeonologyData,
+  Callbacks,
+  GeonologyNode,
+} from '../../data/models';
 import { map, Observable, take, tap } from 'rxjs';
 
 @Injectable({
@@ -34,5 +38,11 @@ export class GeonologyUsecase {
 
   getGeonologyUsers(userId: string) {
     this.store.dispatch(fromStore.getGenealogyAttempted({ userId }));
+  }
+
+  deleteUserGeonology(userGeonology: GeonologyNode | null) {
+    this.store.dispatch(
+      fromStore.deleteUserGenealogyAttempted({ userGeonology }),
+    );
   }
 }

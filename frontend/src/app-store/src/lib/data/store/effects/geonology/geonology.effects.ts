@@ -74,4 +74,32 @@ export class GeonologyEffects {
       }),
     );
   });
+
+  deleteUserGenealogyAttempted$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(fromGeonology.deleteUserGenealogyAttempted),
+      switchMap((action) => {
+        const { id } = action.userGeonology as GeonologyNode;
+
+        return this.geonologyRepository.deleteUserGeonology(id as string).pipe(
+          map((response: { message: string }) => {
+            console.log(response);
+
+            this.snackBar.open(response.message, 'x', {
+              horizontalPosition: 'right',
+              verticalPosition: 'top',
+              duration: 5 * 1000,
+            });
+
+            return fromGeonology.deleteUserGenealogySucceeded({
+              userGeonology: action.userGeonology as GeonologyNode,
+            });
+          }),
+          catchError((error) => {
+            return of(fromGeonology.deleteUserGenealogyFailed({ error }));
+          }),
+        );
+      }),
+    );
+  });
 }

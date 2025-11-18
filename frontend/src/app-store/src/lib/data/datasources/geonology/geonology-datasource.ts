@@ -71,4 +71,18 @@ export class GeonologyDatasource implements GeonologyInterface {
         catchError((error) => this.errorReport(error)),
       );
   }
+
+  deleteUserGeonology(userId: string): Observable<{ message: string }> {
+    return this.http
+      .delete<{ message: string }>(
+        `${this.baseUrl}/api/geonology/deleteGeonology/${userId}`,
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map((resp) => resp),
+        catchError((error) => this.errorReport(error)),
+      );
+  }
 }

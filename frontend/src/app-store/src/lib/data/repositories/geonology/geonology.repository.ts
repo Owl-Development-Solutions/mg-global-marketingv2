@@ -21,4 +21,8 @@ export class GeonologyRepository implements GeonologyRepositoryInterface {
   getGeanology(userId: string): Observable<GeonologyNode> {
     return this.geonologyDatasource.getGeanology(userId);
   }
+
+  deleteUserGeonology(userId: string): Observable<{ message: string }> {
+    return this.geonologyDatasource.deleteUserGeonology(userId);
+  }
 }

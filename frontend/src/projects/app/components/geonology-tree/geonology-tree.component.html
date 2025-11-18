@@ -9,10 +9,12 @@
     <div class="min-w-max flex justify-center">
       <div class="flex w-full flex-col items-center">
         <div
-          class="cursor-pointer group flex cursor-default flex-col items-center transition-all duration-200 relative z-20"
-          (click)="handleClickMember(userNode()?.id)"
+          class="group flex flex-col items-center transition-all duration-200 relative z-20"
         >
-          <div class="relative">
+          <div
+            class="relative cursor-pointer"
+            (click)="handleClickMember(userNode()?.id)"
+          >
             <img
               class="relative inline-flex items-center justify-center mt-2 rounded-full ring-2 ring-primary {{
                 isSmallNode ? 'h-8 w-8' : 'h-12 w-12'
@@ -53,6 +55,13 @@
                 {{ userNode()!.rightDownline }}
               </span>
             </div>
+
+            <!-- Delete Member except root to show -->
+            @if (userNode()?.side !== "root") {
+              <div (click)="deleteMember(userNode())" class="cursor-pointer">
+                <mat-icon class="!text-red-500">delete</mat-icon>
+              </div>
+            }
           </div>
         </div>
 
@@ -88,6 +97,7 @@
                         [userNode]="userNode()!.leftChild!"
                         (handleAddMember)="handleAddMember.emit($event)"
                         (routeToMember)="routeToMember.emit($event)"
+                        (handleDeleteMember)="handleDeleteMember.emit($event)"
                       ></app-geonology-tree>
                     </ng-container>
 
@@ -161,6 +171,7 @@
                         [userNode]="userNode()!.rightChild!"
                         (handleAddMember)="handleAddMember.emit($event)"
                         (routeToMember)="routeToMember.emit($event)"
+                        (handleDeleteMember)="handleDeleteMember.emit($event)"
                       ></app-geonology-tree>
                     </ng-container>
 

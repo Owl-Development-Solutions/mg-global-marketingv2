@@ -13,6 +13,7 @@ import {
   SkeletonTextComponent,
   ColumnContainerComponent,
   GenealogyTableHistoryComponent,
+  AddMemberModalComponent,
 } from '../../components';
 import { MatIcon } from '@angular/material/icon';
 import { CdkPortal } from '@angular/cdk/portal';
@@ -25,6 +26,7 @@ import { MatButton, MatButtonModule } from '@angular/material/button';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GenealogyFlattenedPipe } from 'projects/app/pipes';
+import { DeleteDialogComponent } from 'projects/app/components/delete-dialog/delete-dialog.component';
 
 @Component({
   selector: 'app-geonology',
@@ -69,11 +71,7 @@ export class GeonologyComponent implements OnInit, OnDestroy {
   userId = toSignal(this.getUserId$);
   rootUsername = toSignal(this.rootUsername$);
 
-  async handleAddMember(geonologyData: { data: GeonologyNode; side: string }) {
-    const { AddMemberModalComponent } = await import(
-      '../../components/add-member-modal/add-member-modal.component'
-    );
-
+  handleAddMember(geonologyData: { data: GeonologyNode; side: string }) {
     this.dialog.open(AddMemberModalComponent, {
       data: {
         data: geonologyData.data,
@@ -106,6 +104,22 @@ export class GeonologyComponent implements OnInit, OnDestroy {
       this.router.navigate(['/geonology', userId]);
       this.back.set(true);
     }
+  }
+
+  handleDeleteMember(event: { userNode: GeonologyNode | null }) {
+    const username = event.userNode?.userName;
+
+    const dialogRef = this.dialog.open(DeleteDialogComponent, {
+      data: {
+        label: username,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((res) => {
+      if (!!res) {
+        this.geonologyUsecase.deleteUserGeonology(event.userNode);
+      }
+    });
   }
 
   goBack(event: Event) {
