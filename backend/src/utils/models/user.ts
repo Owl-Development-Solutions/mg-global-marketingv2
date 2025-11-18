@@ -19,7 +19,7 @@ export interface User {
   parentId: string;
   leftChildId: string;
   rightChildId: string;
-  activationCode: string;
+  activationCodeId: string;
 }
 
 export interface AuthResponse {

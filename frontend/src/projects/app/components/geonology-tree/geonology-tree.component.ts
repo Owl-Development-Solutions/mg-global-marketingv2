@@ -25,6 +25,12 @@ export class GeonologyTreeComponent {
     side: any;
   }>();
 
+  @Output() handleDeleteMember: EventEmitter<{
+    userNode: GeonologyNode | null;
+  }> = new EventEmitter<{
+    userNode: GeonologyNode | null;
+  }>();
+
   @Output() routeToMember: EventEmitter<{ userId: string | undefined }> =
     new EventEmitter<{
       userId: string | undefined;
@@ -54,5 +60,9 @@ export class GeonologyTreeComponent {
 
   handleClickMember(userId: string | undefined) {
     this.routeToMember.emit({ userId });
+  }
+
+  deleteMember(userNode: GeonologyNode | null) {
+    this.handleDeleteMember.emit({ userNode });
   }
 }

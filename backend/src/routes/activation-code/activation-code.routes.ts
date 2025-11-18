@@ -1,6 +1,9 @@
 import express from "express";
 import { verifyToken } from "../../utils";
-import { searchActivationCodeController } from "../../controller";
+import {
+  generateFiftyActivationCodesController,
+  searchActivationCodeController,
+} from "../../controller";
 
 const router = express.Router();
 
@@ -9,5 +12,6 @@ router.post(
   verifyToken,
   searchActivationCodeController
 );
+router.post("/createCode", verifyToken, generateFiftyActivationCodesController);
 
 export default router;

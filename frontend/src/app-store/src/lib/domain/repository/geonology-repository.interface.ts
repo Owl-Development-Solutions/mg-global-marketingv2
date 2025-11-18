@@ -8,4 +8,5 @@ import { Observable } from 'rxjs';
 export interface GeonologyRepositoryInterface {
   addUserGeonology(data: AddUserGeonologyData): Observable<GeonologyResponse>;
   getGeanology(userId: string): Observable<GeonologyNode>;
+  deleteUserGeonology(userId: string): Observable<{ message: string }>;
 }

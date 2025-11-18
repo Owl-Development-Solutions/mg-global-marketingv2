@@ -1,15 +1,17 @@
 import { Request, Response } from "express";
+import { deleteGeanologyUser } from "../../infrastructure";
 import { ErrorResponse, Result, SuccessResponse } from "../../utils";
-import { generateFiftyActivationCodes } from "../../infrastructure";
 
-export const generateFiftyActivationCodesController = async (
+export const deleteGeanologyUserController = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  const userId = req.params.userId as string;
+
   const result: Result<
-    SuccessResponse<string[]>,
+    SuccessResponse<string>,
     ErrorResponse
-  > = await generateFiftyActivationCodes();
+  > = await deleteGeanologyUser(userId);
 
   if (!result.success) {
     res.status(result.error.statusCode).json({
