@@ -1,4 +1,4 @@
-import { GeonologyNode, LowOrHigh } from "../models";
+import { GeonologyNode, LowOrHigh, User } from "../models";
 
 export const processUplineRewards = async (
   connection: any,
@@ -160,4 +160,90 @@ export const buildNodeTree = async (
   }
 
   return node;
+};
+
+export const decrementUplineDownlineCounts = async (
+  db: any,
+  currentParentId: string,
+  side: "[L]" | "[R]"
+): Promise<void> => {
+  if (!currentParentId) {
+    return;
+  }
+
+  const downlineColumn = side === "[L]" ? "leftDownline" : "rightDownline";
+
+  await db.execute(
+    `UPDATE user_stats SET ${downlineColumn} = ${downlineColumn} -1 WHERE userId = ?`,
+    [currentParentId]
+  );
+
+  const [grandParentRows] = await db.execute(
+    `SELECT id, leftChildId, rightChildId
+     FROM users
+     WHERE leftChildId = ? OR rightChildId = ?`,
+    [currentParentId, currentParentId]
+  );
+
+  const grandParentData = grandParentRows[0];
+
+  if (grandParentData) {
+    const grandParentId = grandParentData.id;
+    let parentSideRelativeToGrandParent: "[L]" | "[R]";
+
+    if (grandParentData.leftChildId === currentParentId) {
+      parentSideRelativeToGrandParent = "[L]";
+    } else {
+      parentSideRelativeToGrandParent = "[R]";
+    }
+
+    await decrementUplineDownlineCounts(
+      db,
+      grandParentId,
+      parentSideRelativeToGrandParent
+    );
+  }
+};
+
+export const collectDescendantsForDeletion = async (
+  db: any,
+  currentId: string,
+  idsToDelete: string[],
+  coodesToReset: string[]
+): Promise<void> => {
+  const [userRows] = await db.execute(
+    `SELECT id, leftChildId, rightChildId, activationCodeId
+     FROM users
+     WHERE id = ? FOR UPDATE
+    `,
+    [currentId]
+  );
+
+  const userData: User = userRows[0];
+
+  if (!userData) return;
+
+  idsToDelete.push(userData.id);
+
+  if (userData.activationCodeId) {
+    coodesToReset.push(userData.activationCodeId);
+  }
+
+  if (userData.leftChildId) {
+    await collectDescendantsForDeletion(
+      db,
+      userData.leftChildId,
+      idsToDelete,
+      coodesToReset
+    );
+  }
+
+  if (userData.rightChildId) {
+    await collectDescendantsForDeletion(
+      db,
+      userData.rightChildId,
+      idsToDelete,
+      coodesToReset
+    );
+  }
 };

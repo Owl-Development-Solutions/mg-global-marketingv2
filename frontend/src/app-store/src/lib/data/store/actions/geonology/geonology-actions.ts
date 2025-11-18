@@ -42,3 +42,18 @@ export const getGenealogySucceeded = createAction(
   '[Genealogy] Get Genealogy By UserId Succeeded',
   props<{ data: GeonologyNode }>(),
 );
+
+export const deleteUserGenealogyAttempted = createAction(
+  '[Genealogy] Delete User Genealogy Attempted',
+  props<{ userGeonology: GeonologyNode | null }>(),
+);
+
+export const deleteUserGenealogyFailed = createAction(
+  '[Genealogy] Delete User Genealogy Failed',
+  props<{ error: string }>(),
+);
+
+export const deleteUserGenealogySucceeded = createAction(
+  '[Genealogy] Delete User Genealogy Succeeded',
+  props<{ userGeonology: GeonologyNode }>(),
+);

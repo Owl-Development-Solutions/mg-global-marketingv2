@@ -8,4 +8,5 @@ import {
 export interface GeonologyInterface {
   addUserGeonology(data: AddUserGeonologyData): Observable<GeonologyResponse>;
   getGeanology(userId: string): Observable<GeonologyNode>;
+  deleteUserGeonology(userId: string): Observable<{ message: string }>;
 }

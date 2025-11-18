@@ -65,16 +65,55 @@ const updateChildRecursive = (
   const leftChanged = updatedLeft !== node.leftChild;
   const rightChanged = updatedRight !== node.rightChild;
 
+  if (leftChanged || rightChanged) {
+    return {
+      ...node,
+      leftChild: updatedLeft,
+      rightChild: updatedRight,
+      leftDownline: leftChanged
+        ? (node.leftDownline || 0) + 1
+        : node.leftDownline || 0,
+      rightDownline: rightChanged
+        ? (node.rightDownline || 0) + 1
+        : node.rightDownline || 0,
+    };
+  }
+
+  return node;
+};
+
+const deleteSubtreeRecursive = (
+  node: GeonologyNode | null,
+  userIdToDelete: string,
+): GeonologyNode | null => {
+  if (!node) return null;
+
+  // This removes the node and its entire subtree from the structure.
+  if (node.id === userIdToDelete) {
+    return null;
+  }
+
+  // Recursively check children
+  const updatedLeft = node.leftChild
+    ? deleteSubtreeRecursive(node.leftChild, userIdToDelete)
+    : node.leftChild;
+
+  const updatedRight = node.rightChild
+    ? deleteSubtreeRecursive(node.rightChild, userIdToDelete)
+    : node.rightChild;
+
+  // If the recursive calls resulted in no changes to the children,
+  // we return the original, immutable node reference.
+  if (updatedLeft === node.leftChild && updatedRight === node.rightChild) {
+    return node;
+  }
+
+  // If a change occurred (a descendant was deleted), we return a new node object
+  // with the updated child pointers, **ENSURING THE ANCESTOR NODE IS PRESERVED.**
   return {
     ...node,
     leftChild: updatedLeft,
     rightChild: updatedRight,
-    leftDownline: leftChanged
-      ? (node.leftDownline || 0) + 1
-      : node.leftDownline || 0,
-    rightDownline: rightChanged
-      ? (node.rightDownline || 0) + 1
-      : node.rightDownline || 0,
   };
 };
 
@@ -132,4 +171,33 @@ export const initiateGeonologyReducer = createReducer(
       };
     },
   ),
+  on(fromGeonology.deleteUserGenealogyAttempted, (state) => {
+    return {
+      ...state,
+      loadingAttempted: true,
+      loadingSuccess: false,
+      error: null,
+    };
+  }),
+  on(fromGeonology.deleteUserGenealogyFailed, (state, { error }) => {
+    return {
+      ...state,
+      loadingAttempted: false,
+      loadingSuccess: false,
+      error: error || 'Failed to delete user and sub-tree',
+    };
+  }),
+  on(fromGeonology.deleteUserGenealogySucceeded, (state, { userGeonology }) => {
+    const userIdToDelete = userGeonology.id as string;
+
+    const newTree = state.tree
+      ? deleteSubtreeRecursive(state.tree, userIdToDelete)
+      : null;
+
+    return {
+      ...state,
+      loadingAttempted: false,
+      tree: newTree,
+    };
+  }),
 );
