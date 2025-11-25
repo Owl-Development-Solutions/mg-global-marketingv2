@@ -1,59 +1,98 @@
-/* Basic layout and sizing */
-:host {
-  display: block;
-  height: 100vh;
-}
+@use "../../../../styles/variables";
+@use "../../../../styles/mixins";
 
-.mat-sidenav-container {
+:host {
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  border-radius: 0%;
 }
 
 ::ng-deep .mat-drawer-inner-container {
   overflow: hidden !important;
 }
 
-/* Sidenav styles */
-.sidenav {
-  width: 250px;
-  /* Box shadow for a more elevated feel */
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+mat-drawer {
+  border-radius: 0 !important;
+  // Default/collapsed width (66px)
+  width: mixins.calculateRem(66px);
+  // Add transition to the width property
+  transition: width 0.1s ease !important;
+
+  // Expanded width (270px) when the .is-expanded class is present
+  &.is-expanded {
+    width: mixins.calculateRem(270px) !important;
+  }
 }
 
-/* Main content styles */
-.mat-sidenav-content {
-  display: flex;
-  flex-direction: column;
+mat-drawer-container {
+  flex: 1 1 auto;
+
+  &.is-expanded {
+    mat-drawer-content {
+      // Adjusted margin to 270px to match the new expanded drawer width
+      margin-left: mixins.calculateRem(270px) !important;
+      &.mat-content--no-menu-items {
+        margin-left: 0 !important; // always make room for the top left icon
+      }
+    }
+  }
+
+  mat-drawer-content {
+    &.mat-content--no-menu-items {
+      .ups-toolbar--tenant-name {
+        margin-left: 74px;
+      }
+    }
+  }
 }
 
-.mat-toolbar {
-  /* Add a subtle box shadow to the toolbar */
-  box-shadow:
-    0 2px 4px -1px rgba(0, 0, 0, 0.2),
-    0 4px 5px 0 rgba(0, 0, 0, 0.14),
-    0 1px 10px 0 rgba(0, 0, 0, 0.12);
-
-  /* Custom height for a sleeker look */
-  height: 64px;
+mat-drawer--no-menu-items {
+  background-color: transparent;
+  height: 56px;
 }
 
-.mat-toolbar span {
-  font-size: 24px;
-  font-weight: 500;
+mat-toolbar {
+  flex: 0 0 auto;
+}
+
+mat-drawer-content {
+  &.has-sidebar {
+    // This is the default (collapsed) margin, matching the 66px width
+    transition: margin-left 0.1s ease;
+    margin-left: mixins.calculateRem(66px) !important;
+  }
+
+  > mat-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &.mat-content--no-menu-items {
+    margin-left: 0 !important; // always make room for the top left icon
+  }
+}
+
+.content-container {
+  //height: calc(100% - 56px);
+
+  ::ng-deep {
+    // router-outlet is the first child
+    > :last-child {
+      max-height: 100%;
+      height: 100%;
+      overflow: scroll;
+      display: block;
+    }
+  }
 }
 
 .content {
   flex-grow: 1;
+  overflow: auto;
   padding: 24px;
   background-color: #f5f5f5;
-}
-
-.geonology-toolbar {
-  padding: 18px;
-}
-
-.sticky-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }

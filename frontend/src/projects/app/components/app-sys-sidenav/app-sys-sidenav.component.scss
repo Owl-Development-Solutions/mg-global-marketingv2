@@ -1,0 +1,71 @@
+@use "../../../../styles/mixins";
+
+:host {
+  height: calc(100% - 64px);
+}
+
+.nivjenz-sidenav {
+  transition: width 0.2s ease;
+  height: 100%;
+  contain: content;
+
+  > .mat-mdc-list.mat-mdc-list-base {
+    padding-top: 0;
+  }
+
+  &.is-expanded {
+    width: calculateRem(255px);
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  ::ng-deep {
+    .mat-expansion-panel {
+      border-radius: 0 !important;
+      box-shadow: 0 0 0 transparent;
+    }
+
+    .mat-expansion-panel-body {
+      border-radius: 0 !important;
+      padding: 0;
+    }
+
+    .nivjenz-sidenav--parent {
+      height: auto !important;
+      padding: 0 !important;
+
+      .mat-mdc-list-item {
+        padding: 0 !important;
+      }
+    }
+  }
+}
+
+.nivjenz-sidenav--child {
+  padding-top: 0;
+
+  ::ng-deep {
+    .mat-mdc-list-item {
+      height: calculateRem(54px);
+    }
+
+    .mdc-list-item__content {
+      height: 100%;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+  }
+
+  &.is-collapsed {
+    ::ng-deep {
+      a {
+        display: flex !important;
+        justify-content: center;
+      }
+    }
+  }
+}

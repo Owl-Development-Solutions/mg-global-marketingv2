@@ -1,1 +1,15 @@
-<p>app-logo works!</p>
+<div
+  class="min-w-[66px] p-4 bg-gradient-to-tl from-50% from-primary to-accent-700 to-100%"
+>
+  <div class="h-8 flex gap-1 items-center" [class.justify-center]="!expanded">
+    <img
+      src="logo/transparent-original.png"
+      alt="logo"
+      height="20px"
+      width="90px"
+    />
+    <h1 class="text-2xl text-white font-display" [class.hidden]="!expanded">
+      {{ title }}
+    </h1>
+  </div>
+</div>

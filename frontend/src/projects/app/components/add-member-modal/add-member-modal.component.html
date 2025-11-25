@@ -1,40 +1,46 @@
 <form
-  class="space-y-6 pt-6"
+  class="space-y-6 pt-6 dark:bg-gray-900"
   #addMemberForm="ngForm"
   (ngSubmit)="performAddMember(addMemberForm)"
 >
   <div class="p-4 sm:p-6 max-h-[80vh] overflow-y-auto" mat-dialog-content>
-    <div class="flex flex-col gap-2 space-y-3 text-center sm:text-left">
+    <div
+      class="flex flex-col gap-2 space-y-3 text-center sm:text-left font-display"
+    >
       <div class="flex items-center gap-3">
         <div
-          class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100"
+          class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-300 dark:bg-primary-dark"
         >
-          <mat-icon color="primary">person_add</mat-icon>
+          <mat-icon class="!text-primary-600">person_add</mat-icon>
         </div>
         <div>
-          <h2 class="text-xl font-semibold">Add New Member</h2>
-          <p class="text-muted-foreground text-sm">
+          <h2 class="text-xl font-semibold dark:text-gray-300">
+            Add New Member
+          </h2>
+          <p class="text-muted-foreground text-sm dark:text-gray-300">
             Create a new MLM account in your network tree
           </p>
         </div>
       </div>
 
       <div
-        class="text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"
+        class="text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm dark:border-gray-500"
       >
         <div class="flex items-center justify-center text-sm">
           <div class="flex items-center gap-2">
-            <span class="text-muted-foreground">Placement Parent:</span>
+            <span class="text-muted-foreground dark:text-gray-300"
+              >Placement Parent:</span
+            >
             <span
-              class="inline-flex rounded-md border px-2 py-0.5 text-xs font-medium"
+              class="inline-flex rounded-md border px-2 py-0.5 text-xs font-medium dark:border-gray-400 dark:text-gray-300"
               >{{ data.data.userName }}</span
             >
           </div>
-          <mat-icon>arrow_right_alt</mat-icon>
+          <mat-icon class="dark:!text-gray-300">arrow_right_alt</mat-icon>
           <div class="flex items-center gap-2">
-            <span class="text-muted-foreground">Side:</span>
+            <span class="text-muted-foreground dark:!text-gray-300">Side:</span>
             <span
-              class="inline-flex rounded-md bg-primary text-white px-2 py-1 text-xs font-medium capitalize"
+              class="inline-flex rounded-md bg-primary text-white px-2 py-1 text-xs font-medium capitalize dark:bg-primary-dark dark:text-primary-600"
               >{{ data.side }}</span
             >
           </div>
@@ -43,7 +49,7 @@
     </div>
 
     <!-- Personal Info -->
-    <div class="space-y-4 mt-5">
+    <div class="space-y-4 mt-5 font-display dark:text-gray-300">
       <div class="flex items-center gap-2">
         <h3 class="text-foreground text-sm font-medium">
           Personal Information
@@ -52,7 +58,7 @@
       </div>
       <div class="grid grid-cols-2 gap-4">
         <mat-form-field class="w-full" SubscriptSizing>
-          <mat-label>First Name</mat-label>
+          <mat-label class="font-display">First Name</mat-label>
           <input
             required
             matInput
@@ -67,14 +73,16 @@
           @if (firstName.invalid) {
             <mat-error>
               @if (firstName.hasError("required")) {
-                <span>First Name is required</span>
+                <span class="font-display dark:text-alert-300"
+                  >First Name is required</span
+                >
               }
             </mat-error>
           }
         </mat-form-field>
 
         <mat-form-field class="w-full">
-          <mat-label>Last Name</mat-label>
+          <mat-label class="font-display">Last Name</mat-label>
           <input
             matInput
             placeholder=""
@@ -88,7 +96,9 @@
           @if (lastName.invalid) {
             <mat-error>
               @if (lastName.hasError("required")) {
-                <span>Last Name is required</span>
+                <span class="font-display dark:text-alert-300"
+                  >Last Name is required</span
+                >
               }
             </mat-error>
           }
@@ -99,13 +109,17 @@
     <!-- Account Info -->
     <div class="space-y-4 mt-5">
       <div class="flex items-center gap-2">
-        <h3 class="text-foreground text-sm font-medium">Account Information</h3>
+        <h3
+          class="text-foreground text-sm font-medium font-display dark:text-gray-300"
+        >
+          Account Information
+        </h3>
         <div class="flex-1 h-px bg-border"></div>
       </div>
 
       <div class="relative flex flex-col">
         <mat-form-field class="w-full" SubscriptSizing>
-          <mat-label>Username</mat-label>
+          <mat-label class="font-display">Username</mat-label>
           <input
             matInput
             placeholder=""
@@ -120,13 +134,19 @@
           @if (userName.invalid && (userName.dirty || userName.touched)) {
             <mat-error>
               @if (userName.hasError("required")) {
-                <span>Username is required</span>
+                <span class="font-display dark:text-alert-300"
+                  >Username is required</span
+                >
               }
               @if (userName.hasError("minlength")) {
-                <span>Username must be at least 4 characters</span>
+                <span class="font-display dark:text-alert-300"
+                  >Username must be at least 4 characters</span
+                >
               }
               @if (userName.hasError("usernameTaken")) {
-                <span>{{ userName.getError("usernameTaken").message }}</span>
+                <span class="font-display dark:text-alert-300">{{
+                  userName.getError("usernameTaken").message
+                }}</span>
               }
             </mat-error>
           }
@@ -136,7 +156,7 @@
           @if ("isAvailable" in checkResult) {
             @if (checkResult.isAvailable === true) {
               <span
-                class="text-xs absolute top-[60px] text-green-700 ml-[17px]"
+                class="dark:text-green-500 text-xs absolute top-[60px] text-green-700 ml-[17px] font-display"
               >
                 {{ checkResult.message }}
               </span>
@@ -147,7 +167,7 @@
 
       <div class="relative flex flex-col">
         <mat-form-field class="w-full">
-          <mat-label>Activation Code</mat-label>
+          <mat-label class="font-display">Activation Code</mat-label>
           <input
             matInput
             id="activationCode"
@@ -166,13 +186,17 @@
           ) {
             <mat-error>
               @if (activationCode.hasError("required")) {
-                <span>Activation code is required</span>
+                <span class="font-display dark:text-alert-300"
+                  >Activation code is required</span
+                >
               }
               @if (activationCode.hasError("minlength")) {
-                <span>Activation code must be at least 8 characters</span>
+                <span class="font-display dark:text-alert-300"
+                  >Activation code must be at least 8 characters</span
+                >
               }
               @if (activationCode.hasError("invalidActivationCode")) {
-                <span>{{
+                <span class="font-display dark:text-alert-300">{{
                   activationCode.getError("invalidActivationCode").message
                 }}</span>
               }
@@ -183,7 +207,7 @@
           @if ("isAvailable" in checkResult) {
             @if (checkResult.isAvailable === true) {
               <span
-                class="text-xs absolute top-[60px] text-green-700 ml-[17px]"
+                class="dark:text-green-500 text-xs absolute top-[60px] text-green-700 ml-[17px] font-display"
               >
                 {{ checkResult.message }}
               </span>
@@ -196,14 +220,20 @@
     <!-- Network Placement -->
     <div class="space-y-3 mt-4">
       <div class="flex items-center gap-2 pb-2">
-        <h3 class="text-foreground text-sm font-medium">Network Placement</h3>
+        <h3
+          class="dark:text-gray-300 text-foreground text-sm font-medium font-display"
+        >
+          Network Placement
+        </h3>
         <div class="flex-1 h-px bg-border"></div>
       </div>
       <div class="space-y-2">
         <div class="flex items-center justify-between text-sm">
-          <span>Sponsor</span>
+          <span class="font-display dark:text-gray-300">Sponsor</span>
         </div>
-        <p class="text-muted-foreground text-xs mb-2">
+        <p
+          class="dark:text-gray-300 text-muted-foreground text-xs mb-2 font-display"
+        >
           The sponsor will receive referral bonuses from this member.
         </p>
         <mat-form-field class="w-full" appearance="fill">
@@ -222,12 +252,12 @@
             @if (filteredRootUsername$ | async; as options) {
               @if (options.length > 0) {
                 @for (option of options; track option.userId) {
-                  <mat-option [value]="option.value">
+                  <mat-option [value]="option.value" class="font-display">
                     {{ option.label }}
                   </mat-option>
                 }
               } @else if (rootUsername.value && rootUsername.value.length > 2) {
-                <mat-option disabled>
+                <mat-option disabled class="font-display">
                   No sponsor found for "{{ rootUsername.value }}"
                 </mat-option>
               }
@@ -239,7 +269,9 @@
           ) {
             <mat-error>
               @if (rootUsername.hasError("required")) {
-                <span>Sponsor username is required</span>
+                <span class="font-display dark:text-alert-300"
+                  >Sponsor username is required</span
+                >
               }
               @if (activationCode.hasError("minlength")) {}
             </mat-error>
@@ -257,17 +289,21 @@
         <div class="flex items-start gap-3">
           <mat-icon color="primary">info</mat-icon>
           <div class="space-y-2">
-            <h4 class="text-sm font-medium text-blue-900">Placement Summary</h4>
+            <h4 class="text-sm font-medium text-blue-900 font-display">
+              Placement Summary
+            </h4>
             <div class="grid grid-cols-2 gap-4 text-xs">
               <div>
-                <span class="text-blue-700">Placement Parent:</span>
-                <p class="font-medium text-blue-900">
+                <span class="text-blue-700 font-display"
+                  >Placement Parent:</span
+                >
+                <p class="font-medium text-blue-900 font-display">
                   {{ data.data.userName }}
                 </p>
               </div>
               <div>
-                <span class="text-blue-700">Placement:</span>
-                <p class="font-medium text-blue-900 capitalize">
+                <span class="text-blue-700 font-display">Placement:</span>
+                <p class="font-medium text-blue-900 capitalize font-display">
                   {{ data.side }} side
                 </p>
               </div>
@@ -279,17 +315,21 @@
   </div>
 
   @if (error$.getValue()) {
-    <app-notification class="my-4 p-4" [notification]="error$.getValue()">
+    <app-notification
+      class="my-4 p-4 font-display"
+      [notification]="error$.getValue()"
+    >
     </app-notification>
   }
 
-  <div mat-dialog-actions class="p-4 flex gap-2">
+  <div mat-dialog-actions class="p-4 flex gap-2 dark:bg-gray-900">
     <button
       mat-stroked-button
       mat-dialog-close
       color="warn"
       type="button"
       (click)="onCancelClick()"
+      class="!font-display dark:!text-primary-dark"
     >
       Cancel
     </button>
