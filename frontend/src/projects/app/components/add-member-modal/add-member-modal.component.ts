@@ -42,6 +42,7 @@ import { activationCodeValidValidator } from 'projects/app/helpers/activation-co
 import { usernameAvailableValidator } from 'projects/app/helpers/search-user.validator';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NotificationComponent } from '../notification/notification.component';
+import { CdkOverlayOrigin } from '@angular/cdk/overlay';
 
 export interface AddMemberModalData {
   data: GeonologyNode;

@@ -5,7 +5,7 @@
     style="display: flex; align-items: center; justify-content: center"
   />
 } @else {
-  <div class="w-full overflow-x-auto">
+  <div class="w-full overflow-x-auto font-display">
     <div class="min-w-max flex justify-center">
       <div class="flex w-full flex-col items-center">
         <div
@@ -16,7 +16,7 @@
             (click)="handleClickMember(userNode()?.id)"
           >
             <img
-              class="relative inline-flex items-center justify-center mt-2 rounded-full ring-2 ring-primary {{
+              class="relative inline-flex items-center justify-center mt-2 rounded-full ring-2 ring-primary dark:ring-primary-600-dark {{
                 isSmallNode ? 'h-8 w-8' : 'h-12 w-12'
               }}"
               src="person-img.jpg"
@@ -26,7 +26,7 @@
           <!-- User Details -->
           <div class="mt-2 space-y-1 text-center">
             <div
-              class="font-medium font-semibold text-blue-600 transition-colors {{
+              class="font-medium font-semibold text-primary-600 transition-colors  dark:text-primary-600-dark {{
                 isSmallNode ? 'text-xs' : 'text-sm'
               }}"
             >
@@ -34,7 +34,7 @@
             </div>
 
             <div
-              class="text-muted-foreground {{
+              class="text-muted-foreground dark:text-gray-300 {{
                 isSmallNode ? 'text-[10px]' : 'text-xs'
               }}"
             >
@@ -43,25 +43,20 @@
 
             <!-- Downline Counter -->
             <div
-              class="bg-muted/50 rounded border px-2 py-1 {{
+              class="bg-muted/50 rounded border px-2 py-1 dark:border-white {{
                 isSmallNode ? 'text-[10px]' : 'text-xs'
               }}"
             >
-              <span class="font-medium text-green-600">
+              <span class="font-medium text-green-600 dark:!text-green-500">
                 {{ userNode()!.leftDownline }}</span
               >
-              <span class="text-muted-foreground mx-1">|</span>
+              <span class="text-muted-foreground mx-1 dark:text-gray-300"
+                >|</span
+              >
               <span class="font-medium text-purple-600">
                 {{ userNode()!.rightDownline }}
               </span>
             </div>
-
-            <!-- Delete Member except root to show -->
-            @if (userNode()?.side !== "root") {
-              <div (click)="deleteMember(userNode())" class="cursor-pointer">
-                <mat-icon class="!text-red-500">delete</mat-icon>
-              </div>
-            }
           </div>
         </div>
 
@@ -107,18 +102,22 @@
                         <div class="relative">
                           <div class="group flex flex-col items-center">
                             <span
-                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 size-8"
+                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 size-8 dark:border-gray-300"
                             >
                               <span
-                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full"
+                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full dark:text-white"
                               >
                                 <mat-icon>question_mark</mat-icon>
                               </span>
                             </span>
-                            <div class="text-muted-foreground mt-2 text-xs">
+                            <div
+                              class="text-muted-foreground mt-2 text-xs dark:text-white"
+                            >
                               Empty
                             </div>
-                            <div class="text-muted-foreground text-xs">
+                            <div
+                              class="text-muted-foreground text-xs dark:text-white"
+                            >
                               0 | 0
                             </div>
                           </div>
@@ -131,20 +130,25 @@
                             (click)="addMember(userNode(), 'left')"
                           >
                             <span
-                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-blue-400 group-hover:opacity-80 size-10"
+                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-primary-400 group-hover:opacity-80 size-10 dark:border-gray-300 dark:opacity-50"
                             >
                               <span
-                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-blue-600"
+                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-primary-600 dark:group-hover:bg-transparent"
                               >
-                                <mat-icon>add</mat-icon>
+                                <mat-icon
+                                  class="dark:!text-gray-300 dark:group-hover:!text-primary-600-dark"
+                                  >add</mat-icon
+                                >
                               </span>
                             </span>
                             <div
-                              class="mt-2 text-xs text-blue-600 group-hover:text-blue-700"
+                              class="mt-2 text-xs text-primary-600 group-hover:text-primary-600 dark:text-primary-600-dark group-hover:text-primary-600-dark"
                             >
                               Add Member
                             </div>
-                            <div class="text-muted-foreground text-xs">
+                            <div
+                              class="text-muted-foreground text-xs dark:text-white"
+                            >
                               0 | 0
                             </div>
                           </div>
@@ -181,18 +185,22 @@
                         <div class="relative">
                           <div class="group flex flex-col items-center">
                             <span
-                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 size-8"
+                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 size-8 dark:border-gray-300"
                             >
                               <span
-                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full"
+                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full dark:text-white"
                               >
                                 <mat-icon>question_mark</mat-icon>
                               </span>
                             </span>
-                            <div class="text-muted-foreground mt-2 text-xs">
+                            <div
+                              class="text-muted-foreground mt-2 text-xs dark:text-white"
+                            >
                               Empty
                             </div>
-                            <div class="text-muted-foreground text-xs">
+                            <div
+                              class="text-muted-foreground text-xs dark:text-white"
+                            >
                               0 | 0
                             </div>
                           </div>
@@ -205,20 +213,25 @@
                             (click)="addMember(userNode(), 'right')"
                           >
                             <span
-                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-blue-400 group-hover:opacity-80 size-10"
+                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-primary-400 group-hover:opacity-80 size-10 dark:border-gray-300 dark:opacity-50"
                             >
                               <span
-                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-blue-600"
+                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-primary-600 dark:group-hover:bg-transparent"
                               >
-                                <mat-icon>add</mat-icon>
+                                <mat-icon
+                                  class="dark:!text-gray-300 dark:group-hover:!text-primary-600-dark"
+                                  >add</mat-icon
+                                >
                               </span>
                             </span>
                             <div
-                              class="mt-2 text-xs text-blue-600 group-hover:text-blue-700"
+                              class="mt-2 text-xs text-primary-600 group-hover:text-primary-600 dark:text-primary-600-dark group-hover:text-primary-600-dark"
                             >
                               Add Member
                             </div>
-                            <div class="text-muted-foreground text-xs">
+                            <div
+                              class="text-muted-foreground text-xs dark:text-white"
+                            >
                               0 | 0
                             </div>
                           </div>

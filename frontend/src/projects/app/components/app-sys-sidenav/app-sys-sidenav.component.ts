@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
+import { MatButton } from '@angular/material/button';
 
 export interface SidenavMenuItem {
   label: string;
@@ -36,6 +37,7 @@ export interface SidenavMenuItem {
     CommonModule,
     MatDividerModule,
     MatListModule,
+    MatButton,
   ],
   templateUrl: './app-sys-sidenav.component.html',
   styleUrl: './app-sys-sidenav.component.scss',
@@ -43,9 +45,9 @@ export interface SidenavMenuItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppSysSidenavComponent {
-  isExpanded = input<boolean>(false);
-
   userId = input<string>();
+
+  @Input() isExpanded: boolean | undefined = false;
 
   @Input() menuItems: SidenavMenuItem[] = [];
 
@@ -58,4 +60,6 @@ export class AppSysSidenavComponent {
   @Input() sidenavBadges?: { [path: string]: number };
 
   @Output() toggleSidenav = new EventEmitter<void>();
+
+  @Output() toggleExpansion = new EventEmitter();
 }

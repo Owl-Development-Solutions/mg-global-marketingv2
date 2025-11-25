@@ -1,4 +1,4 @@
-<div>
+<div class="dark:bg-black">
   <app-geonology-tree
     [userNode]="geonologyData$ | async"
     [loading]="genealogyTreeLoading$ | async"
@@ -6,9 +6,9 @@
     (routeToMember)="handleRouteToMember($event)"
     (handleDeleteMember)="handleDeleteMember($event)"
   ></app-geonology-tree>
-  <div class="text-gray-400 px-6 py-3 mt-3">
+  <div class="text-gray-400 dark:!text-white px-6 py-3 mt-3">
     @if (!loading()) {
-      <div class="flex items-center justify-center gap-6 text-xs">
+      <div class="flex items-center justify-center gap-6 text-xs font-display">
         <div class="flex items-center gap-1">
           <mat-icon style="color: rgba(241, 44, 44, 0.719)">bolt</mat-icon>
           <span>Deduction Active</span>
@@ -19,7 +19,7 @@
   </div>
 
   <!-- GENEALOGY HISTORY -->
-  <div class="grow shrink-0 basis-[740px] flex flex-col h-[740px] m">
+  <!-- <div class="grow shrink-0 basis-[740px] flex flex-col h-[740px] m">
     <app-column-container class="grow" [title]="'Genealogy History'">
       <div class="h-full p-4">
         <app-genealogy-table-history
@@ -29,7 +29,7 @@
         </app-genealogy-table-history>
       </div>
     </app-column-container>
-  </div>
+  </div> -->
 </div>
 
 <ng-container *cdkPortal>
@@ -41,9 +41,11 @@
       matTooltip="Go Back"
       (click)="goBack($event)"
     >
-      <mat-icon>arrow_back</mat-icon>
+      <mat-icon class="dark:!text-gray-300">arrow_back</mat-icon>
     </button>
-    <h5 class="flex items-center text-2xl font-semibold">
+    <h5
+      class="flex items-center text-2xl font-semibold dark:!text-gray-300 !font-display"
+    >
       Genealogy for
       @if (loading()) {
         <app-skeleton-text
@@ -52,7 +54,9 @@
           class="ml-2"
         ></app-skeleton-text>
       } @else {
-        <span class="ml-2 text-primary">{{ fullName() }}</span>
+        <span class="ml-2 text-primary dark:text-primary-dark font-display">{{
+          fullName()
+        }}</span>
       }
     </h5>
   </div>
