@@ -5,7 +5,7 @@ import { Component, Input, OnChanges } from '@angular/core';
   template: `
     @for (width of lineWidths; track width) {
       <p
-        class="skeleton--text bg-gray-100 skeleton-loading"
+        class="skeleton--text bg-gray-100 dark:!bg-gray-900 skeleton-loading"
         [style.width]="fullWidth ? '100%' : width"
         [style.height.px]="lineHeight"
       ></p>

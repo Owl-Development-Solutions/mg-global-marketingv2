@@ -11,8 +11,6 @@ import {
 import {
   GeonologyTreeComponent,
   SkeletonTextComponent,
-  ColumnContainerComponent,
-  GenealogyTableHistoryComponent,
   AddMemberModalComponent,
 } from '../../components';
 import { MatIcon } from '@angular/material/icon';
@@ -22,10 +20,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthUsecase, GeonologyUsecase } from '@app-store/lib/usecases';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddUserGeonologyData, GeonologyNode } from '@app-store/public-api';
-import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { GenealogyFlattenedPipe } from 'projects/app/pipes';
 import { DeleteDialogComponent } from 'projects/app/components/delete-dialog/delete-dialog.component';
 
 @Component({
@@ -38,9 +35,6 @@ import { DeleteDialogComponent } from 'projects/app/components/delete-dialog/del
     MatButtonModule,
     SkeletonTextComponent,
     MatTooltipModule,
-    ColumnContainerComponent,
-    GenealogyTableHistoryComponent,
-    GenealogyFlattenedPipe,
   ],
   styleUrl: './geonology.component.scss',
   templateUrl: './geonology.component.html',

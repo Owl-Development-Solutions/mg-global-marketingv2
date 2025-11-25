@@ -5,7 +5,7 @@
   [class.click-enabled]="clickEnabled"
 >
   <div
-    class="user-identity--circle"
+    class="user-identity--circle font-display dark:bg-gray-900 dark:text-white"
     [ngClass]="{ 'user-identity--circle--small': isSmall }"
     [ngClass]="{ 'user-identity--circle--loading': skeleton }"
   >
@@ -14,7 +14,10 @@
   </div>
 
   @if (!skeleton) {
-    <p [ngClass]="{ '@xs:hidden @lg:block': enableContainerQuery }">
+    <p
+      class="font-display dark:!text-gray-300"
+      [ngClass]="{ '@xs:hidden @lg:block': enableContainerQuery }"
+    >
       {{ userName?.firstName }} {{ userName?.lastName }}
     </p>
   }

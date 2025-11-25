@@ -1,8 +1,11 @@
-<mat-sidenav-container fullscreen>
+<!-- <mat-sidenav-container fullscreen>
   <mat-sidenav #sidenav mode="side" opened class="sidenav">
     <app-sys-sidenav
-      (toggleSidenav)="toggleExpansion()"
+      [canClose]="!smallerScreens()"
       [userId]="getUserId()"
+      [isExpanded]="isExpanded()"
+      (toggleExpansion)="toggleExpansion()"
+      (toggleSidenav)="toggleExpansion()"
     ></app-sys-sidenav>
   </mat-sidenav>
 
@@ -44,6 +47,114 @@
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<ng-template #titlePortal>
+  @if (portal()) {
+    <app-page-title></app-page-title>
+  }
+</ng-template> -->
+<div class="w-full">
+  <div
+    class="transition-all"
+    [class.-mt-[100%]]="!portalOpen()"
+    [class.mt-[0%]]="portalOpen()"
+  >
+    @if (portalOpen()) {
+      <div
+        class="flex gap-4 p-4 bg-gray-100 border-b-2 border-primary dark:bg-black"
+      ></div>
+    }
+  </div>
+</div>
+<mat-drawer-container
+  [hasBackdrop]="smallerScreens()"
+  [class.is-expanded]="
+    (isExpanded() && largerScreens()) || (drawerOpen() && smallerScreens())
+  "
+  class="transition-all block min-h-[100vh]"
+  (backdropClick)="toggleDrawer()"
+>
+  <mat-drawer
+    class="!bg-white dark:!bg-black"
+    [opened]="drawerOpen()"
+    [disableClose]="true"
+    [class.is-expanded]="
+      (isExpanded() && largerScreens()) || (drawerOpen() && smallerScreens())
+    "
+  >
+    <app-logo [title]="'NivJenz'" [expanded]="isExpanded() || smallerScreens()">
+    </app-logo>
+    <app-sys-sidenav
+      [canClose]="!smallerScreens()"
+      [userId]="getUserId()"
+      [isExpanded]="isExpanded() || smallerScreens()"
+      [menuItems]="currentMenuItems"
+      (toggleExpansion)="toggleExpansion()"
+    ></app-sys-sidenav>
+  </mat-drawer>
+
+  <mat-drawer-content
+    class="!flex flex-col"
+    [style.overflow]="'hidden'"
+    [class.has-sidebar]="largerScreens()"
+  >
+    <mat-toolbar class="bg-transparent" color="transparent">
+      <mat-toolbar-row class="@container dark:bg-black">
+        <div class="flex gap-4 h-full w-full items-center justify-between">
+          @if (smallerScreens()) {
+            <div class="flex items-center gap-4">
+              <button
+                mat-icon-button
+                (click)="toggleDrawer()"
+                [disabled]="portalOpen()"
+              >
+                <mat-icon>menu</mat-icon>
+              </button>
+            </div>
+          }
+
+          <div class="hidden @5xl:flex grow">
+            <ng-container *ngTemplateOutlet="titlePortal"></ng-container>
+          </div>
+
+          <button [matMenuTriggerFor]="userMenu" class="p-2">
+            <app-user-identity
+              [userName]="getAuthName$ | async"
+              [enableContainerQuery]="true"
+            >
+            </app-user-identity>
+          </button>
+          <mat-menu #userMenu xPosition="before" class="dark:!bg-black">
+            <button
+              mat-menu-item
+              class="group dark:!text-gray-300 dark:hover:!bg-gray-900"
+            >
+              <mat-icon class="!text-primary-300 group-hover:!text-primary"
+                >password</mat-icon
+              >
+              My Account
+            </button>
+            <button
+              mat-menu-item
+              (click)="logout()"
+              class="group dark:!text-gray-300 dark:hover:!bg-gray-900"
+            >
+              <mat-icon class="!text-red-300 group-hover:!text-red-500"
+                >logout</mat-icon
+              >
+              Log Out
+            </button>
+          </mat-menu>
+        </div>
+      </mat-toolbar-row>
+    </mat-toolbar>
+
+    <!-- main-content -->
+    <div class="content dark:!bg-gray-900 overflow-scroll p-2 md:p-6 flex-auto">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>
 
 <ng-template #titlePortal>
   @if (portal()) {

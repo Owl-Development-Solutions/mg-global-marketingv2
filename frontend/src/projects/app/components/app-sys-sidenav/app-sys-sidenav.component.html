@@ -1,54 +1,92 @@
-<div class="h-screen bg-white shadow-md flex flex-col ml-[0px]">
-  <!-- Logo -->
-  <div class="bg-blue-600 text-white text-lg font-bold p-[18.6px]">NivJenZ</div>
-
-  <!-- Nav Items -->
-  <nav class="flex-1 space-y-1 mt-2">
-    <a
-      routerLink="/dashboard"
-      routerLinkActive="bg-blue-100 text-blue-600"
-      class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-md"
-    >
-      <span class="material-icons mr-3 text-gray-500">dashboard</span>
-      Dashboard
-    </a>
-
-    <a
-      routerLink="/ecu-wallet"
-      routerLinkActive="bg-blue-100 text-blue-600"
-      class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-md"
-    >
-      <span class="material-icons mr-3 text-gray-500"
-        >account_balance_wallet</span
-      >
-      NJ Wallet
-    </a>
-
-    <a
-      routerLink="/unilevel"
-      routerLinkActive="bg-blue-100 text-blue-600"
-      class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-md"
-    >
-      <span class="material-icons mr-3 text-gray-500">account_tree</span>
-      Unilevel
-    </a>
-
-    <a
-      [routerLink]="['/geonology', userId()]"
-      routerLinkActive="bg-blue-100 text-blue-600"
-      class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-md"
-    >
-      <span class="material-icons mr-3 text-gray-500">map</span>
-      Genealogy
-    </a>
-
-    <a
-      routerLink="/leadership-support"
-      routerLinkActive="bg-blue-100 text-blue-600"
-      class="flex items-center px-4 py-2 text-gray-700 hover:bg-blue-50 rounded-md"
-    >
-      <span class="material-icons mr-3 text-gray-500">supervisor_account</span>
-      Leadership Support
-    </a>
-  </nav>
+<div
+  class="nivjenz-sidenav flex flex-col justify-between"
+  [class.is-expanded]="isExpanded"
+>
+  @if (isExpanded) {
+    @for (menu of [menuItems, secondaryMenuItems]; track $index) {
+      <mat-accordion multi>
+        @for (item of menu; track $index) {
+          <mat-expansion-panel
+            [expanded]="true"
+            class="bg-white dark:!bg-black"
+          >
+            <mat-expansion-panel-header class="!px-4 !h-12"
+              ><mat-panel-title
+                class="uppercase text-black dark:!text-gray-500 font-display"
+                >{{ item.label }}</mat-panel-title
+              >
+            </mat-expansion-panel-header>
+            @for (child of item.children; track $index) {
+              <ng-template
+                *ngTemplateOutlet="menuItem; context: { $implicit: child }"
+              ></ng-template>
+            }
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    }
+  } @else {
+    @for (menu of [menuItems, secondaryMenuItems]; track $index) {
+      <div>
+        @for (item of menu; track $index) {
+          <div>
+            @for (child of item.children; track $index) {
+              <ng-template
+                *ngTemplateOutlet="menuItem; context: { $implicit: child }"
+              ></ng-template>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
 </div>
+@if (canClose) {
+  <div class="flex p-4">
+    <button
+      (click)="toggleExpansion.emit()"
+      class="flex gap-2 items-center text-sm text-gray-600"
+    >
+      <div class="border rounded-full p-1 flex">
+        <mat-icon
+          aria-label="Menu"
+          [class.rotate-180]="!isExpanded"
+          class="transition-transform"
+          >arrow_backward</mat-icon
+        >
+      </div>
+      @if (isExpanded) {
+        Collapse Menu
+      }
+    </button>
+  </div>
+}
+
+<ng-template #menuItem let-child>
+  <a
+    class="font-display p-3 flex gap-4 border-l-4 border-transparent border-solid focus:outline-accent focus:outline-2 focus:-outline-offset-2 focus:outline hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors text-gray-800 dark:text-white"
+    [class.justify-center]="!isExpanded"
+    matLine
+    [routerLink]="child.routerLink.join('/')"
+    [queryParams]="
+      child.globalFilters
+        ? queryParams?.['global']
+        : queryParams?.[child.routerLink.join('/')]
+    "
+    routerLinkActive="!text-primary group is-active dark:!text-primary-200-dark !border-accent bg-gray-100 dark:bg-gray-900"
+    [routerLinkActiveOptions]="{ exact: child.exactMatchHighlight || false }"
+    [matTooltip]="child.label"
+    [matTooltipPosition]="'right'"
+    [matTooltipDisabled]="isExpanded"
+    [matTooltipShowDelay]="500"
+  >
+    <mat-icon
+      *ngIf="child.icon"
+      class="!text-primary-300 group-[.is-active]:!text-primary"
+      >{{ child.icon }}</mat-icon
+    >
+    <span class="nivjenz-sidenav--child--text" *ngIf="isExpanded">{{
+      child.label
+    }}</span>
+  </a>
+</ng-template>

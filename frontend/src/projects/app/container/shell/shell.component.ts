@@ -23,7 +23,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { PageTitleComponent, UserIdentityComponent } from '../../components';
+import {
+  AppLogoComponent,
+  PageTitleComponent,
+  UserIdentityComponent,
+} from '../../components';
 import { PageTitlePortalService } from '../../services';
 import { AuthUsecase } from '@app-store/lib/usecases';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -47,6 +51,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
     MatMenu,
     MatMenuItem,
     CommonModule,
+    AppLogoComponent,
   ],
   templateUrl: './shell-component.html',
   styleUrls: ['./shell-component.scss'],
@@ -89,11 +94,13 @@ export class ShellComponent {
 
   toggleExpansion() {
     const updatedExpanded = !this.isExpanded();
+
     this.writeLocalStorageSidenavSetting(updatedExpanded);
     window.dispatchEvent(new Event('resize'));
     const event = new CustomEvent('localStorageChanged', {
       detail: { key: this.localStorageKey, value: updatedExpanded },
     });
+
     window.dispatchEvent(event);
   }
 
@@ -144,4 +151,73 @@ export class ShellComponent {
   logout() {
     this.authUsecase.logout();
   }
+
+  //hardcoded for now
+  currentMenuItems = [
+    // DASHBOARD
+    {
+      label: 'Dashboard Activity',
+      children: [
+        {
+          label: 'Dashboard',
+          icon: 'dashboard',
+          routerLink: ['/dashboard'],
+        },
+      ],
+    },
+
+    // NJ WALLET
+    {
+      label: 'Financial',
+      children: [
+        {
+          label: 'NJ Wallet',
+          icon: 'account_balance_wallet',
+          routerLink: ['/ecu-wallet'], // <-- FIXED
+        },
+      ],
+    },
+
+    // UNILEVEL
+    {
+      label: 'Network',
+      children: [
+        {
+          label: 'Unilevel',
+          icon: 'account_tree',
+          routerLink: ['/unilevel'], // <-- FIXED
+        },
+      ],
+    },
+
+    // GENEALOGY
+    {
+      label: 'Genealogy',
+      children: [
+        {
+          label: 'Genealogy',
+          icon: 'family_restroom',
+          routerLink: ['/geonology', this.getUserId() as string],
+          // Replace 'current' with the actual user ID dynamically
+        },
+        // {
+        //   label: 'User Log',
+        //   icon: 'connect_without_contact',
+        //   routerLink: ['/unilevel'],
+        // },
+      ],
+    },
+
+    // LEADERSHIP SUPPORT
+    {
+      label: 'Support',
+      children: [
+        {
+          label: 'Leadership Support',
+          icon: 'support',
+          routerLink: ['/leadership-support'], // correct
+        },
+      ],
+    },
+  ];
 }
