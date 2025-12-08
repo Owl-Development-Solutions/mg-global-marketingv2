@@ -6,11 +6,12 @@ import { MatIcon } from '@angular/material/icon';
   imports: [MatIcon],
   template: `
     <div class="flex flex-col justify-center items-center h-full w-full">
-      <mat-icon class="mb-7">{{ icon() }}</mat-icon>
+      <mat-icon class="!mb-7">{{ icon() }}</mat-icon>
 
-      <p class="text-2xl">{{ message() }}</p>
+      <p class="text-2xl !font-display font-semibold !mb-7">{{ message() }}</p>
     </div>
   `,
+  styleUrl: './empty-history-message.component.scss',
 })
 export class EmptyHistoryMessageComponent {
   icon = input<string>();

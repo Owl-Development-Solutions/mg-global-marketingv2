@@ -1,9 +1,10 @@
 import { Component, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
+import { BalanceCardComponent } from '../balance-card/balance-card.component';
 
 @Component({
   selector: 'app-profile-card',
-  imports: [MatIcon],
+  imports: [MatIcon, BalanceCardComponent],
   templateUrl: './profile-card.component.html',
   styleUrl: './profile-card.component.scss',
 })
@@ -24,7 +25,7 @@ export class ProfileCardComponent {
     'PMA Reminder for FA049950: Qualified for next month’s benefits...';
 
   balances = [
-    { amount: '339.18P PHP', label: 'PHP Balance' },
+    { amount: '339.18 PHP', label: 'PHP Balance' },
     { amount: '145.00 PHP', label: 'EC Wallet' },
     { amount: '0', label: 'Travel GC' },
   ];

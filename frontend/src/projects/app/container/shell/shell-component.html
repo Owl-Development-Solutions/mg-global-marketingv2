@@ -1,58 +1,3 @@
-<!-- <mat-sidenav-container fullscreen>
-  <mat-sidenav #sidenav mode="side" opened class="sidenav">
-    <app-sys-sidenav
-      [canClose]="!smallerScreens()"
-      [userId]="getUserId()"
-      [isExpanded]="isExpanded()"
-      (toggleExpansion)="toggleExpansion()"
-      (toggleSidenav)="toggleExpansion()"
-    ></app-sys-sidenav>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <mat-toolbar class="geonology-toolbar sticky-toolbar">
-      <button mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-
-      <div class="flex ml-3 justify-between items-center w-full">
-        <ng-container *ngTemplateOutlet="titlePortal"></ng-container>
-
-        <button [matMenuTriggerFor]="userMenu" class="p-2">
-          <app-user-identity
-            [userName]="getAuthName$ | async"
-            [enableContainerQuery]="true"
-          >
-          </app-user-identity>
-        </button>
-        <mat-menu #userMenu xPosition="before">
-          <button mat-menu-item class="group">
-            <mat-icon class="!text-primary-300 group-hover:!text-primary"
-              >password</mat-icon
-            >
-            My Account
-          </button>
-          <button mat-menu-item (click)="logout()" class="group">
-            <mat-icon class="!text-red-300 group-hover:!text-red-500"
-              >logout</mat-icon
-            >
-            Log Out
-          </button>
-        </mat-menu>
-      </div>
-    </mat-toolbar>
-
-    <div class="content">
-      <router-outlet></router-outlet>
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-
-<ng-template #titlePortal>
-  @if (portal()) {
-    <app-page-title></app-page-title>
-  }
-</ng-template> -->
 <div class="w-full">
   <div
     class="transition-all"
@@ -62,7 +7,9 @@
     @if (portalOpen()) {
       <div
         class="flex gap-4 p-4 bg-gray-100 border-b-2 border-primary dark:bg-black"
-      ></div>
+      >
+        <ng-container *ngTemplateOutlet="titlePortal"></ng-container>
+      </div>
     }
   </div>
 </div>
@@ -109,6 +56,20 @@
                 [disabled]="portalOpen()"
               >
                 <mat-icon>menu</mat-icon>
+              </button>
+            </div>
+          }
+
+          @if (portal()) {
+            <div class="flex @5xl:hidden">
+              <button
+                (click)="togglePortal()"
+                type="button"
+                [ngClass]="{ 'bg-primary text-white': portalOpen() }"
+                class="p-3 flex items-center shadow-none"
+              >
+                <mat-icon>tune</mat-icon>
+                <span class="!text-xs font-display"> Page Filters </span>
               </button>
             </div>
           }
