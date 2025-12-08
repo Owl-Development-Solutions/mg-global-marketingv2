@@ -1,0 +1,57 @@
+<form #addWallet="ngForm" (ngSubmit)="performAddWallet(addWallet)">
+  <div mat-dialog-content>
+    <div class="p-4 sm:p-6">
+      <div
+        class="flex flex-col gap-2 space-y-3 text-center sm:text-left font-display"
+      >
+        <div class="flex items-center gap-3">
+          <p class="text-muted-foreground text-sm dark:text-gray-300">
+            Select an amount you wish to reload
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <mat-radio-group
+          (change)="selectPrice(price)"
+          [(ngModel)]="selectedPrice"
+          #price="ngModel"
+          name="price"
+        >
+          <div class="grid grid-cols-2 gap-4">
+            @for (priceOpt of priceOpts; track priceOpt.label) {
+              <div
+                class="border rounded-lg text-center bg-gray-50 p-3 flex items-center justify-center"
+              >
+                <mat-radio-button [value]="priceOpt.price">
+                  <span class="!font-display">{{ priceOpt.price }}</span>
+                </mat-radio-button>
+              </div>
+            }
+          </div>
+        </mat-radio-group>
+      </div>
+    </div>
+  </div>
+
+  <div mat-dialog-actions class="p-4 flex gap-2">
+    <button
+      mat-stroked-button
+      mat-dialog-close
+      color="warn"
+      type="button"
+      class="!font-display"
+    >
+      Cancel
+    </button>
+    <app-submit-button
+      text="Add Wallet"
+      icon="add_card"
+      color="primary"
+      [type]="'submit'"
+      [isDisabled]="!price.value"
+      [isLoading]="submitting$ | async"
+    >
+    </app-submit-button>
+  </div>
+</form>

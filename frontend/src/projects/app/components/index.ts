@@ -17,3 +17,5 @@ export * from './genealogy-table-history/genealogy-table-history.component';
 export * from './notification/notification.component';
 export * from './empty-history-message/empty-history-message.component';
 export * from './register-modal/register-modal.component';
+export * from './profile-card/profile-card.component';
+export * from './add-wallet-button/add-wallet-button.component';
