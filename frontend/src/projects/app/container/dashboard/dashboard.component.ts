@@ -9,6 +9,7 @@ import { CdkPortal } from '@angular/cdk/portal';
 import { AuthUsecase } from '@app-store/lib/usecases';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { BalanceCardComponent } from 'projects/app/components/balance-card/balance-card.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,6 +18,7 @@ import { CommonModule } from '@angular/common';
     ProfileTabsComponent,
     CdkPortal,
     CommonModule,
+    BalanceCardComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
