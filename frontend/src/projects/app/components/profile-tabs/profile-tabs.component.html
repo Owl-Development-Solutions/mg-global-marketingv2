@@ -18,8 +18,15 @@
   <!-- Tab 2 -->
   <mat-tab label="Account Info">
     <div class="bg-white rounded-xl shadow-md p-6">
-      Account Info goes here...
+      <label for="name " class="font-bold " >Name</label>
+      <span class="ml-2">{{ userInfo()?.firstName }} {{ userInfo()?.lastName }}</span>
+      <label for="username">username</label>
+      <span class="ml-2">{{ userInfo()?.username }}</span>
+      <label for="email">email</label>
+      <span class="ml-2">{{ userInfo()?.email }}</span>
+
     </div>
+    
   </mat-tab>
 
   <!-- Tab 4 -->
