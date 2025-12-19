@@ -5,8 +5,9 @@ export const processUplineRewards = async (
   startUplineId: string,
   newChildId: string
 ) => {
-  const RPP = 100;
-  const PAIRING_BONUS = 150.0;
+  const POINT_VALUE = 1;
+  const PAIRING_BONUS = 250.0;
+  const TRAVEL_MILESTONE = 10;
 
   let currentUplineId = startUplineId;
   let currentChildId = newChildId;
@@ -17,41 +18,87 @@ export const processUplineRewards = async (
       [currentUplineId]
     );
 
-    const uplineUsers = uplineUserRows as any;
-    const uplineUser = uplineUsers[0];
-
+    const uplineUser = (uplineUserRows as any)[0];
     if (!uplineUser) break;
 
-    const sideToUpdate =
-      uplineUser.leftChildId === currentChildId
-        ? "leftDownline"
-        : "rightDownline";
+    const side = uplineUser.leftChildId === currentChildId ? "Left" : "Right";
+    const downlineColumn = side === "Left" ? "leftDownline" : "rightDownline";
+    const pointsColumn = side === "Left" ? "leftPoints" : "rightPoints";
 
     await connection.execute(
-      `UPDATE user_stats SET ${sideToUpdate} = ${sideToUpdate} + 1 WHERE userId = ?`,
-      [currentUplineId]
+      `UPDATE user_stats SET 
+        ${downlineColumn} = ${downlineColumn} + 1, 
+        ${pointsColumn} = ${pointsColumn} + ? 
+       WHERE userId = ?`,
+      [POINT_VALUE, currentUplineId]
     );
 
     const [statsRows] = await connection.execute(
-      `SELECT leftPoints, rightPoints, balance FROM user_stats WHERE userId = ? FOR UPDATE`,
+      `SELECT leftPoints, rightPoints, totalPairsMade, njWallet FROM user_stats WHERE userId = ? FOR UPDATE`,
       [currentUplineId]
     );
 
-    const stats = statsRows as any;
-    const stat = stats[0];
-
-    const matches = Math.floor(
-      Math.min(stat.leftPoints, stat.rightPoints) / RPP
+    const stats = (statsRows as any)[0];
+    const matchValue = Math.floor(
+      Math.min(stats.leftPoints, stats.rightPoints)
     );
 
-    if (matches > 0) {
-      const pointsToDeduct = matches * RPP;
-      const commisionEarned = matches * PAIRING_BONUS;
+    if (matchValue >= 1) {
+      const pairsToProcess = matchValue;
+      const commissionEarned = pairsToProcess * PAIRING_BONUS;
+      const newTotalPairs = stats.totalPairsMade + pairsToProcess;
+
+      // Update the user's wallet and consume points
+      await connection.execute(
+        `UPDATE user_stats SET 
+            njWallet = njWallet + ?, 
+            leftPoints = leftPoints - ?, 
+            rightPoints = rightPoints - ?, 
+            totalPairsMade = ? 
+         WHERE userId = ?`,
+        [
+          commissionEarned,
+          pairsToProcess,
+          pairsToProcess,
+          newTotalPairs,
+          currentUplineId,
+        ]
+      );
 
       await connection.execute(
-        `UPDATE user_stats SET leftPoints = leftPoints - ?, rightPoints = rightPoints - ?, balance = balance + ? WHERE userId = ?`,
-        [pointsToDeduct, pointsToDeduct, commisionEarned, currentUplineId]
+        "INSERT INTO transactions (`userId`, `type`, `walletType`, `amount`, `transactionDirection`, `description`) VALUES (?, ?, ?, ?, ?, ?)",
+        [
+          currentUplineId,
+          "Pairing Bonus",
+          "njWallet",
+          commissionEarned,
+          "Credit",
+          `${pairsToProcess} pair(s) completed`,
+        ]
       );
+
+      const travelPointsAwarded =
+        Math.floor(newTotalPairs / TRAVEL_MILESTONE) -
+        Math.floor(stats.totalPairsMade / TRAVEL_MILESTONE);
+
+      if (travelPointsAwarded > 0) {
+        await connection.execute(
+          `UPDATE user_stats SET travelGcPoints = travelGcPoints + ? WHERE userId = ?`,
+          [travelPointsAwarded, currentUplineId]
+        );
+
+        await connection.execute(
+          "INSERT INTO transactions (`userId`, `type`, `walletType`, `amount`, `transactionDirection`, `description`) VALUES (?, ?, ?, ?, ?, ?)",
+          [
+            currentUplineId,
+            "Travel Points",
+            "travelGcPoints",
+            travelPointsAwarded,
+            "Credit",
+            `${travelPointsAwarded} travel point(s) awarded`,
+          ]
+        );
+      }
     }
 
     currentChildId = currentUplineId;

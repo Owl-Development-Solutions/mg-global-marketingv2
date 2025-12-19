@@ -12,6 +12,7 @@ import {
   UserStats,
 } from "../../utils";
 import { processUplineRewards } from "../../utils/helpers/genology-helper";
+import { processBinaryVolumeUpstream } from "../../utils/helpers/process-upstream-geonology";
 
 export const addGeonologyUserIn = async (
   data: AddUserGeonologyData
@@ -173,7 +174,9 @@ export const addGeonologyUserIn = async (
       parentId,
     ]);
 
-    await processUplineRewards(db, parentId, newUserId);
+    const sideForVolume: "Left" | "Right" = side === "[L]" ? "Left" : "Right";
+
+    await processBinaryVolumeUpstream(parentId, sideForVolume);
 
     const geonologyLevel: LowOrHigh = { low: newDbLevel, high: 0 };
 

@@ -15,6 +15,7 @@ import {
 } from "../../utils";
 import bcrypt from "bcryptjs";
 import { connection } from "../../config/mysql.db";
+import { processBinaryVolumeUpstream } from "../../utils/helpers/process-upstream-geonology";
 
 export const registerUserIn = async (
   user: RegisterData
@@ -159,7 +160,7 @@ export const registerUserIn = async (
 
     //insert into users table
     const [result] = await db.execute(
-      "INSERT INTO users (`id`, `firstName`, `lastName`, `middleName`, `userName`, `name`, `email`, `password`, `birthDate`, `parentId`, `sponsorId`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO users (`id`, `firstName`, `lastName`, `middleName`, `userName`, `name`, `email`, `password`, `birthDate`, `parentId`, `activationCodeId`, `sponsorId`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         newUserId,
         user.firstName,
@@ -171,6 +172,7 @@ export const registerUserIn = async (
         hash,
         user.birthDate,
         actualUplineId,
+        activationCodeIdFromDB,
         actualSponsorId,
       ]
     );
@@ -189,9 +191,7 @@ export const registerUserIn = async (
     }
 
     await db.execute(
-      `INSERT INTO user_stats (
-      userId, balance, leftPoints, rightPoints, leftDownline, rightDownline, rankPoints, level, sidePath, hasDeduction
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      "INSERT INTO user_stats (`userId`, `balance`, `leftPoints`, `rightPoints`, `leftDownline`, `rightDownline`, `rankPoints`, `level`, `sidePath`, `hasDeduction`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [newUserId, 0.0, 0, 0, 0, 0, 0, 0, "root", false]
     );
 
@@ -204,6 +204,29 @@ export const registerUserIn = async (
       "Used",
       activationCodeIdFromDB,
     ]);
+
+    await db.execute(
+      `UPDATE user_stats SET normalWallet = normalWallet + 500.00 WHERE userId = ?`,
+      [actualUplineId]
+    );
+
+    await db.execute(
+      "INSERT INTO transactions (`userId`, `type`, `walletType`, `amount`, `transactionDirection`, `description`, `referenceId`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [
+        actualUplineId,
+        "Referral Bonus",
+        "normalWallet",
+        500,
+        "Credit",
+        `Direct referral bonus for new user ${user.username}`,
+        newUserId,
+      ]
+    );
+
+    const placementSide: "Left" | "Right" =
+      user.position === "[L]" ? "Left" : "Right";
+
+    await processBinaryVolumeUpstream(actualUplineId, placementSide);
 
     return {
       success: true,
