@@ -111,6 +111,8 @@ body {
   }
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 .register-dialog .mat-mdc-dialog-container {
   max-width: 900px !important;
   min-width: 900px !important;
