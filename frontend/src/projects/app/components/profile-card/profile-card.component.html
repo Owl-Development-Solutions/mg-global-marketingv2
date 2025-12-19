@@ -22,12 +22,10 @@
 
     <div class="flex flex-wrap gap-4 mt-4">
       @for (balance of balances; track balance.label) {
-        <div
-          class="border border-dashed rounded-lg p-4 w-40 text-center bg-gray-50"
-        >
-          <p class="text-xl font-semibold">{{ balance.amount }}</p>
-          <p class="text-xs text-gray-500">{{ balance.label }}</p>
-        </div>
+        <app-balance-card
+          [amount]="balance.amount"
+          [label]="balance.label"
+        ></app-balance-card>
       }
     </div>
   </div>

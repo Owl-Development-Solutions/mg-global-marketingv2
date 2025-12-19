@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { inject, NgModule } from '@angular/core';
 import {
   AuthComponent,
   AuthFormComponent,
@@ -14,7 +14,6 @@ import {
   AuthGuardFn,
   VerifyAuthenticatedGuardFn,
   GetGenealogyGuardFn,
-  GetUserByIdGuard,
 } from './app/guards';
 
 export const routes: Routes = [
@@ -31,24 +30,28 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: DashboardComponent,
+        title: 'Dashboard',
       },
       {
         path: 'unilevel',
         component: UnilevelComponent,
+        title: 'Unilevel',
       },
       {
         path: 'geonology/:user',
         canActivate: [GetGenealogyGuardFn],
         component: GeonologyComponent,
-        data: { title: 'Genealogy' },
+        title: 'Genealogy',
       },
       {
         path: 'ecu-wallet',
         component: EcuWalletComponent,
+        title: 'NJ-Wallet',
       },
       {
         path: 'leadership-support',
         component: LeadershipSupportComponent,
+        title: 'Leadership Supprt',
       },
     ],
   },
@@ -60,6 +63,7 @@ export const routes: Routes = [
       {
         path: 'credentials',
         component: AuthFormComponent,
+        title: 'Auth',
       },
     ],
   },
