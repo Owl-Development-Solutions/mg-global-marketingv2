@@ -1,9 +1,10 @@
 import { Component, input } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
+import { DatePipe, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-profile-tabs',
-  imports: [MatTabsModule],
+  imports: [MatTabsModule, DatePipe, CommonModule],
   templateUrl: './profile-tabs.component.html',
   styleUrl: './profile-tabs.component.scss',
 })
@@ -11,9 +12,14 @@ export class ProfileTabsComponent {
   userInfo = input.required<
     | {
         firstName: string;
+        middleName?: string;
         lastName: string;
+        birthDate?: Date | string | null;
         username: string;
         email: string;
+        sponsor?: any;
+        upline?: any;
+        position?: any;
       }
     | undefined
     | null

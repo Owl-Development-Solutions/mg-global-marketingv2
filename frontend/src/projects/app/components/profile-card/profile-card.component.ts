@@ -1,9 +1,10 @@
 import { Component, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
+import { BalanceCardComponent } from '../balance-card/balance-card.component';
 
 @Component({
   selector: 'app-profile-card',
-  imports: [MatIcon],
+  imports: [MatIcon, BalanceCardComponent],
   templateUrl: './profile-card.component.html',
   styleUrl: './profile-card.component.scss',
 })
