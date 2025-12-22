@@ -15,12 +15,102 @@
     </div>
   </mat-tab>
 
-  <!-- Tab 2 -->
-  <mat-tab label="Account Info">
-    <div class="bg-white rounded-xl shadow-md p-6">
-      Account Info goes here...
+<!-- Tab 2 -->
+<mat-tab label="Account Info">
+  <div class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-8 border-b pb-4">
+      <h2 class="text-2xl font-semibold text-gray-800">
+        Account Information
+      </h2>
+      <p class="text-sm text-gray-500">
+        View your personal and account details
+      </p>
     </div>
-  </mat-tab>
+
+    <!-- Info Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Full Name -->
+      <div class="space-y-1">
+        <span class="text-xs uppercase tracking-wide text-gray-500">
+          Full Name
+        </span>
+        <p class="text-lg font-medium text-gray-900">
+          {{ userInfo()?.firstName }}
+          {{ userInfo()?.middleName || '' }}
+          {{ userInfo()?.lastName }}
+        </p>
+      </div>
+
+      <!-- Username -->
+      <div class="space-y-1">
+        <span class="text-xs uppercase tracking-wide text-gray-500">
+          Username
+        </span>
+        <p class="text-base text-gray-800">
+          {{ userInfo()?.username || '—' }}
+        </p>
+      </div>
+
+      <!-- Email -->
+      <div class="space-y-1">
+        <span class="text-xs uppercase tracking-wide text-gray-500">
+          Email Address
+        </span>
+        <p class="text-base text-gray-800 break-all">
+          {{ userInfo()?.email || '—' }}
+        </p>
+      </div>
+
+      <!-- Birthdate -->
+      <div class="space-y-1">
+        <span class="text-xs uppercase tracking-wide text-gray-500">
+          Birthdate
+        </span>
+        <p class="text-base text-gray-800">
+          <ng-container *ngIf="userInfo()?.birthDate; else noBirthDate">
+            {{ userInfo()?.birthDate | date:'MMMM dd, yyyy' }}
+          </ng-container>
+          <ng-template #noBirthDate>—</ng-template>
+        </p>
+      </div>
+
+      <!-- Position -->
+      <div class="space-y-1">
+        <span class="text-xs uppercase tracking-wide text-gray-500">
+          Position
+        </span>
+        <p class="text-base text-gray-800">
+          {{ userInfo()?.position || '—' }}
+        </p>
+      </div>
+
+      <!-- Sponsor -->
+      <div class="space-y-1">
+        <span class="text-xs uppercase tracking-wide text-gray-500">
+          Sponsor
+        </span>
+        <p class="text-base text-gray-800">
+          {{ userInfo()?.sponsor?.userName || userInfo()?.sponsor || '—' }}
+        </p>
+      </div>
+
+      <!-- Upline -->
+      <div class="space-y-1 md:col-span-2">
+        <span class="text-xs uppercase tracking-wide text-gray-500">
+          Upline
+        </span>
+        <p class="text-base text-gray-800">
+          {{ userInfo()?.upline?.userName || userInfo()?.upline || '—' }}
+        </p>
+      </div>
+
+    </div>
+  </div>
+</mat-tab>
+
 
   <!-- Tab 4 -->
   <mat-tab label="Package Points">

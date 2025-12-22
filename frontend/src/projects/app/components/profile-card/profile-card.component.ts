@@ -25,9 +25,9 @@ export class ProfileCardComponent {
     'PMA Reminder for FA049950: Qualified for next month’s benefits...';
 
   balances = [
-    { amount: '339.18 PHP', label: 'PHP Balance' },
-    { amount: '145.00 PHP', label: 'EC Wallet' },
-    { amount: '0', label: 'Travel GC' },
+    { amount: 'PHP', label: 'Balance' },
+    { amount: 'PHP', label: 'EC Wallet' },
+    { amount: 'PHP', label: 'Travel GC' },
   ];
 
   imgUrl = 'person-img.jpg';

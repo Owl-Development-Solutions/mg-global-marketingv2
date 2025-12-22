@@ -43,9 +43,11 @@ import {
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
 import { UsernameSharedService } from 'projects/app/services';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-account-info-register',
+  standalone: true,
   imports: [
     MatDatepickerModule,
     MatFormField,
@@ -68,6 +70,28 @@ import { UsernameSharedService } from 'projects/app/services';
   styleUrl: './account-info-register.component.scss',
 })
 export class AccountInfoRegisterComponent implements AfterViewInit {
+  constructor(private userService: UserService) {}
+    // Call this after successful registration (e.g., after API success or on submit)
+    saveUserInfo() {
+      const userData = this.register();
+      this.userService.setUser({
+        firstName: userData.firstName,
+        middleName: userData.middleName,
+        lastName: userData.lastName,
+        birthDate: userData.birthDate ? (typeof userData.birthDate === 'string' ? new Date(userData.birthDate) : userData.birthDate) : null,
+        username: userData.username,
+        email: userData.email,
+        sponsor: userData.sponsor,
+        upline: userData.upline,
+        position: userData.position
+      });
+    }
+
+    // Example: Call saveUserInfo() after registration (replace with your actual registration logic)
+    onRegister() {
+      // ... your registration logic (API call, validation, etc.)
+      this.saveUserInfo();
+    }
   private userUsecase = inject(UserUsecase);
   private userIdSharedService = inject(UsernameSharedService);
 
