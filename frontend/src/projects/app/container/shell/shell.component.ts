@@ -171,7 +171,7 @@ export class ShellComponent {
       label: 'Financial',
       children: [
         {
-          label: 'NJ Wallet',
+          label: 'Wallet',
           icon: 'account_balance_wallet',
           routerLink: ['/ecu-wallet'], // <-- FIXED
         },
