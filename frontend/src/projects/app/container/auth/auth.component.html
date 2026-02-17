@@ -3,22 +3,22 @@
 >
   <div class="h-full flex flex-col @3xl:flex-row">
     <div
-      class="grow flex flex-col gap-16 max-w-8xl grow mx-auto items-center justify-center p-8"
+      class="grow flex flex-col gap-16 max-w-8xl mx-auto items-center justify-center p-8 bg-black text-white"
     >
       <!-- <h1 class="@3xl:hidden text-white text-5xl text-center">NivJenz</h1> -->
 
       <img
-        src="logo/transparent-original.png"
+        src="logo/Davince-resolve-fusion.png"
         alt="logo"
-        [class.h-50]="(breakpoint$ | async)?.matches"
-        [class.h-72]="(breakpoint$ | async)?.matches === false"
+        [class.h-30]="(breakpoint$ | async)?.matches"
+        [class.h-149]="(breakpoint$ | async)?.matches === false"
       />
     </div>
     <div
       class="@3xl:max-w-lg @3xl:min-w-[490px] bg-white flex flex-col gap-4 p-8 justify-center"
     >
       <h1 class="hidden @3xl:block text-primary text-5xl text-center">
-        NivJenz
+        Davinci Resolve Fusion
       </h1>
       <div>
         <router-outlet></router-outlet>
