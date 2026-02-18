@@ -207,17 +207,5 @@ export class ShellComponent {
         // },
       ],
     },
-
-    // LEADERSHIP SUPPORT
-    {
-      label: 'Support',
-      children: [
-        {
-          label: 'Leadership Support',
-          icon: 'support',
-          routerLink: ['/leadership-support'], // correct
-        },
-      ],
-    },
   ];
 }

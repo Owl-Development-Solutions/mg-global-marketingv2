@@ -53,7 +53,6 @@ export class EcuWalletComponent {
   balances = [
     { amount: '339.18 PHP', label: 'PHP Balance' },
     { amount: '145.00 PHP', label: 'EC Wallet' },
-    { amount: '0', label: 'Travel GC' },
   ];
 
   handleAddWallet() {
