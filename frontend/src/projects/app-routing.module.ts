@@ -45,7 +45,7 @@ export const routes: Routes = [
       {
         path: 'ecu-wallet',
         component: EcuWalletComponent,
-        title: 'NJ-Wallet',
+        title: 'Davince Resolve Fusion',
       },
     ],
   },
