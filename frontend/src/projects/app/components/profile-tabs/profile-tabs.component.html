@@ -1,43 +1,28 @@
 <mat-tab-group mat-stretch-tabs>
-  <!-- Tab 1 -->
-  <mat-tab label="Reminders">
-    <div class="bg-white rounded-xl shadow-md p-6">
-      <h6 class="text-base font-bold mb-2">
-        Welcome {{ userInfo()?.firstName }} {{ userInfo()?.lastName }}!
-      </h6>
-      <p>
-        Your EC R2ME link is
-        <a [href]="reminderLink" class="text-red-500 underline">{{
-          reminderLink
-        }}</a>
-      </p>
-      <p class="mt-2 text-gray-700">{{ reminderText }}</p>
-    </div>
-  </mat-tab>
 
 <!-- Tab 2 -->
-<mat-tab label="Account Info">
-  <div class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl mx-auto">
+<mat-tab label="Account Info" class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl 2xl:text-2xl">
+  <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm sm:shadow-md lg:shadow-lg p-3 sm:p-4 md:p-6 lg:p-8 xl:p-12 2xl:p-16 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl 2xl:max-w-4xl mx-auto overflow-hidden">
 
     <!-- Header -->
-    <div class="mb-8 border-b pb-4">
-      <h2 class="text-2xl font-semibold text-gray-800">
+    <div class="mb-3 sm:mb-4 md:mb-5 lg:mb-6 xl:mb-8 2xl:mb-10 border-b border-gray-100 pb-2 sm:pb-3 md:pb-4 lg:pb-5 xl:pb-6 2xl:pb-8">
+      <h2 class="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-semibold text-gray-900 truncate">
         Account Information
       </h2>
-      <p class="text-sm text-gray-500">
+      <p class="text-xs sm:text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg text-gray-500 mt-1">
         View your personal and account details
       </p>
     </div>
 
     <!-- Info Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-7 2xl:gap-8">
 
       <!-- Full Name -->
-      <div class="space-y-1">
-        <span class="text-xs uppercase tracking-wide text-gray-500">
+      <div class="space-y-1 sm:space-y-2">
+        <span class="text-xs sm:text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg uppercase tracking-wide text-gray-500 font-medium">
           Full Name
         </span>
-        <p class="text-lg font-medium text-gray-900">
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-medium text-gray-900 truncate leading-tight">
           {{ userInfo()?.firstName }}
           {{ userInfo()?.middleName || '' }}
           {{ userInfo()?.lastName }}
@@ -45,31 +30,31 @@
       </div>
 
       <!-- Username -->
-      <div class="space-y-1">
-        <span class="text-xs uppercase tracking-wide text-gray-500">
+      <div class="space-y-1 sm:space-y-2">
+        <span class="text-xs sm:text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg uppercase tracking-wide text-gray-500 font-medium">
           Username
         </span>
-        <p class="text-base text-gray-800">
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-900 truncate leading-tight">
           {{ userInfo()?.username || '—' }}
         </p>
       </div>
 
       <!-- Email -->
-      <div class="space-y-1">
-        <span class="text-xs uppercase tracking-wide text-gray-500">
+      <div class="space-y-1 sm:space-y-2">
+        <span class="text-xs sm:text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg uppercase tracking-wide text-gray-500 font-medium">
           Email Address
         </span>
-        <p class="text-base text-gray-800 break-all">
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-900 break-all leading-tight">
           {{ userInfo()?.email || '—' }}
         </p>
       </div>
 
       <!-- Birthdate -->
-      <div class="space-y-1">
-        <span class="text-xs uppercase tracking-wide text-gray-500">
+      <div class="space-y-1 sm:space-y-2">
+        <span class="text-xs sm:text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg uppercase tracking-wide text-gray-500 font-medium">
           Birthdate
         </span>
-        <p class="text-base text-gray-800">
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-900 leading-tight">
           <ng-container *ngIf="userInfo()?.birthDate; else noBirthDate">
             {{ userInfo()?.birthDate | date:'MMMM dd, yyyy' }}
           </ng-container>
@@ -78,31 +63,31 @@
       </div>
 
       <!-- Position -->
-      <div class="space-y-1">
-        <span class="text-xs uppercase tracking-wide text-gray-500">
+      <div class="space-y-1 sm:space-y-2">
+        <span class="text-xs sm:text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg uppercase tracking-wide text-gray-500 font-medium">
           Position
         </span>
-        <p class="text-base text-gray-800">
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-900 truncate leading-tight">
           {{ userInfo()?.position || '—' }}
         </p>
       </div>
 
       <!-- Sponsor -->
-      <div class="space-y-1">
-        <span class="text-xs uppercase tracking-wide text-gray-500">
+      <div class="space-y-1 sm:space-y-2">
+        <span class="text-xs sm:text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg uppercase tracking-wide text-gray-500 font-medium">
           Sponsor
         </span>
-        <p class="text-base text-gray-800">
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-900 truncate leading-tight">
           {{ userInfo()?.sponsor?.userName || userInfo()?.sponsor || '—' }}
         </p>
       </div>
 
       <!-- Upline -->
-      <div class="space-y-1 md:col-span-2">
-        <span class="text-xs uppercase tracking-wide text-gray-500">
+      <div class="space-y-1 sm:space-y-2 md:col-span-2">
+        <span class="text-xs sm:text-xs md:text-sm lg:text-sm xl:text-base 2xl:text-lg uppercase tracking-wide text-gray-500 font-medium">
           Upline
         </span>
-        <p class="text-base text-gray-800">
+        <p class="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl text-gray-900 truncate leading-tight">
           {{ userInfo()?.upline?.userName || userInfo()?.upline || '—' }}
         </p>
       </div>
@@ -110,12 +95,4 @@
     </div>
   </div>
 </mat-tab>
-
-
-  <!-- Tab 4 -->
-  <mat-tab label="Package Points">
-    <div class="bg-white rounded-xl shadow-md p-6">
-      Package Points go here...
-    </div>
-  </mat-tab>
 </mat-tab-group>

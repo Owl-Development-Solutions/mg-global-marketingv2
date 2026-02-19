@@ -1,63 +1,90 @@
-<div>
+<div class="space-y-6">
   @if (loading) {
-    <div class="spinner-container">
-      <mat-spinner color="primary" mode="indeterminate"> </mat-spinner>
+    <!-- Loading State -->
+    <div class="flex items-center justify-center py-12">
+      <div class="text-center space-y-4">
+        <mat-spinner color="warn" mode="indeterminate" diameter="50"></mat-spinner>
+        <p class="text-sm text-gray-500 font-medium">Authenticating...</p>
+      </div>
     </div>
   } @else {
-    <form #authForm="ngForm" (ngSubmit)="login(authForm)" class="font-display">
-      <mat-form-field hideRequiredMarker>
-        <mat-label>Email</mat-label>
-        <input
-          required
-          type="text"
-          matInput
-          placeholder="Email"
-          name="email"
-          id="email"
-          #email="ngModel"
-          [(ngModel)]="input!.email"
-        />
+    <!-- Login Form -->
+    <form #authForm="ngForm" (ngSubmit)="login(authForm)" class="space-y-5">
+      <!-- Email Field -->
+      <div class="space-y-2">
+        <mat-form-field 
+          hideRequiredMarker 
+          class="w-full"
+        >
+          <mat-label class="text-sm font-medium">Email Address</mat-label>
+          <input
+            required
+            type="email"
+            matInput
+            placeholder="Enter your email"
+            name="email"
+            id="email"
+            #email="ngModel"
+            [(ngModel)]="input!.email"
+            class="text-base"
+          />
 
-        @if (email.invalid) {
-          <mat-error>
-            @if (email.hasError("required")) {
-              <span>Email is required</span>
-            }
-          </mat-error>
-        }
-      </mat-form-field>
+          @if (email.invalid && email.touched) {
+            <mat-error class="text-sm">
+              @if (email.hasError("required")) {
+                <span>Email address is required</span>
+              }
+              @if (email.hasError("email")) {
+                <span>Please enter a valid email address</span>
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+      </div>
 
-      <app-password-field
-        #password="ngModel"
-        name="password"
-        [required]="true"
-        [label]="'Password'"
-        [isDisabled]="loading"
-        [error]="password"
-        [(ngModel)]="input!.password"
-      >
-      </app-password-field>
+      <!-- Password Field -->
+      <div class="space-y-2">
+        <app-password-field
+          #password="ngModel"
+          name="password"
+          [required]="true"
+          [label]="'Password'"
+          [isDisabled]="loading"
+          [error]="password"
+          [(ngModel)]="input!.password"
+        >
+        </app-password-field>
+      </div>
 
-      <div class="flex justify-between items-center">
-        <span
-          class="mb-5 mt-4 cursor-pointer hover:underline"
+      <!-- Action Links -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 pt-2">
+        <button
+          type="button"
           (click)="forgottenPassword(authForm.value?.username)"
+          class="text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors duration-200 underline-offset-4 hover:underline"
         >
           Forgot Password?
-        </span>
+        </button>
 
-        <span
-          class="mb-5 mt-4 cursor-pointer hover:underline text-primary"
+        <button
+          type="button"
           (click)="signUpHere()"
-          >Register Here</span
+          class="text-sm font-medium text-gray-900 hover:text-gray-700 transition-colors duration-200 underline-offset-4 hover:underline"
         >
+          Register Here
+        </button>
       </div>
-      <app-submit-button
-        [isDisabled]="authForm.invalid || authLoading()!"
-        [isLoading]="authLoading()!"
-        [text]="'Login'"
-      >
-      </app-submit-button>
+
+      <!-- Submit Button -->
+      <div class="pt-4">
+        <app-submit-button
+          [isDisabled]="authForm.invalid || authLoading()!"
+          [isLoading]="authLoading()!"
+          [text]="'Sign In'"
+          [color]="'warn'"
+        >
+        </app-submit-button>
+      </div>
     </form>
   }
 </div>

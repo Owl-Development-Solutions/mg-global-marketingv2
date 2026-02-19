@@ -1,0 +1,28 @@
+/* Auth Form Component Styles */
+/* Complementary styles for Tailwind CSS design */
+
+/* Icon container enhancements */
+::ng-deep .mat-icon {
+  transition: transform 0.2s ease;
+}
+
+/* Form container responsive adjustments */
+@media (max-width: 640px) {
+  .form-container {
+    padding: 1rem;
+  }
+}
+
+/* Enhanced focus states for accessibility */
+@media (prefers-reduced-motion: no-preference) {
+  .icon-container:hover .mat-icon {
+    transform: scale(1.1);
+  }
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
