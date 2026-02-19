@@ -51,7 +51,7 @@ export const getUserInfo = createSelector(
   },
 );
 
-export const getUserName = createSelector(
+export const getUserFullName = createSelector(
   getAuthProfile,
   (user: UserResponseModel | undefined) => {
     if (user) {
@@ -59,6 +59,16 @@ export const getUserName = createSelector(
         firstName: user.attributes?.firstName,
         lastName: user.attributes?.lastName,
       };
+    }
+    return null;
+  },
+);
+
+export const getUserName = createSelector(
+  getAuthProfile,
+  (user: UserResponseModel | undefined) => {
+    if (user) {
+      return user.attributes.username;
     }
     return null;
   },
