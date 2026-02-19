@@ -65,11 +65,13 @@ export class GeonologyComponent implements OnInit, OnDestroy {
   userId = toSignal(this.getUserId$);
   rootUsername = toSignal(this.rootUsername$);
 
+  userName = toSignal(this.authUsecase.getUserName$);
+
   handleAddMember(geonologyData: { data: GeonologyNode; side: string }) {
     this.dialog.open(AddMemberModalComponent, {
       data: {
         data: geonologyData.data,
-        rootUsername: this.rootUsername(),
+        rootUsername: this.userName(),
         side: geonologyData.side,
         onSubmit: this.submitAddMember.bind(this),
       },
