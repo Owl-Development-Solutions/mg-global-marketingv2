@@ -27,7 +27,6 @@ export class ProfileCardComponent {
   balances = [
     { amount: 'PHP', label: 'Balance' },
     { amount: 'PHP', label: 'EC Wallet' },
-    { amount: 'PHP', label: 'Travel GC' },
   ];
 
   imgUrl = 'person-img.jpg';

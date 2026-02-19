@@ -6,7 +6,6 @@ import {
   EcuWalletComponent,
   GeonologyComponent,
   ShellComponent,
-  LeadershipSupportComponent,
   UnilevelComponent,
 } from './app/container';
 import { RouterModule, Routes } from '@angular/router';
@@ -46,12 +45,7 @@ export const routes: Routes = [
       {
         path: 'ecu-wallet',
         component: EcuWalletComponent,
-        title: 'NJ-Wallet',
-      },
-      {
-        path: 'leadership-support',
-        component: LeadershipSupportComponent,
-        title: 'Leadership Supprt',
+        title: 'Davince Resolve Fusion',
       },
     ],
   },
