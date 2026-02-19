@@ -18,41 +18,42 @@ import { connection } from "../../config/mysql.db";
 import { processBinaryVolumeUpstream } from "../../utils/helpers/process-upstream-geonology";
 
 export const registerUserIn = async (
-  user: RegisterData
+  user: RegisterData,
 ): Promise<Result<SuccessResponse, ErrorResponse>> => {
+  const db = connection();
+  const conn = await db.getConnection();
+
   try {
+    await conn.beginTransaction();
+
+    // ================= VALIDATION =================
+
     if (
       !user.email ||
       !user.password ||
       !user.sponsor ||
       !user.upline ||
-      !user.position
+      !user.position ||
+      !user.pin
     ) {
+      await conn.rollback();
       return {
         success: false,
-        error: {
-          errorMessage: "Missing Required Fields",
-          statusCode: 400,
-        },
+        error: { errorMessage: "Missing Required Fields", statusCode: 400 },
       };
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(user.email)) {
+      await conn.rollback();
       return {
         success: false,
-        error: {
-          errorMessage: "Invalid email format",
-          statusCode: 400,
-        },
+        error: { errorMessage: "Invalid email format", statusCode: 400 },
       };
     }
 
-    const db = connection();
-
-    const sideColumn = user.position === "[L]" ? "LeftChildId" : "rightChildId";
-
     if (user.position !== "[L]" && user.position !== "[R]") {
+      await conn.rollback();
       return {
         success: false,
         error: {
@@ -62,27 +63,32 @@ export const registerUserIn = async (
       };
     }
 
-    const [emailCheck] = await db.execute(
-      "SELECT * FROM `users` WHERE `email` = ?",
-      [user.email]
+    const sideColumn = user.position === "[L]" ? "LeftChildId" : "RightChildId";
+
+    // ================= EMAIL CHECK =================
+
+    const [emailCheck] = await conn.execute(
+      "SELECT id FROM users WHERE email = ?",
+      [user.email.trim()],
     );
 
     if ((emailCheck as any[]).length > 0) {
+      await conn.rollback();
       return {
         success: false,
-        error: {
-          errorMessage: "Email is aldready registered",
-          statusCode: 409,
-        },
+        error: { errorMessage: "Email already registered", statusCode: 409 },
       };
     }
 
-    const [sponsorCheck] = await db.execute(
-      "SELECT id FROM `users` WHERE `userName` = ?",
-      [user.sponsor]
+    // ================= SPONSOR CHECK =================
+
+    const [sponsorCheck] = await conn.execute(
+      "SELECT id FROM users WHERE userName = ?",
+      [user.sponsor],
     );
 
     if ((sponsorCheck as any[]).length === 0) {
+      await conn.rollback();
       return {
         success: false,
         error: {
@@ -92,20 +98,17 @@ export const registerUserIn = async (
       };
     }
 
-    const sponsorUsers = sponsorCheck as any[];
-    const sponsorUser = sponsorUsers[0];
+    const actualSponsorId = (sponsorCheck as any[])[0].id;
 
-    const actualSponsorId = sponsorUser.id;
+    // ================= UPLINE CHECK =================
 
-    const [uplineCheck] = await db.execute(
-      `SELECT id, ${sideColumn} FROM users WHERE username = ? FOR UPDATE`,
-      [user.upline]
+    const [uplineCheck] = await conn.execute(
+      "SELECT id FROM users WHERE username = ?",
+      [user.upline],
     );
 
-    const uplines = uplineCheck as any[];
-    const upline = uplines[0];
-
-    if (!upline) {
+    if ((uplineCheck as any[]).length === 0) {
+      await conn.rollback();
       return {
         success: false,
         error: {
@@ -115,118 +118,116 @@ export const registerUserIn = async (
       };
     }
 
-    if (upline[sideColumn]) {
-      const sideName = user.position === "[L]" ? "Left" : "Right";
-      return {
-        success: false,
-        error: {
-          statusCode: 409,
-          errorMessage: `Upline slot on the ${sideName} side is already occupied`,
-        },
-      };
-    }
+    const actualUplineId = (uplineCheck as any[])[0].id;
 
-    const actualUplineId = upline.id;
+    // ================= ACTIVATION CODE (ATOMIC) =================
+    // This prevents double usage without FOR UPDATE
 
-    //activation-codes
-    const [codes] = await db.execute(
-      `SELECT id, status FROM activation_codes WHERE code = ? FOR UPDATE`,
-      [user.pin]
+    const [activationUpdate] = await conn.execute(
+      `UPDATE activation_codes 
+       SET status = 'Used'
+       WHERE code = ? AND status = 'Active'`,
+      [user.pin.trim()],
     );
 
-    const codeRecords = codes as ActivationCode[];
-    const code = codeRecords[0];
-
-    if (!code) {
+    if ((activationUpdate as ResultSetHeader).affectedRows === 0) {
+      await conn.rollback();
       return {
         success: false,
         error: {
           statusCode: 404,
-          errorMessage: "Activation code is invalid or not found.",
+          errorMessage: "Activation code is invalid or already used.",
         },
       };
     }
 
-    const activationCodeIdFromDB = code.id;
+    const [activationCodeRow] = await conn.execute(
+      "SELECT id FROM activation_codes WHERE code = ?",
+      [user.pin.trim()],
+    );
 
-    //has the password
+    const activationCodeIdFromDB = (activationCodeRow as any[])[0].id;
+
+    // ================= CREATE USER =================
+
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(user.password, salt);
     const { v4: uuidv4 } = await import("uuid");
     const newUserId = uuidv4();
 
-    const userFullName =
-      user.firstName + " " + user.middleName + " " + user.lastName;
+    const userFullName = `${user.firstName} ${user.middleName ?? ""} ${user.lastName}`;
 
-    //insert into users table
-    const [result] = await db.execute(
-      "INSERT INTO users (`id`, `firstName`, `lastName`, `middleName`, `userName`, `name`, `email`, `password`, `birthDate`, `parentId`, `activationCodeId`, `sponsorId`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    await conn.execute(
+      `INSERT INTO users 
+      (id, firstName, lastName, middleName, userName, name, email, password, birthDate, parentId, activationCodeId, sponsorId) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         newUserId,
         user.firstName,
         user.lastName,
         user.middleName,
         user.username,
-        userFullName,
+        userFullName.trim(),
         user.email,
         hash,
         user.birthDate,
         actualUplineId,
         activationCodeIdFromDB,
         actualSponsorId,
-      ]
+      ],
     );
 
-    //error when inserting in the database
-    const insertResult = result as ResultSetHeader;
+    // ================= ATOMIC SLOT PLACEMENT =================
 
-    if (insertResult.affectedRows === 0) {
+    const [slotUpdate] = await conn.execute(
+      `UPDATE users 
+       SET ${sideColumn} = ?
+       WHERE id = ? AND ${sideColumn} IS NULL`,
+      [newUserId, actualUplineId],
+    );
+
+    if ((slotUpdate as ResultSetHeader).affectedRows === 0) {
+      await conn.rollback();
       return {
         success: false,
         error: {
-          statusCode: 500,
-          errorMessage: "Failed to insert user",
+          statusCode: 409,
+          errorMessage: "Upline slot already occupied.",
         },
       };
     }
 
-    await db.execute(
-      "INSERT INTO user_stats (`userId`, `balance`, `leftPoints`, `rightPoints`, `leftDownline`, `rightDownline`, `rankPoints`, `level`, `sidePath`, `hasDeduction`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [newUserId, 0.0, 0, 0, 0, 0, 0, 0, "root", false]
+    // ================= USER STATS =================
+
+    await conn.execute(
+      `INSERT INTO user_stats 
+       (userId, balance, leftPoints, rightPoints, leftDownline, rightDownline, rankPoints, level, sidePath, hasDeduction) 
+       VALUES (?, 0, 0, 0, 0, 0, 0, 0, 'root', false)`,
+      [newUserId],
     );
 
-    await db.execute(`UPDATE users SET ${sideColumn} = ? WHERE id = ?`, [
-      newUserId,
-      actualUplineId,
-    ]);
-
-    await db.execute(`UPDATE activation_codes SET status = ? WHERE id = ?`, [
-      "Used",
-      activationCodeIdFromDB,
-    ]);
-
-    await db.execute(
-      `UPDATE user_stats SET normalWallet = normalWallet + 500.00 WHERE userId = ?`,
-      [actualUplineId]
+    await conn.execute(
+      `UPDATE user_stats 
+       SET normalWallet = normalWallet + 500 
+       WHERE userId = ?`,
+      [actualUplineId],
     );
 
-    await db.execute(
-      "INSERT INTO transactions (`userId`, `type`, `walletType`, `amount`, `transactionDirection`, `description`, `referenceId`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    await conn.execute(
+      `INSERT INTO transactions 
+       (userId, type, walletType, amount, transactionDirection, description, referenceId) 
+       VALUES (?, 'Referral Bonus', 'normalWallet', 500, 'Credit', ?, ?)`,
       [
         actualUplineId,
-        "Referral Bonus",
-        "normalWallet",
-        500,
-        "Credit",
         `Direct referral bonus for new user ${user.username}`,
         newUserId,
-      ]
+      ],
     );
 
-    const placementSide: "Left" | "Right" =
-      user.position === "[L]" ? "Left" : "Right";
+    const placementSide = user.position === "[L]" ? "Left" : "Right";
+    await processBinaryVolumeUpstream(conn, actualUplineId, placementSide);
 
-    await processBinaryVolumeUpstream(actualUplineId, placementSide);
+    await conn.commit();
 
     return {
       success: true,
@@ -236,6 +237,7 @@ export const registerUserIn = async (
       },
     };
   } catch (error) {
+    await conn.rollback();
     return {
       success: false,
       error: {
@@ -243,11 +245,13 @@ export const registerUserIn = async (
         errorMessage: error instanceof Error ? error.message : String(error),
       },
     };
+  } finally {
+    conn.release();
   }
 };
 
 export const loginUserIn = async (
-  data: User
+  data: User,
 ): Promise<Result<SuccessResponse<UserResponse>, ErrorResponse>> => {
   try {
     if (!data.email || !data.password) {

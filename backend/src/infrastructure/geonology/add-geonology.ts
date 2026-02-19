@@ -15,32 +15,37 @@ import { processUplineRewards } from "../../utils/helpers/genology-helper";
 import { processBinaryVolumeUpstream } from "../../utils/helpers/process-upstream-geonology";
 
 export const addGeonologyUserIn = async (
-  data: AddUserGeonologyData
+  data: AddUserGeonologyData,
 ): Promise<Result<SuccessResponse<GeonologyResponse>, ErrorResponse>> => {
-  const { parentUserName, side, child, activationCodeId } = data;
+  const { parentUserName, side, child, activationCodeId, sponsorUsername } =
+    data;
 
-  const sideColumn = side === "[L]" ? "leftChildId" : "rightChildId";
+  console.log(data);
 
+  // 1. Basic Validation
   if (side !== "[L]" && side !== "[R]") {
     return {
       success: false,
-      error: {
-        statusCode: 400,
-        errorMessage: "Invalid placement side, Must be [L] or [R].",
-      },
+      error: { statusCode: 400, errorMessage: "Invalid side." },
     };
   }
 
+  const sideColumn = side === "[L]" ? "leftChildId" : "rightChildId";
   const db = connection();
+  const conn = await db.getConnection(); // Get a single connection for the transaction
 
   try {
-    const [codes] = await db.execute(
-      `SELECT id, status, expiresAt FROM activation_codes WHERE code = ? FOR UPDATE`,
-      [activationCodeId]
-    );
+    await conn.beginTransaction();
 
+    // 2. Lock and Validate Activation Code
+    const [codes]: any = await conn.execute(
+      `SELECT id, expiresAt FROM activation_codes WHERE code = ? AND status = 'Active' FOR UPDATE`,
+      [activationCodeId],
+    );
     const codeRecords = codes as ActivationCode[];
     const code = codeRecords[0];
+
+    console.log(code);
 
     if (!code) {
       return {
@@ -52,154 +57,96 @@ export const addGeonologyUserIn = async (
       };
     }
 
-    if (code.expiresAt && new Date(code.expiresAt) < new Date()) {
-      return {
-        success: false,
-        error: {
-          statusCode: 403,
-          errorMessage: "Activation code is already expired.",
-        },
-      };
-    }
-
-    const activationCodeIdFromDB = code.id;
-
-    const [sponsorResult] = await db.execute(
+    // 3. Lock and Validate Parent/Sponsor
+    const [sponsor]: any = await conn.execute(
       `SELECT id FROM users WHERE username = ?`,
-      [data.sponsorUsername]
+      [sponsorUsername],
     );
-    const sponsors = sponsorResult as User[];
-    const sponsor = sponsors[0];
+    if (!sponsor[0]) throw new Error("Sponsor not found.");
 
-    if (!sponsor) {
-      return {
-        success: false,
-        error: {
-          statusCode: 404,
-          errorMessage: "Sponsor username is not valid or found.",
-        },
-      };
-    }
-
-    const sponsorId = sponsor.id;
-
-    const [parent] = await db.execute(
-      `SELECT id, ${sideColumn} FROM users WHERE username = ?`,
-      [parentUserName]
+    const [parent]: any = await conn.execute(
+      `SELECT id, ${sideColumn} FROM users WHERE username = ? FOR UPDATE`,
+      [parentUserName],
     );
-    const users = parent as User[];
-    const user = users[0];
+    if (!parent[0]) throw new Error("Parent user not found.");
+    if (parent[0][sideColumn])
+      throw new Error(`The ${side} slot is already occupied.`);
 
-    if (!user || user[sideColumn]) {
-      const message = !user
-        ? "Parent user not found."
-        : `The ${side.replace(/\[|\]/g, "")} slot of the parent is already occupied.`;
-
-      return {
-        success: false,
-        error: {
-          statusCode: 409,
-          errorMessage: message,
-        },
-      };
-    }
-
-    const parentId = user.id;
-
+    // 4. Create User
     const { v4: uuidv4 } = await import("uuid");
     const newUserId = uuidv4();
+    const fullName =
+      `${child.firstName} ${child.middleName || ""} ${child.lastName}`.replace(
+        /\s+/g,
+        " ",
+      );
 
-    const middlename = child.middleName === undefined ? "" : child.middleName;
-    const fullName = child.firstName + " " + middlename + " " + child.lastName;
-
-    //  INSERT NEW USER (CHILD)
-    // Pass the activationCodeId into the users table
-    const [userResult] = await db.execute(
+    await conn.execute(
       `INSERT INTO users (id, userName, firstName, lastName, middleName, name, parentId, activationCodeId, sponsorId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         newUserId,
         child.userName,
         child.firstName,
         child.lastName,
-        middlename,
+        child.middleName || "",
         fullName,
-        parentId,
-        activationCodeIdFromDB,
-        sponsorId,
-      ]
+        parent[0].id,
+        code.id,
+        sponsor[0].id,
+      ],
     );
 
-    await db.execute(
+    // 5. Update Code Status
+    await conn.execute(
+      `UPDATE activation_codes SET status = 'Used' WHERE id = ?`,
+      [code.id],
+    );
+    await conn.execute(
       `INSERT INTO code_usages (id, activationCodeId, userId) VALUES (?, ?, ?)`,
-      [uuidv4(), activationCodeIdFromDB, newUserId]
+      [uuidv4(), code.id, newUserId],
     );
 
-    await db.execute(`UPDATE activation_codes SET status = ? WHERE id = ?`, [
-      "Used",
-      activationCodeIdFromDB,
-    ]);
-
-    const [parentStats] = await db.execute(
+    // 6. Initialize Stats
+    const [parentStats]: any = await conn.execute(
       `SELECT sidePath, level FROM user_stats WHERE userId = ?`,
-      [parentId]
+      [parent[0].id],
     );
-    const userStats = parentStats as UserStats[];
-    const userStat = userStats[0];
-    const parentSidePath =
-      userStat?.sidePath === "root" ? "" : userStat?.sidePath;
+    const pStat = parentStats[0];
+    const newSidePath = `${pStat?.sidePath === "root" ? "" : pStat?.sidePath}${side}`;
+    const newLevel = (pStat?.level || 0) + 1;
 
-    const newSidePath = `${parentSidePath}${side}`;
-
-    const newDbLevel = userStat?.level + 1;
-
-    await db.execute(
-      `INSERT INTO user_stats (
-      userId, balance, leftPoints, rightPoints, leftDownline, rightDownline, rankPoints, level, sidePath, hasDeduction) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        newUserId,
-        child.balance,
-        child.leftPoints,
-        child.rightPoints,
-        child.leftDownline,
-        child.rightDownline,
-        child.rankPoints,
-        newDbLevel,
-        newSidePath,
-        child.hasDeduction,
-      ]
+    await conn.execute(
+      `INSERT INTO user_stats (userId, balance, level, sidePath) VALUES (?, ?, ?, ?)`,
+      [newUserId, child.balance || 0, newLevel, newSidePath],
     );
 
-    await db.execute(`UPDATE users SET ${sideColumn} = ? WHERE id = ?`, [
+    // Link Parent to Child
+    await conn.execute(`UPDATE users SET ${sideColumn} = ? WHERE id = ?`, [
       newUserId,
-      parentId,
+      parent[0].id,
     ]);
 
-    const sideForVolume: "Left" | "Right" = side === "[L]" ? "Left" : "Right";
+    // 7. Process Upstream Volume (Pass the transaction connection!)
+    const sideForVolume = side === "[L]" ? "Left" : "Right";
+    await processBinaryVolumeUpstream(conn, parent[0].id, sideForVolume);
 
-    await processBinaryVolumeUpstream(parentId, sideForVolume);
-
-    const geonologyLevel: LowOrHigh = { low: newDbLevel, high: 0 };
-
-    const response: GeonologyResponse = {
-      newUserId,
-      geonologyLevel,
-    };
+    await conn.commit();
 
     return {
       success: true,
       data: {
-        message: `User ${child.userName} successfully added and code consumed.`,
+        message: `User ${child.userName} added successfully.`,
         statusCode: 200,
-        data: response,
+        data: { newUserId, geonologyLevel: { low: newLevel, high: 0 } },
       },
     };
-  } catch (error) {
+  } catch (error: any) {
+    await conn.rollback();
     return {
       success: false,
-      error: {
-        statusCode: 500,
-        errorMessage: error instanceof Error ? error.message : String(error),
-      },
+      error: { statusCode: 500, errorMessage: error.message },
     };
+  } finally {
+    conn.release();
   }
 };
