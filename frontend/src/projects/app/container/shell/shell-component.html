@@ -29,7 +29,10 @@
       (isExpanded() && largerScreens()) || (drawerOpen() && smallerScreens())
     "
   >
-    <app-logo [title]="'Davince Resolve Fusion'" [expanded]="isExpanded() || smallerScreens()">
+    <app-logo
+      [title]="'Davince Resolve Fusion'"
+      [expanded]="isExpanded() || smallerScreens()"
+    >
     </app-logo>
     <app-sys-sidenav
       [canClose]="!smallerScreens()"
