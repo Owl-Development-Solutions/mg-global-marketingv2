@@ -31,7 +31,7 @@ export const getRefreshToken = createSelector(
   (state) => state.data?.refreshToken,
 );
 
-export const getAccessTokenz = createSelector(
+export const getAccessToken = createSelector(
   selectAuthState,
   (state) => state.data?.accessToken,
 );

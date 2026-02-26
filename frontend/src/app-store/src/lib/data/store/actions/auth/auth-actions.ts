@@ -52,3 +52,8 @@ export const refreshTokenFailed = createAction(
 );
 
 export const logoutAttempted = createAction('[Auth] Logout Attempted');
+
+export const updateUserProfile = createAction(
+  '[Auth] Update User Profile',
+  props<{ data: Partial<UserResponseModel> }>(),
+);

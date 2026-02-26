@@ -51,8 +51,8 @@ export class EcuWalletComponent {
   dataSource = [];
 
   balances = [
-    { amount: '339.18 PHP', label: 'PHP Balance' },
-    { amount: '145.00 PHP', label: 'EC Wallet' },
+    { amount: '339.18 PHP', label: 'TOTAL BALANCE' },
+    { amount: '145.00 PHP', label: 'TOTAL ELEARNINGS' },
   ];
 
   handleAddWallet() {

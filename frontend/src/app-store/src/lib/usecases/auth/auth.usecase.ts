@@ -32,6 +32,10 @@ export class AuthUsecase {
     this.store.dispatch(fromStore.logoutAttempted());
   }
 
+  updateUserProfile(data: Partial<any>) {
+    this.store.dispatch(fromStore.updateUserProfile({ data }));
+  }
+
   registerUser(data: RegisterData, callBacks: Callbacks) {
     this.store.dispatch(
       fromStore.initiateRegisterUserAttempted({ data, callBacks }),

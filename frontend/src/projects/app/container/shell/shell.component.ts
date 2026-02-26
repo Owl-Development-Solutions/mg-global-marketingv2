@@ -31,6 +31,8 @@ import {
 import { PageTitlePortalService } from '../../services';
 import { AuthUsecase } from '@app-store/lib/usecases';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatDialog } from '@angular/material/dialog';
+import { MyAccountModalComponent } from '../../components/my-account-modal/my-account-modal.component';
 
 @Component({
   selector: 'app-shell-component',
@@ -52,6 +54,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
     MatMenuItem,
     CommonModule,
     AppLogoComponent,
+    MyAccountModalComponent,
   ],
   templateUrl: './shell-component.html',
   styleUrls: ['./shell-component.scss'],
@@ -62,6 +65,7 @@ export class ShellComponent {
   protected breakpointObserver = inject(BreakpointObserver);
 
   private authUsecase = inject(AuthUsecase);
+  private dialog = inject(MatDialog);
 
   getAuthName$ = this.authUsecase.getAuthName$;
   getUserId$ = this.authUsecase.getUserId$;
@@ -150,6 +154,16 @@ export class ShellComponent {
 
   logout() {
     this.authUsecase.logout();
+  }
+
+  openMyAccountModal() {
+    const dialogRef = this.dialog.open(MyAccountModalComponent, {
+      width: '500px',
+      maxWidth: '90vw',
+      data: {
+        userId: this.getUserId()
+      }
+    });
   }
 
   //hardcoded for now

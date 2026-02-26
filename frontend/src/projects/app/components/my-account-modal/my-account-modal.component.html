@@ -1,0 +1,226 @@
+<div mat-dialog-content class="p-4 sm:p-6 lg:p-8 xl:p-10 bg-white dark:bg-gray-900 rounded-xl shadow-lg" style="padding: 20px; min-height: calc(100% + 60px);">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border-b border-gray-200 dark:border-gray-700 pb-3 sm:pb-4 lg:pb-6 xl:pb-8">
+    <div class="w-full text-center sm:text-left">
+      <h2 class="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold text-gray-800 dark:text-gray-900 tracking-tight" style="font-size: calc(1.125rem);">
+        Account Information
+      </h2>
+    </div>
+
+    <button 
+      *ngIf="!isEditMode"
+      mat-icon-button 
+      (click)="enableEditMode()"
+      class="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500 transition-all duration-200 hover:scale-105 mx-auto sm:mx-0"
+      matTooltip="Edit Profile"
+      matTooltipPosition="above">
+      <mat-icon class="text-lg sm:text-xl lg:text-2xl">edit</mat-icon>
+    </button>
+  </div>
+
+  <!-- Profile Section -->
+  <div class="mt-4 sm:mt-6 lg:mt-8 xl:mt-10 flex flex-col items-center">
+
+    <!-- Profile Image -->
+    <div class="relative group cursor-pointer mb-4 sm:mb-6">
+      <div class="w-16 sm:w-20 lg:w-24 xl:w-28 h-16 sm:h-20 lg:h-24 xl:h-28 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center shadow-md overflow-hidden ring-2 ring-gray-200 dark:ring-gray-700 transition-all duration-300 hover:ring-blue-500 hover:shadow-lg">
+        <img 
+          *ngIf="isEditMode && imagePreview; else showInitials"
+          [src]="imagePreview" 
+          alt="Profile" 
+          class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+        <ng-template #showInitials>
+          <span class="text-white text-lg sm:text-xl lg:text-2xl xl:text-3xl font-medium tracking-wide transition-transform duration-300 group-hover:scale-110">
+            {{ (userProfile$ | async)?.firstName?.charAt(0) || 'U' }}
+            {{ (userProfile$ | async)?.lastName?.charAt(0) || 'S' }}
+          </span>
+        </ng-template>
+      </div>
+
+      <!-- Online Status -->
+      <div class="absolute bottom-0 right-0 sm:bottom-1 sm:right-1 lg:bottom-2 lg:right-2 xl:bottom-3 xl:right-3 w-2 h-2 sm:w-3 sm:h-3 lg:w-4 lg:h-4 xl:w-5 xl:h-5 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></div>
+
+      <!-- Upload Button -->
+      <div *ngIf="isEditMode" class="absolute -bottom-2 -right-2 sm:-bottom-2 sm:-right-2 lg:-bottom-3 lg:-right-3 xl:-bottom-4 xl:-right-4">
+        <button 
+          mat-mini-fab
+          class="bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-all duration-200 hover:scale-105 hover:shadow-lg"
+          (click)="triggerImageUpload()"
+          matTooltip="Upload Photo"
+          matTooltipPosition="right">
+          <mat-icon class="text-sm sm:text-base lg:text-lg xl:text-xl">camera_alt</mat-icon>
+        </button>
+        <input 
+          #imageUpload
+          type="file" 
+          accept="image/*" 
+          (change)="onImageSelected($event)"
+          hidden
+          aria-label="Upload profile photo">
+      </div>
+    </div>
+
+    <!-- Name & Email -->
+    <div class="text-center mt-3 sm:mt-4 lg:mt-6 xl:mt-8 space-y-1 sm:space-y-2 lg:space-y-3">
+      <h3 class="text-base sm:text-lg lg:text-xl xl:text-2xl font-medium text-gray-900 dark:text-white">
+        {{ (userProfile$ | async)?.firstName || 'User' }} 
+        {{ (userProfile$ | async)?.lastName || 'Name' }}
+      </h3>
+      <p class="text-sm sm:text-base lg:text-lg xl:text-xl text-gray-600 dark:text-gray-300">
+        {{ (userProfile$ | async)?.email || 'user@example.com' }}
+      </p>
+      <p class="text-xs sm:text-sm lg:text-base xl:text-lg text-gray-500 dark:text-gray-400 font-mono">
+        @{{ (userProfile$ | async)?.username || 'username' }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Account Details Card -->
+  <div class="mt-6 sm:mt-8 lg:mt-10 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700">
+
+    <!-- Member ID -->
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 px-4 sm:px-6 py-3 sm:py-4">
+      <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 text-center sm:text-left">Member ID</span>
+      <span class="text-xs sm:text-sm font-mono text-gray-800 dark:text-gray-100 break-all text-center sm:text-right sm:text-left">{{ userId || 'N/A' }}</span>
+    </div>
+
+    <!-- Full Name -->
+    <div class="px-4 sm:px-6 py-3 sm:py-4">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+        <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 text-center sm:text-left">Full Name</span>
+
+        <ng-container *ngIf="!isEditMode; else editName">
+          <span class="text-xs sm:text-sm text-gray-800 dark:text-gray-100 text-center sm:text-left">
+            {{ (userProfile$ | async)?.firstName }} 
+            {{ (userProfile$ | async)?.lastName }}
+          </span>
+        </ng-container>
+      </div>
+
+      <ng-template #editName>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+          <div>
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>First Name</mat-label>
+              <input matInput [(ngModel)]="editableProfile.firstName" placeholder="Enter your first name">
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Last Name</mat-label>
+              <input matInput [(ngModel)]="editableProfile.lastName" placeholder="Enter your last name">
+            </mat-form-field>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Email -->
+    <div class="px-4 sm:px-6 py-3 sm:py-4">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+        <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Email Address</span>
+
+        <ng-container *ngIf="!isEditMode; else editEmail">
+          <span class="text-xs sm:text-sm text-gray-800 dark:text-gray-100 break-all">
+            {{ (userProfile$ | async)?.email }}
+          </span>
+        </ng-container>
+      </div>
+
+      <ng-template #editEmail>
+        <div class="mt-6">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Email Address</mat-label>
+            <input matInput type="email" [(ngModel)]="editableProfile.email" placeholder="Enter your email address">
+          </mat-form-field>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Username -->
+    <div class="px-4 sm:px-6 py-3 sm:py-4">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+        <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 text-center sm:text-left">Username</span>
+
+        <ng-container *ngIf="!isEditMode; else editUsername">
+          <span class="text-xs sm:text-sm font-mono text-gray-800 dark:text-gray-100 break-all text-center sm:text-left">
+            @{{ (userProfile$ | async)?.username }}
+          </span>
+        </ng-container>
+      </div>
+
+      <ng-template #editUsername>
+        <div class="mt-6">
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Username</mat-label>
+            <input matInput [(ngModel)]="editableProfile.username" placeholder="Enter your username">
+          </mat-form-field>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Role -->
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 px-4 sm:px-6 py-3 sm:py-4">
+      <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 text-center sm:text-left">Role</span>
+      <span class="px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-full bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200">
+        {{ (userProfile$ | async)?.role || 'Member' }}
+      </span>
+    </div>
+
+    <!-- Status -->
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 px-4 sm:px-6 py-3 sm:py-4">
+      <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 text-center sm:text-left">Account Status</span>
+      <span class="px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-full bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200">
+        Active
+      </span>
+    </div>
+
+  </div>
+
+  <!-- Footer Actions -->
+  <div mat-dialog-actions class="px-8 py-5 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3 rounded-b-xl">
+</div>
+
+<!-- Footer Actions -->
+<div mat-dialog-actions class="px-8 py-5 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3 rounded-b-xl">
+
+  <ng-container *ngIf="!isEditMode">
+    <button 
+      mat-stroked-button 
+      mat-dialog-close 
+      class="px-6">
+      Close
+    </button>
+  </ng-container>
+
+  <ng-container *ngIf="isEditMode">
+    <button 
+      mat-stroked-button
+      (click)="cancelEdit()"
+      color="warn"
+      class="px-6 transition-all duration-200 hover:scale-105"
+      [disabled]="isSaving"
+      matTooltip="Cancel changes"
+      matTooltipPosition="above">
+      Cancel
+    </button>
+
+    <button 
+      mat-flat-button
+      (click)="saveChanges()"
+      color="primary"
+      class="px-6 transition-all duration-200 hover:scale-105"
+      [disabled]="isSaving"
+      matTooltip="Save profile changes"
+      matTooltipPosition="above">
+      <span *ngIf="!isSaving">Save Changes</span>
+      <span *ngIf="isSaving" class="flex items-center gap-2">
+        <mat-icon class="animate-spin">refresh</mat-icon>
+        Saving...
+      </span>
+    </button>
+  </ng-container>
+
+</div>

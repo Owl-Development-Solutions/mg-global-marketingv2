@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API Connection Test</h1>
+    <button onclick="testAPI()">Test API Connection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            const userId = '0de25304-5afc-499d-8111-e23a826d1118';
+            
+            try {
+                // Test direct connection to backend
+                const response = await fetch('http://localhost:3000/api/v1/users/' + userId, {
+                    method: 'PUT',
+                    body: new FormData()
+                });
+                
+                resultDiv.innerHTML = `
+                    <h3>Direct Backend Test (port 3000):</h3>
+                    <p>Status: ${response.status}</p>
+                    <p>URL: http://localhost:3000/api/v1/users/${userId}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3>Direct Backend Test Failed:</h3>
+                    <p>Error: ${error.message}</p>
+                    <p>This means your backend is not running on port 3000</p>
+                `;
+            }
+            
+            try {
+                // Test proxy connection
+                const proxyResponse = await fetch('/api/v1/users/' + userId, {
+                    method: 'PUT',
+                    body: new FormData()
+                });
+                
+                resultDiv.innerHTML += `
+                    <h3>Proxy Test (current port):</h3>
+                    <p>Status: ${proxyResponse.status}</p>
+                    <p>URL: /api/v1/users/${userId}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML += `
+                    <h3>Proxy Test Failed:</h3>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -2,10 +2,12 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
+import multer from "multer";
 
 //routes import
 import authRouter from "./routes/users/auth.routes";
 import userRouter from "./routes/users/get-user.routes";
+import updateUserRouter from "./routes/users/update-user.routes";
 import geonologyRouter from "./routes/geonology/geonology.routes";
 import activationCodeRouter from "./routes/activation-code/activation-code.routes";
 
@@ -43,6 +45,9 @@ app.use("/api/auth", authRouter);
 
 //Base path for getting user/s
 app.use("/api/getUser", userRouter);
+
+//Base path for updating user/s
+app.use("/api/v1/users", updateUserRouter);
 
 //Base path for activation-codes
 app.use("/api/activationCode", activationCodeRouter);
