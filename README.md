@@ -58,8 +58,7 @@ The frontend will be running at: http://localhost:4200
 
 
 ### Backend
-
-1. **Navigate** to the backend directory:
+**Navigate** to the backend directory:
    ```bash
    cd backend
    ```
