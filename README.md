@@ -22,7 +22,36 @@ root/
 └── backend/     # Node.js & Express API (Routing, Logic)
 ```
 
-## Installation
+
+## ⚙️ Environment Variables
+
+Create a .env file inside the backend folder.
+
+backend/.env
+
+Example configuration:
+
+```
+PORT=8800
+
+DB_HOST=your-db-host
+DB_USER=your-db-user
+DB_PASSWORD=your-db-password
+DB_DATABASE=your-db-name
+DB_PORT=your-db-port
+
+JWT_SECRET=your-jwt-secret
+JWT_REFRESH_ACCESS_TOKEN_SECRET=your-refresh-secret
+
+JWT_ACCESS_TOKEN_EXPIRES=7d
+JWT_ACCESS_REFRESH_TOKEN_EXPIRES=7d
+
+FRONTEND_PORT_DEVELOPMENT=http://localhost:4200
+FRONTEND_PORT_PRODUCTION=https://your-production-domain.com
+```
+----
+
+## 📦 Installation
 
 Install dependencies for **both frontend and backend**.
 
