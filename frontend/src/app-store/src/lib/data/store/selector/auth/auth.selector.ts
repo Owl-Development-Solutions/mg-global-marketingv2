@@ -31,7 +31,7 @@ export const getRefreshToken = createSelector(
   (state) => state.data?.refreshToken,
 );
 
-export const getAccessTokenz = createSelector(
+export const getAccessToken = createSelector(
   selectAuthState,
   (state) => state.data?.accessToken,
 );
@@ -41,10 +41,7 @@ export const getUserInfo = createSelector(
   (user: UserResponseModel | undefined) => {
     if (user) {
       return {
-        firstName: user.attributes?.firstName,
-        lastName: user.attributes?.lastName,
-        username: user.attributes?.username,
-        email: user.attributes?.email,
+        ...user.attributes,
       };
     }
     return null;

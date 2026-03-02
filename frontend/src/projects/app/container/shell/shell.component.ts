@@ -27,10 +27,12 @@ import {
   AppLogoComponent,
   PageTitleComponent,
   UserIdentityComponent,
+  AccountModalComponent,
 } from '../../components';
 import { PageTitlePortalService } from '../../services';
-import { AuthUsecase } from '@app-store/lib/usecases';
+import { AuthUsecase, EditUserUsecase } from '@app-store/lib/usecases';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-shell-component',
@@ -62,11 +64,16 @@ export class ShellComponent {
   protected breakpointObserver = inject(BreakpointObserver);
 
   private authUsecase = inject(AuthUsecase);
+  private editUserUsecase = inject(EditUserUsecase);
+  private dialog = inject(MatDialog);
 
   getAuthName$ = this.authUsecase.getAuthName$;
   getUserId$ = this.authUsecase.getUserId$;
+  getUserInfo$ = this.authUsecase.getUserInfo$;
 
   getUserId = toSignal(this.getUserId$);
+  userAuthName = toSignal(this.getAuthName$);
+  userProfile = toSignal(this.getUserInfo$);
 
   breakpoint: Signal<BreakpointState | undefined> = toSignal(
     this.breakpointObserver.observe([Breakpoints.XSmall, Breakpoints.Small]),
@@ -150,6 +157,40 @@ export class ShellComponent {
 
   logout() {
     this.authUsecase.logout();
+  }
+
+  openMyAccountModal() {
+    this.dialog.open(AccountModalComponent, {
+      width: '500px',
+      data: {
+        fullName: this.userAuthName(),
+        userProfile: this.userProfile(),
+        onSubmit: this.editAccount.bind(this),
+      },
+    });
+  }
+
+  editAccount({
+    data,
+    onSuccess,
+    onFailure,
+  }: {
+    data: any;
+    onSuccess: () => void;
+    onFailure: (errors: { errorMsg: string }) => void;
+  }) {
+    this.editUserUsecase.execute(
+      {
+        ...data,
+        id: this.getUserId(),
+      },
+      {
+        onSuccess: () => {
+          onSuccess();
+        },
+        onFailure,
+      },
+    );
   }
 
   //hardcoded for now

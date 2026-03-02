@@ -62,4 +62,17 @@ export const initiateAuthReducer = createReducer(
   on(fromAuth.logoutAttempted, () => ({
     ...initialAuthState,
   })),
+  on(fromAuth.updateUserProfileSucceeded, (state, { data }) => {
+    if (!state.data) return state;
+    return {
+      ...state,
+      data: {
+        ...state.data,
+        attributes: {
+          ...state.data.attributes,
+          ...data,
+        },
+      },
+    };
+  }),
 );

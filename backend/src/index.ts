@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 //routes import
 import authRouter from "./routes/users/auth.routes";
 import userRouter from "./routes/users/get-user.routes";
+import updateUserRouter from "./routes/users/update-user.routes";
 import geonologyRouter from "./routes/geonology/geonology.routes";
 import activationCodeRouter from "./routes/activation-code/activation-code.routes";
 
@@ -28,7 +29,7 @@ app.use(
       }
     },
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 
@@ -43,6 +44,9 @@ app.use("/api/auth", authRouter);
 
 //Base path for getting user/s
 app.use("/api/getUser", userRouter);
+
+//Base path for updating user/s
+app.use("/api/user", updateUserRouter);
 
 //Base path for activation-codes
 app.use("/api/activationCode", activationCodeRouter);

@@ -1,0 +1,161 @@
+<form #editUserProfile="ngForm" (ngSubmit)="performEditUserProfile(editUserProfile)">
+  <div mat-dialog-content class="p-4 sm:p-6 lg:p-8 xl:p-10" style="padding: 20px; min-height: calc(100% + 60px);">
+
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border-b border-gray-200 pb-3 sm:pb-4 lg:pb-6 xl:pb-8">
+      <div class="w-full text-center sm:text-left">
+        <h2 class="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold text-gray-800 dark:text-gray-900 tracking-tight" style="font-size: calc(1.125rem);">
+          Account Information
+        </h2>
+      </div>
+
+      <button type="button" 
+              mat-icon-button 
+              (click)="enableEditMode()"
+              class="text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-500 transition-all duration-200 hover:scale-105 mx-auto sm:mx-0">
+        <mat-icon class="text-lg sm:text-xl lg:text-2xl">edit</mat-icon>
+      </button>
+    </div>
+
+    <div class="mt-4 sm:mt-6 lg:mt-8 xl:mt-10 flex flex-col items-center">
+      <div class="relative group cursor-pointer mb-4 sm:mb-6">
+        <div class="w-16 sm:w-20 lg:w-24 xl:w-28 h-16 sm:h-20 lg:h-24 xl:h-28 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center shadow-md overflow-hidden ring-2 ring-gray-200 transition-all duration-300 hover:ring-blue-500 hover:shadow-lg">
+
+          <span class="text-white text-lg sm:text-xl lg:text-2xl xl:text-3xl font-medium tracking-wide">
+            {{ data.userProfile.firstName.charAt(0) || 'U' }}
+            {{ data.userProfile.lastName.charAt(0) || 'S' }}
+          </span>
+        </div>
+
+        </div>
+
+      <div class="text-center mt-3 sm:mt-4 space-y-1 sm:space-y-2 lg:space-y-3">
+        <h3 class="text-base sm:text-lg lg:text-xl xl:text-2xl font-medium text-gray-900">
+          {{ data.fullName.firstName }} {{ data.fullName.lastName }}
+        </h3>
+        <p class="text-sm sm:text-base lg:text-lg xl:text-xl text-gray-600">
+          {{ data.userProfile.email }}
+        </p>
+        <p class="text-xs sm:text-sm lg:text-base xl:text-lg text-gray-500">
+          @{{ data.userProfile.userName }}
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-6 sm:mt-8 lg:mt-10 bg-gray-50 dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700">
+
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 px-4 sm:px-6 py-3 sm:py-4">
+        <span class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 text-center sm:text-left">Member ID</span>
+        <span class="text-xs sm:text-sm text-gray-800 dark:text-gray-100 break-all text-center sm:text-right">{{ data.userProfile.id }}</span>
+      </div>
+
+      <div [class.grid]="!isEditMode()" [class.grid-cols-2]="!isEditMode()" class="gap-2 px-4 sm:px-6 py-3 sm:py-4">
+        <span class="text-xs mb-2 sm:text-sm font-medium text-gray-600 dark:text-gray-400">Full Name</span>
+
+        @if(!isEditMode()) {
+          <span class="text-xs sm:text-sm text-gray-800 dark:text-gray-100 break-all text-right">
+            {{data.userProfile.firstName}} {{data.userProfile.lastName}}
+          </span>
+        } @else {
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 col-span-2">
+            <div>
+              <mat-form-field class="w-full" hideRequiredMarker>
+                <mat-label>First Name</mat-label>
+                <input matInput required name="firstName" #firstName="ngModel" type="text" [ngModel]="data.userProfile.firstName">
+                @if (firstName.invalid) {
+                  <mat-error>
+                    @if (firstName.hasError("required")) { <span>First Name is required</span> }
+                  </mat-error>
+                }
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field class="w-full" hideRequiredMarker>
+                <mat-label>Last Name</mat-label>
+                <input matInput required name="lastName" #lastName="ngModel" type="text" [ngModel]="data.userProfile.lastName">
+                @if (lastName.invalid) {
+                  <mat-error>
+                    @if (lastName.hasError("required")) { <span>Last Name is required</span> }
+                  </mat-error>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div [class.grid]="!isEditMode()" [class.grid-cols-2]="!isEditMode()" class="gap-2 px-4 sm:px-6 py-3 sm:py-4">
+        <span class="text-xs mb-2 sm:text-sm font-medium text-gray-600 dark:text-gray-400">Address</span>
+        @if(!isEditMode()) {
+          <span class="text-xs sm:text-sm text-gray-800 dark:text-gray-100 break-all text-right">{{data.userProfile.address}}</span>
+        } @else {
+          <div class="grid grid-cols-1 gap-4 mt-2 col-span-2">
+            <mat-form-field class="w-full" hideRequiredMarker>
+              <mat-label>Address</mat-label>
+              <input matInput required name="address" #address="ngModel" type="text" [ngModel]="data.userProfile.address">
+              @if (address.invalid) {
+                <mat-error>
+                  @if (address.hasError("required")) { <span>Address is required</span> }
+                </mat-error>
+              }
+            </mat-form-field>
+          </div>
+        }
+      </div>
+
+      <div [class.grid]="!isEditMode()" [class.grid-cols-2]="!isEditMode()" class="gap-2 px-4 sm:px-6 py-3 sm:py-4">
+        <span class="text-xs mb-2 sm:text-sm font-medium text-gray-600 dark:text-gray-400">Contact Number</span>
+        @if(!isEditMode()) {
+          <span class="text-xs sm:text-sm text-gray-800 dark:text-gray-100 break-all text-right">{{data.userProfile.contactNumber}}</span>
+        } @else {
+          <div class="grid grid-cols-1 gap-4 mt-2 col-span-2">
+            <mat-form-field class="w-full" hideRequiredMarker>
+              <mat-label>Phone Number</mat-label>
+              <input matInput required name="contactNumber" #contactNumber="ngModel" type="number" [ngModel]="data.userProfile.contactNumber">
+            </mat-form-field>
+          </div>
+        }
+      </div>
+
+      <div [class.grid]="!isEditMode()" [class.grid-cols-2]="!isEditMode()" class="gap-2 px-4 sm:px-6 py-3 sm:py-4">
+        <span class="text-xs mb-2 sm:text-sm font-medium text-gray-600 dark:text-gray-400">Birth Date</span>
+        @if(!isEditMode()) {
+          <span class="text-xs sm:text-sm text-gray-800 dark:text-gray-100 break-all text-right">
+            {{data.userProfile.birthDate | date: 'longDate' }}
+          </span>
+        } @else {
+          <div class="grid grid-cols-1 gap-4 mt-2 col-span-2">
+            <mat-form-field class="w-full">
+              <mat-label>Birthdate</mat-label>
+              <input matInput required [matDatepicker]="birthDate" [ngModel]="data.userProfile.birthDate" name="birthDate" #birthDateInput="ngModel" />
+              <mat-datepicker-toggle matIconSuffix [for]="birthDate"></mat-datepicker-toggle>
+              <mat-datepicker #birthDate></mat-datepicker>
+              @if (birthDateInput.touched && birthDateInput.hasError("required")) {
+                <mat-hint><span class="text-alert">Birthdate is required.</span></mat-hint>
+              }
+            </mat-form-field>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div mat-dialog-actions class="p-4 flex gap-2">
+    @if(isEditMode()) {
+      <button mat-stroked-button mat-dialog-close color="warn" type="button" (click)="onCancelClick()">
+        Cancel
+      </button>
+      <app-submit-button
+        [isDisabled]="editUserProfile.invalid || editUserProfile.pending!"
+        text="Submit"
+        icon="person"
+        [isLoading]="submitting$ | async"
+        color="primary"
+        [type]="'submit'">
+      </app-submit-button>
+    } @else {
+      <button mat-stroked-button mat-dialog-close color="warn" type="button" (click)="onCancelClick()">
+        Cancel
+      </button>
+    }
+  </div>
+</form>

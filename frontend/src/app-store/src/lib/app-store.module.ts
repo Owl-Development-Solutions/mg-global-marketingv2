@@ -23,6 +23,7 @@ import { EffectsModule } from '@ngrx/effects';
     EffectsModule.forFeature([
       fromStore.AuthEffects,
       fromStore.UserTokenEffects,
+      fromStore.UserEffects,
       fromStore.GeonologyEffects,
     ]),
   ],

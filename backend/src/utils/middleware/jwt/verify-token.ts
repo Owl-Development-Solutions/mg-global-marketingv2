@@ -10,21 +10,29 @@ interface AuthenticatedRequest extends Request {
 export const verifyToken = (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const secret = process.env.JWT_SECRET!;
   const authHeader = req.headers["authorization"];
 
   const token = authHeader?.split(" ")[1];
+  console.log("Extracted token:", token ? "exists" : "missing");
+  console.log("Token length:", token?.length || 0);
 
-  if (!token) return res.sendStatus(401);
+  if (!token) {
+    console.log("No token provided, returning 401");
+    return res.sendStatus(401);
+  }
 
   jwt.verify(token, secret, (err, user) => {
-    if (err)
+    if (err) {
+      console.log("Token verification error:", err.message);
       return res.status(403).json({
         message: "Invalid or expired token",
       });
+    }
 
+    console.log("Token verified successfully, user:", user);
     req.user = user as JWTProps;
     next();
   });

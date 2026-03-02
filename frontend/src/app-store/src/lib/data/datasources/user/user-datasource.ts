@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { AppErrors } from '../../errors';
 import UnexpectedError = AppErrors.UnexpectedError;
 import InvalidCredentials = AppErrors.InvalidCredentials;
@@ -9,7 +9,7 @@ import UserNotFound = AppErrors.UserNotFound;
 import { UserDatasourceInterface } from '../../models/user.interface';
 import { UserResponseModel } from '../../models/user.attributes.model';
 import { Document } from '../../models/json-api.interface';
-import { UserData } from '../../models';
+import { UserData, UserEditData } from '../../models';
 
 @Injectable({
   providedIn: 'root',
@@ -107,6 +107,23 @@ export class UserDatasource implements UserDatasourceInterface {
       )
       .pipe(
         map((data: Document<UserData[]>) => data.data as UserData[]),
+        catchError((err) => this.userErrorReport(err)),
+      );
+  }
+
+  editUser(data: Partial<UserEditData>): Observable<boolean> {
+    return this.http
+      .patch(
+        `${this.baseUrl}/api/user/editUser`,
+        {
+          ...data,
+        },
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map(() => true),
         catchError((err) => this.userErrorReport(err)),
       );
   }

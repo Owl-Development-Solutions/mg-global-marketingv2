@@ -9,9 +9,9 @@ import { Observable } from 'rxjs';
 export class GetTokenUsecase {
   private store = inject(Store<fromStore.UserState>);
 
-  getAccessTokenz = this.store.pipe(select(fromStore.getAccessTokenz));
+  getAccessToken = this.store.pipe(select(fromStore.getAccessToken));
 
   execute(): Observable<string | undefined> {
-    return this.store.select(fromStore.getAccessTokenz);
+    return this.store.select(fromStore.getAccessToken);
   }
 }
