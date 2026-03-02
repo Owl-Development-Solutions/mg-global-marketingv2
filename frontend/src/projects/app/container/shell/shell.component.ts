@@ -179,12 +179,18 @@ export class ShellComponent {
     onSuccess: () => void;
     onFailure: (errors: { errorMsg: string }) => void;
   }) {
-    this.editUserUsecase.execute(data, {
-      onSuccess: () => {
-        onSuccess();
+    this.editUserUsecase.execute(
+      {
+        ...data,
+        id: this.getUserId(),
       },
-      onFailure,
-    });
+      {
+        onSuccess: () => {
+          onSuccess();
+        },
+        onFailure,
+      },
+    );
   }
 
   //hardcoded for now

@@ -43,6 +43,7 @@ export interface RegisterData {
 }
 
 export interface UserEditData {
+  id: string;
   firstName: string;
   lastName: string;
   address: string;
