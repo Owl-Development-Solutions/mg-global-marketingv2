@@ -106,11 +106,30 @@ $theme: mat.define-theme(
   --color-green-900: #0f5734;
 }
 
-html,
-body {
+html {
   height: 100%;
   margin: 0;
+  @include mat.all-component-themes($theme);
+
+  @include mat.color-variants-backwards-compatibility($theme);
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
   font-family: "Montserrat", sans-serif;
+
+  // Reset the user agent margin.
+  margin: 0;
+  height: 100%;
 }
 
 // @todo

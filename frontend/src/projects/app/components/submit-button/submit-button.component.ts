@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { ThemePalette } from '@angular/material/core';
@@ -7,7 +6,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-submit-button',
-  imports: [MatButton, MatIcon, MatProgressSpinner, CommonModule],
+  imports: [MatButton, MatIcon, MatProgressSpinner],
   templateUrl: './submit-button.component.html',
 })
 export class SubmitButtonComponent {

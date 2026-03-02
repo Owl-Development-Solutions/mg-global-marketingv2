@@ -14,7 +14,7 @@ import {
 } from '@angular/material/table';
 import { SkeletonTextComponent } from '../skeleton-text/skeleton-text.component';
 import { EmptyHistoryMessageComponent } from '../empty-history-message/empty-history-message.component';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -35,7 +35,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatNoDataRow,
     MatHeaderRow,
     MatHeaderRowDef,
-    CommonModule,
     MatButtonModule,
     RouterModule,
     MatIconModule,

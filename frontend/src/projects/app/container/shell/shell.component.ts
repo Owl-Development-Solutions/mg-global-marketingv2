@@ -36,7 +36,6 @@ import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-shell-component',
-  standalone: true,
   imports: [
     AppSysSidenavComponent,
     RouterModule,
