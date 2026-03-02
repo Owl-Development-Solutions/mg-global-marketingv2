@@ -3,13 +3,13 @@ import {
   Breakpoints,
   BreakpointState,
 } from '@angular/cdk/layout';
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-breakpoint-observer',
-  imports: [CommonModule],
+  imports: [],
   template: `<ng-content></ng-content>`,
 })
 export class BreakpointObserverComponent {

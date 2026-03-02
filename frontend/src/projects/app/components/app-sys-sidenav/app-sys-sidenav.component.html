@@ -80,13 +80,13 @@
     [matTooltipDisabled]="isExpanded"
     [matTooltipShowDelay]="500"
   >
-    <mat-icon
-      *ngIf="child.icon"
-      class="!text-primary-300 group-[.is-active]:!text-primary"
-      >{{ child.icon }}</mat-icon
-    >
-    <span class="nivjenz-sidenav--child--text" *ngIf="isExpanded">{{
-      child.label
-    }}</span>
+    @if (child.icon) {
+      <mat-icon class="!text-primary-300 group-[.is-active]:!text-primary">{{
+        child.icon
+      }}</mat-icon>
+    }
+    @if (isExpanded) {
+      <span class="nivjenz-sidenav--child--text">{{ child.label }}</span>
+    }
   </a>
 </ng-template>

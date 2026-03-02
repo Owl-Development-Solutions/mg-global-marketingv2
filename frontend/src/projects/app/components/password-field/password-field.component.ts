@@ -20,7 +20,6 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { FormErrorPipe } from '../../pipes';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-password-field',
@@ -32,7 +31,6 @@ import { CommonModule } from '@angular/common';
     MatIcon,
     FormsModule,
     MatError,
-    CommonModule,
   ],
   templateUrl: './password-field.component.html',
   styleUrl: './password-field.component.scss',

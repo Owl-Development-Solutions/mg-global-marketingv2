@@ -13,12 +13,7 @@ import {
   MatTable,
 } from '@angular/material/table';
 import { SkeletonTextComponent } from '../skeleton-text/skeleton-text.component';
-import {
-  CommonModule,
-  DatePipe,
-  NgClass,
-  TitleCasePipe,
-} from '@angular/common';
+import { DatePipe, NgClass, TitleCasePipe } from '@angular/common';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,7 +36,6 @@ import { EmptyHistoryMessageComponent } from '../empty-history-message/empty-his
     MatNoDataRow,
     MatHeaderRow,
     MatHeaderRowDef,
-    CommonModule,
     MatButtonModule,
     RouterModule,
     MatIconModule,
