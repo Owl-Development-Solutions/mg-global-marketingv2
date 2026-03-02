@@ -112,15 +112,19 @@ export class UserDatasource implements UserDatasourceInterface {
   }
 
   editUser(data: Partial<UserEditData>): Observable<boolean> {
-    // return this.http
-    //   .patch(`${this.baseUrl}/api/user/editUser`, {
-    //     ...data,
-    //   })
-    //   .pipe(
-    //     map(() => true),
-    //     catchError((err) => this.userErrorReport(err)),
-    //   );
-
-    return of(true);
+    return this.http
+      .patch(
+        `${this.baseUrl}/api/user/editUser`,
+        {
+          ...data,
+        },
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        map(() => true),
+        catchError((err) => this.userErrorReport(err)),
+      );
   }
 }
