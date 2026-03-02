@@ -67,3 +67,12 @@ export interface RegisterData {
   upline: string;
   pin: string;
 }
+
+export interface EditUserData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  contactNumber: number;
+  birthDate: string;
+}

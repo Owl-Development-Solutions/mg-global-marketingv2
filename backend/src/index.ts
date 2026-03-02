@@ -2,7 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
-import multer from "multer";
 
 //routes import
 import authRouter from "./routes/users/auth.routes";
@@ -30,7 +29,7 @@ app.use(
       }
     },
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 
@@ -47,7 +46,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/getUser", userRouter);
 
 //Base path for updating user/s
-app.use("/api/v1/users", updateUserRouter);
+app.use("/api/user", updateUserRouter);
 
 //Base path for activation-codes
 app.use("/api/activationCode", activationCodeRouter);
