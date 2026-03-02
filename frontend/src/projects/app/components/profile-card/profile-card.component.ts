@@ -9,11 +9,11 @@ import { BalanceCardComponent } from '../balance-card/balance-card.component';
   styleUrl: './profile-card.component.scss',
 })
 export class ProfileCardComponent {
-  userInfo = input.required<
+  userInfo: any = input.required<
     | {
         firstName: string;
         lastName: string;
-        username: string;
+        userName: string;
         email: string;
       }
     | undefined
@@ -22,7 +22,7 @@ export class ProfileCardComponent {
 
   reminderLink = 'https://shop.empoweredconsumerism.com/?epid=FA049950';
   reminderText =
-    'PMA Reminder for FA049950: Qualified for next month\'s benefits...';
+    "PMA Reminder for FA049950: Qualified for next month's benefits...";
 
   balances = [
     { amount: 'PHP', label: 'TOTAL BALANCE' },

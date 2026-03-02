@@ -19,3 +19,4 @@ export * from './empty-history-message/empty-history-message.component';
 export * from './register-modal/register-modal.component';
 export * from './profile-card/profile-card.component';
 export * from './add-wallet-button/add-wallet-button.component';
+export * from './account-modal/account-modal.component';

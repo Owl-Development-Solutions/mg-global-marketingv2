@@ -27,12 +27,12 @@ import {
   AppLogoComponent,
   PageTitleComponent,
   UserIdentityComponent,
+  AccountModalComponent,
 } from '../../components';
 import { PageTitlePortalService } from '../../services';
-import { AuthUsecase } from '@app-store/lib/usecases';
+import { AuthUsecase, EditUserUsecase } from '@app-store/lib/usecases';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
-import { MyAccountModalComponent } from '../../components/my-account-modal/my-account-modal.component';
 
 @Component({
   selector: 'app-shell-component',
@@ -54,7 +54,6 @@ import { MyAccountModalComponent } from '../../components/my-account-modal/my-ac
     MatMenuItem,
     CommonModule,
     AppLogoComponent,
-    MyAccountModalComponent,
   ],
   templateUrl: './shell-component.html',
   styleUrls: ['./shell-component.scss'],
@@ -65,12 +64,16 @@ export class ShellComponent {
   protected breakpointObserver = inject(BreakpointObserver);
 
   private authUsecase = inject(AuthUsecase);
+  private editUserUsecase = inject(EditUserUsecase);
   private dialog = inject(MatDialog);
 
   getAuthName$ = this.authUsecase.getAuthName$;
   getUserId$ = this.authUsecase.getUserId$;
+  getUserInfo$ = this.authUsecase.getUserInfo$;
 
   getUserId = toSignal(this.getUserId$);
+  userAuthName = toSignal(this.getAuthName$);
+  userProfile = toSignal(this.getUserInfo$);
 
   breakpoint: Signal<BreakpointState | undefined> = toSignal(
     this.breakpointObserver.observe([Breakpoints.XSmall, Breakpoints.Small]),
@@ -157,12 +160,30 @@ export class ShellComponent {
   }
 
   openMyAccountModal() {
-    const dialogRef = this.dialog.open(MyAccountModalComponent, {
+    this.dialog.open(AccountModalComponent, {
       width: '500px',
-      maxWidth: '90vw',
       data: {
-        userId: this.getUserId()
-      }
+        fullName: this.userAuthName(),
+        userProfile: this.userProfile(),
+        onSubmit: this.editAccount.bind(this),
+      },
+    });
+  }
+
+  editAccount({
+    data,
+    onSuccess,
+    onFailure,
+  }: {
+    data: any;
+    onSuccess: () => void;
+    onFailure: (errors: { errorMsg: string }) => void;
+  }) {
+    this.editUserUsecase.execute(data, {
+      onSuccess: () => {
+        onSuccess();
+      },
+      onFailure,
     });
   }
 

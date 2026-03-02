@@ -3,7 +3,7 @@ import { UserRepositoryInterface } from '../../../domain/repository';
 import { Observable } from 'rxjs';
 import { UserResponseModel } from '../../models/user.attributes.model';
 import { UserDatasource } from '../../datasources/user/user-datasource';
-import { UserData } from '@app-store/public-api';
+import { UserData, UserEditData } from '@app-store/public-api';
 
 @Injectable({
   providedIn: 'root',
@@ -28,5 +28,9 @@ export class UserRepository implements UserRepositoryInterface {
 
   searchUserByName(name: string): Observable<UserData[]> {
     return this.userDatasource.searchUserByName(name);
+  }
+
+  editUser(data: Partial<UserEditData>): Observable<boolean> {
+    return this.userDatasource.editUser(data);
   }
 }
