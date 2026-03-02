@@ -122,8 +122,11 @@ RxJS for reactive programming and asynchronous data flow
 
 Express for backend API routing and business logic
 
+---
 
+## License
 
+This project is licensed under the MIT License.
 
 
 
