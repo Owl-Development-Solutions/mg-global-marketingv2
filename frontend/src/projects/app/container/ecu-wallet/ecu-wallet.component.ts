@@ -1,5 +1,4 @@
 import { Component, inject, ViewChild } from '@angular/core';
-
 import { PageTitlePortalService } from '../../services';
 import { CdkPortal } from '@angular/cdk/portal';
 import { ColumnContainerComponent } from '../../components';
