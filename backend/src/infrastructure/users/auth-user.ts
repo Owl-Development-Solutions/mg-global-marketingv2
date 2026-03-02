@@ -18,7 +18,7 @@ import { connection } from "../../config/mysql.db";
 import { processBinaryVolumeUpstream } from "../../utils/helpers/process-upstream-geonology";
 
 export const registerUserIn = async (
-  user: RegisterData
+  user: RegisterData,
 ): Promise<Result<SuccessResponse, ErrorResponse>> => {
   try {
     if (
@@ -64,7 +64,7 @@ export const registerUserIn = async (
 
     const [emailCheck] = await db.execute(
       "SELECT * FROM `users` WHERE `email` = ?",
-      [user.email]
+      [user.email],
     );
 
     if ((emailCheck as any[]).length > 0) {
@@ -79,7 +79,7 @@ export const registerUserIn = async (
 
     const [sponsorCheck] = await db.execute(
       "SELECT id FROM `users` WHERE `userName` = ?",
-      [user.sponsor]
+      [user.sponsor],
     );
 
     if ((sponsorCheck as any[]).length === 0) {
@@ -99,7 +99,7 @@ export const registerUserIn = async (
 
     const [uplineCheck] = await db.execute(
       `SELECT id, ${sideColumn} FROM users WHERE username = ? FOR UPDATE`,
-      [user.upline]
+      [user.upline],
     );
 
     const uplines = uplineCheck as any[];
@@ -131,7 +131,7 @@ export const registerUserIn = async (
     //activation-codes
     const [codes] = await db.execute(
       `SELECT id, status FROM activation_codes WHERE code = ? FOR UPDATE`,
-      [user.pin]
+      [user.pin],
     );
 
     const codeRecords = codes as ActivationCode[];
@@ -174,7 +174,7 @@ export const registerUserIn = async (
         actualUplineId,
         activationCodeIdFromDB,
         actualSponsorId,
-      ]
+      ],
     );
 
     //error when inserting in the database
@@ -192,7 +192,7 @@ export const registerUserIn = async (
 
     await db.execute(
       "INSERT INTO user_stats (`userId`, `balance`, `leftPoints`, `rightPoints`, `leftDownline`, `rightDownline`, `rankPoints`, `level`, `sidePath`, `hasDeduction`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [newUserId, 0.0, 0, 0, 0, 0, 0, 0, "root", false]
+      [newUserId, 0.0, 0, 0, 0, 0, 0, 0, "root", false],
     );
 
     await db.execute(`UPDATE users SET ${sideColumn} = ? WHERE id = ?`, [
@@ -207,7 +207,7 @@ export const registerUserIn = async (
 
     await db.execute(
       `UPDATE user_stats SET normalWallet = normalWallet + 500.00 WHERE userId = ?`,
-      [actualUplineId]
+      [actualUplineId],
     );
 
     await db.execute(
@@ -220,7 +220,7 @@ export const registerUserIn = async (
         "Credit",
         `Direct referral bonus for new user ${user.username}`,
         newUserId,
-      ]
+      ],
     );
 
     const placementSide: "Left" | "Right" =
@@ -247,7 +247,7 @@ export const registerUserIn = async (
 };
 
 export const loginUserIn = async (
-  data: User
+  data: User,
 ): Promise<Result<SuccessResponse<UserResponse>, ErrorResponse>> => {
   try {
     if (!data.email || !data.password) {
@@ -295,20 +295,25 @@ export const loginUserIn = async (
     }
 
     const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+    const refreshTokenz = generateRefreshToken(user);
 
-    await saveRefreshToken(user.id, refreshToken);
+    await saveRefreshToken(user.id, refreshTokenz);
+
+    const {
+      password,
+      token,
+      refreshToken,
+      parentId,
+      leftChildId,
+      ...userData
+    } = user;
 
     const response: UserResponse = {
       id: user!.id,
       type: user!.role,
       attributes: {
-        firstName: user!.firstName,
-        lastName: user!.lastName,
-        name: user!.name,
-        email: user!.email,
-        username: user!.userName,
-        role: user!.role,
+        ...userData,
+        username: user.userName,
       } as any,
       accessToken: accessToken,
     };

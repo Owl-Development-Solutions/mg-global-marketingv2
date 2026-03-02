@@ -19,7 +19,7 @@ export const updateUser = async (
                 address = ?,
                 contactNumber = ?,
                 birthDate = ?,
-                updatedAt = NOW()
+                updated_at = NOW()
             WHERE id = ?
         `;
 

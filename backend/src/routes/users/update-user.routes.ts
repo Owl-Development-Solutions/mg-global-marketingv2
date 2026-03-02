@@ -1,9 +1,9 @@
 import express from "express";
 import { verifyToken } from "../../utils";
-import { updateUser } from "../../infrastructure";
+import { editUserController } from "../../controller";
 
 const router = express.Router();
 
-router.patch("/editUser", verifyToken, updateUser);
+router.patch("/editUser", verifyToken, editUserController);
 
 export default router;
