@@ -24,3 +24,63 @@ export const generateCodes = (existingCodes: Set<string>, count: number) => {
 
   return Array.from(generated);
 };
+
+export const getLevelBonus = (price: number, degree: number): number => {
+  if (price === 500) {
+    if (degree === 1) return 100;
+    if (degree >= 2 && degree <= 3) return 50;
+    if (degree >= 4 && degree <= 5) return 25;
+
+    return 0;
+  }
+
+  if (price === 3500) {
+    if (degree === 1 || degree === 2) return 400;
+    if (degree === 3) return 100;
+    if (degree === 4 || degree === 5) return 50;
+    if (degree >= 6) return 25;
+
+    return 0;
+  }
+
+  return 0;
+};
+
+export const getDirectBonus = (price: number): number => {
+  if (price === 500) return 100;
+  if (price === 3500) return 400;
+  return 0;
+};
+
+export const getIndirectBonus = ({
+  price,
+  current500,
+  current3500,
+}: {
+  price: number;
+  current500: number;
+  current3500: number;
+}): number => {
+  console.log(price, current500, current3500);
+
+  const currentTotal = price === 3500 ? current3500 : current500;
+
+  const firstBonus = price === 3500 ? 400 : 100;
+  const maxTotal = price === 3500 ? 550 : 250;
+
+  if (currentTotal >= maxTotal) return 0;
+
+  if (currentTotal === 0) {
+    return firstBonus;
+  }
+
+  if (currentTotal === firstBonus || currentTotal === firstBonus + 50) {
+    return 50;
+  }
+
+  if (currentTotal === firstBonus + 100 || currentTotal === firstBonus + 125) {
+    return 25;
+  }
+
+  return 0;
+};

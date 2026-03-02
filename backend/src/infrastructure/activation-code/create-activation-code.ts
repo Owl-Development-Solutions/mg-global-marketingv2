@@ -11,19 +11,19 @@ import {
 export const generateFiftyActivationCodes = async (): Promise<
   Result<SuccessResponse<string[]>, ErrorResponse>
 > => {
-  const sponsorID = "0b456738-238b-454c-ab5b-8366bf767cb0";
+  const sponsorID = "d7c93f86-8b38-404c-ad02-4ba6afbffd57";
   try {
     const db = connection();
 
     const [existingRows] = await db.execute(
-      "SELECT id, code FROM activation_codes"
+      "SELECT id, code FROM activation_codes",
     );
 
     const existingCodes = new Set(
-      (existingRows as ActivationCode[]).map((r) => r.code)
+      (existingRows as ActivationCode[]).map((r) => r.code),
     );
     const existingIds = new Set(
-      (existingRows as ActivationCode[]).map((r) => r.id)
+      (existingRows as ActivationCode[]).map((r) => r.id),
     );
 
     const newCodes = generateCodes(existingCodes, 50);
@@ -40,7 +40,7 @@ export const generateFiftyActivationCodes = async (): Promise<
         id,
         code,
         "Active",
-        "second batch 50 codes",
+        "third batch 50 codes",
         sponsorID,
         null,
         new Date(),

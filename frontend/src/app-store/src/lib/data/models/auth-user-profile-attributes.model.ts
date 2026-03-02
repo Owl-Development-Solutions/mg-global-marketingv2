@@ -40,6 +40,7 @@ export interface RegisterData {
   position: string;
   upline: string | undefined;
   pin: string;
+  mainParentId?: string;
 }
 
 export interface UserEditData {

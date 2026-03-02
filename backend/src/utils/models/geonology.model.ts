@@ -30,6 +30,7 @@ export interface AddUserGeonologyData {
   child: GeonologyNode;
   activationCodeId: string;
   sponsorUsername: string;
+  mainParentTree: string;
 }
 
 export interface GeonologyResponse {
