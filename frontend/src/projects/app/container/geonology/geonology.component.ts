@@ -87,7 +87,12 @@ export class GeonologyComponent implements OnInit, OnDestroy {
     onSuccess: () => void;
     onFailure: (errors: { errorMsg: string }) => void;
   }) {
-    this.geonologyUsecase.addUserGeonology(data, {
+    const geData: AddUserGeonologyData = {
+      ...data,
+      mainParentTree: this.userId()!,
+    };
+
+    this.geonologyUsecase.addUserGeonology(geData, {
       onSuccess: () => {
         onSuccess();
       },

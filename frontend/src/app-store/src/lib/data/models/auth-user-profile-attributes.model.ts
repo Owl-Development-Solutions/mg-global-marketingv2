@@ -14,8 +14,10 @@ export interface User {
   address: string;
   country: string;
   city: string;
-  contactNumber: string;
+  contactNumber: number;
   role: string;
+  image?: string;
+  birthDate?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,4 +40,14 @@ export interface RegisterData {
   position: string;
   upline: string | undefined;
   pin: string;
+  mainParentId?: string;
+}
+
+export interface UserEditData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  contactNumber: number;
+  birthDate: string;
 }

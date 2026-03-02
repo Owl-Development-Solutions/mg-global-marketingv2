@@ -11,7 +11,7 @@ export const getUserProfile = createSelector(
   (state: fromAuth.UserState) => state && state?.data,
 );
 
-export const getAccessToken = createSelector(
+export const getUserAccessToken = createSelector(
   selectUserState,
   (state: fromAuth.UserState) => state && state.data?.accessToken,
 );

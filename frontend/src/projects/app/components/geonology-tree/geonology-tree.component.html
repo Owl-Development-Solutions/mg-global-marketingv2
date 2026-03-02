@@ -57,6 +57,15 @@
                 {{ userNode()!.rightPoints }}
               </span>
             </div>
+            <!-- 
+            Leaving this in here in case you need to delete some node child  
+            Uncomment it if you want to delete child nodes
+            It also delete the sub child also eg parent => child => child it will remove all -->
+            <!-- @if (userNode()?.side !== "root") {
+              <div (click)="deleteMember(userNode())" class="cursor-pointer">
+                <mat-icon class="!text-red-500">delete</mat-icon>
+              </div>
+            } -->
           </div>
         </div>
 

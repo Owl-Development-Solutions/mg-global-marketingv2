@@ -31,6 +31,7 @@ export class GeonologyUsecase {
         child: data.child,
         activationCodeId: data.activationCodeId,
         sponsorUsername: data.sponsorUsername,
+        mainParentTree: data.mainParentTree,
         callBacks,
       }),
     );

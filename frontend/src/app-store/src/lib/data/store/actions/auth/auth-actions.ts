@@ -3,6 +3,7 @@ import {
   AuthUserResponse,
   Callbacks,
   RegisterData,
+  UserEditData,
   UserResponseModel,
 } from '../../../models';
 
@@ -52,3 +53,18 @@ export const refreshTokenFailed = createAction(
 );
 
 export const logoutAttempted = createAction('[Auth] Logout Attempted');
+
+export const updateUserProfileAttempted = createAction(
+  '[Auth] Update User Profile Attempted',
+  props<{ data: Partial<UserEditData>; callBacks: Callbacks }>(),
+);
+
+export const updateUserProfileFailed = createAction(
+  '[Auth] Update User Profile Failed',
+  props<{ error: any }>(),
+);
+
+export const updateUserProfileSucceeded = createAction(
+  '[Auth] Update User Profile Succeeded',
+  props<{ data: Partial<UserEditData> }>(),
+);

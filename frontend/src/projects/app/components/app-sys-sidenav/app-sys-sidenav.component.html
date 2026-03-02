@@ -12,7 +12,7 @@
           >
             <mat-expansion-panel-header class="!px-4 !h-12"
               ><mat-panel-title
-                class="uppercase text-black dark:!text-gray-500 font-display"
+                class="uppercase text-black dark:!text-gray-500"
                 >{{ item.label }}</mat-panel-title
               >
             </mat-expansion-panel-header>
@@ -64,7 +64,7 @@
 
 <ng-template #menuItem let-child>
   <a
-    class="font-display p-3 flex gap-4 border-l-4 border-transparent border-solid focus:outline-accent focus:outline-2 focus:-outline-offset-2 focus:outline hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors text-gray-800 dark:text-white"
+    class="p-3 flex gap-4 border-l-4 border-transparent border-solid focus:outline-accent focus:outline-2 focus:-outline-offset-2 focus:outline hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors text-gray-800 dark:text-white"
     [class.justify-center]="!isExpanded"
     matLine
     [routerLink]="child.routerLink.join('/')"

@@ -12,7 +12,7 @@ import {
  *
  */
 export const deleteGeanologyUser = async (
-  userIdToDelete: string
+  userIdToDelete: string,
 ): Promise<Result<SuccessResponse<string>, ErrorResponse>> => {
   const allUserIdsToDelete: string[] = [];
   const allActivationCodesToReset: string[] = [];
@@ -24,7 +24,7 @@ export const deleteGeanologyUser = async (
       db,
       userIdToDelete,
       allUserIdsToDelete,
-      allActivationCodesToReset
+      allActivationCodesToReset,
     );
 
     if (allUserIdsToDelete.length === 0) {
@@ -47,7 +47,7 @@ export const deleteGeanologyUser = async (
              FROM users
              WHERE leftChildId = ? OR rightChildId = ? FOR UPDATE
             `,
-      [userIdToDelete, userIdToDelete]
+      [userIdToDelete, userIdToDelete],
     );
 
     const parentDataz = parentCheck as User[];
@@ -69,7 +69,7 @@ export const deleteGeanologyUser = async (
       //Set the parent's pointer to the deleted user to null
       await db.execute(
         `UPDATE users SET ${parentSideColumn} = NULL WHERE id = ?`,
-        [parentId]
+        [parentId],
       );
 
       /**
@@ -85,7 +85,7 @@ export const deleteGeanologyUser = async (
 
       await db.execute(
         `UPDATE user_stats SET ${downlineColumn} = ${downlineColumn} - ? WHERE userId = ?`,
-        [allUserIdsToDelete.length, parentData]
+        [allUserIdsToDelete.length, parentData.id],
       );
 
       /**
@@ -107,7 +107,7 @@ export const deleteGeanologyUser = async (
         .join(",");
       await db.execute(
         `UPDATE activation_codes SET status = 'Active' WHERE id IN (${codePlaceholders})`,
-        allActivationCodesToReset
+        allActivationCodesToReset,
       );
     }
 
@@ -118,19 +118,19 @@ export const deleteGeanologyUser = async (
     //Delete from user_stats
     await db.execute(
       `DELETE FROM user_stats WHERE userId IN (${placeholders})`,
-      allUserIdsToDelete
+      allUserIdsToDelete,
     );
 
     //Delete from code_usages
     await db.execute(
       `DELETE FROM code_usages WHERE userId IN (${placeholders})`,
-      allUserIdsToDelete
+      allUserIdsToDelete,
     );
 
     //Delete from users
     await db.execute(
       `DELETE FROM users WHERE id IN (${placeholders})`,
-      allUserIdsToDelete
+      allUserIdsToDelete,
     );
 
     return {

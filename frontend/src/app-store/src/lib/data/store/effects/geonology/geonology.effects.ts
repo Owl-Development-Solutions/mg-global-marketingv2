@@ -4,7 +4,6 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as fromGeonology from '../../../store/actions/geonology/geonology-actions';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { GeonologyNode, GeonologyResponse } from '../../../models';
-import { rootUsername } from '@app-store/public-api';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
@@ -41,6 +40,7 @@ export class GeonologyEffects {
           child,
           activationCodeId,
           sponsorUsername,
+          mainParentTree,
           callBacks,
         } = action;
         const data = {
@@ -48,6 +48,7 @@ export class GeonologyEffects {
           side,
           child,
           sponsorUsername,
+          mainParentTree,
           activationCodeId,
         };
 

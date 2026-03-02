@@ -6,6 +6,20 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=TikTok+Sans:opsz,wght@12..36,300..900&display=swap");
 
+$theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$azure-palette,
+    ),
+    typography: (
+      brand-family: '"Montserrat", sans-serif',
+      plain-family: '"Montserrat", sans-serif',
+    ),
+  )
+);
+
 @theme {
   --color-primary-50: #ebf1ff;
   --color-primary-50-dark: #ebf1ff;
@@ -90,13 +104,13 @@
   --color-green-700: #1b9d5e;
   --color-green-800: #157a49;
   --color-green-900: #0f5734;
-  --font-display: "Montserrat", sans-serif;
 }
 
 html,
 body {
   height: 100%;
   margin: 0;
+  font-family: "Montserrat", sans-serif;
 }
 
 // @todo
