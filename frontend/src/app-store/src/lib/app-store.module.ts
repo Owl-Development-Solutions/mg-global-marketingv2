@@ -25,6 +25,7 @@ import { EffectsModule } from '@ngrx/effects';
       fromStore.UserTokenEffects,
       fromStore.UserEffects,
       fromStore.GeonologyEffects,
+      fromStore.UploadThingEffects,
     ]),
   ],
 })

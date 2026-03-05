@@ -491,20 +491,26 @@ export const loginUserIn = async (
     }
 
     const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+    const refreshTokenz = generateRefreshToken(user);
 
-    await saveRefreshToken(user.id, refreshToken);
+    await saveRefreshToken(user.id, refreshTokenz);
+
+    const {
+      password,
+      parentId,
+      leftChildId,
+      rightChildId,
+      activationCodeId,
+      refreshToken,
+      ...userData
+    } = user;
 
     const response: UserResponse = {
       id: user!.id,
       type: user!.role,
       attributes: {
-        firstName: user!.firstName,
-        lastName: user!.lastName,
-        name: user!.name,
-        email: user!.email,
-        username: user!.userName,
-        role: user!.role,
+        ...userData,
+        username: user.userName,
       } as any,
       accessToken: accessToken,
     };

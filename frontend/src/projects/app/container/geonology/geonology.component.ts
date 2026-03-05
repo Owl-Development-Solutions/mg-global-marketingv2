@@ -20,7 +20,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthUsecase, GeonologyUsecase } from '@app-store/lib/usecases';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AddUserGeonologyData, GeonologyNode } from '@app-store/public-api';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButtonModule, MatIconButton } from '@angular/material/button';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DeleteDialogComponent } from 'projects/app/components/delete-dialog/delete-dialog.component';

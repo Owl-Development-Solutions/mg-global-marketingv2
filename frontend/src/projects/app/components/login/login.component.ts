@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, input, Output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
@@ -14,7 +13,6 @@ import { SubmitButtonComponent } from '../submit-button/submit-button.component'
     MatError,
     MatLabel,
     MatProgressSpinnerModule,
-    CommonModule,
     FormsModule,
     MatFormField,
     MatInput,

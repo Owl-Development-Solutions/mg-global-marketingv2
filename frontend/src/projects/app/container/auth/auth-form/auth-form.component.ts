@@ -1,4 +1,4 @@
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -25,7 +25,7 @@ import { UsernameSharedService } from 'projects/app/services';
 
 @Component({
   selector: 'app-auth-form',
-  imports: [CommonModule, MatIcon, LoginComponent, SignUpComponent],
+  imports: [MatIcon, LoginComponent, SignUpComponent],
   templateUrl: './auth-form.component.html',
   styleUrl: './auth-form.component.scss',
 })

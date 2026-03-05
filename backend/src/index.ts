@@ -9,6 +9,7 @@ import userRouter from "./routes/users/get-user.routes";
 import updateUserRouter from "./routes/users/update-user.routes";
 import geonologyRouter from "./routes/geonology/geonology.routes";
 import activationCodeRouter from "./routes/activation-code/activation-code.routes";
+import fileUploadRouter from "./routes/upload/file-upload.routes";
 
 const app = express();
 dotenv.config();
@@ -35,6 +36,9 @@ app.use(express.json());
 
 //middleware
 app.use(bodyParser.json());
+
+//Base path for file upload
+app.use("/api/upload", fileUploadRouter);
 
 //Base path for geonology
 app.use("/api/geonology", geonologyRouter);

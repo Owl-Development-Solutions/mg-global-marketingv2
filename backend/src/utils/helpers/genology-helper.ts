@@ -3,7 +3,7 @@ import { GeonologyNode, LowOrHigh, User } from "../models";
 export const processUplineRewards = async (
   connection: any,
   startUplineId: string,
-  newChildId: string
+  newChildId: string,
 ) => {
   const POINT_VALUE = 1;
   const PAIRING_BONUS = 250.0;
@@ -15,7 +15,7 @@ export const processUplineRewards = async (
   while (currentUplineId) {
     const [uplineUserRows] = await connection.execute(
       `SELECT id, parentId, leftChildId, rightChildId FROM users WHERE id = ?`,
-      [currentUplineId]
+      [currentUplineId],
     );
 
     const uplineUser = (uplineUserRows as any)[0];
@@ -30,17 +30,17 @@ export const processUplineRewards = async (
         ${downlineColumn} = ${downlineColumn} + 1, 
         ${pointsColumn} = ${pointsColumn} + ? 
        WHERE userId = ?`,
-      [POINT_VALUE, currentUplineId]
+      [POINT_VALUE, currentUplineId],
     );
 
     const [statsRows] = await connection.execute(
       `SELECT leftPoints, rightPoints, totalPairsMade, njWallet FROM user_stats WHERE userId = ? FOR UPDATE`,
-      [currentUplineId]
+      [currentUplineId],
     );
 
     const stats = (statsRows as any)[0];
     const matchValue = Math.floor(
-      Math.min(stats.leftPoints, stats.rightPoints)
+      Math.min(stats.leftPoints, stats.rightPoints),
     );
 
     if (matchValue >= 1) {
@@ -62,7 +62,7 @@ export const processUplineRewards = async (
           pairsToProcess,
           newTotalPairs,
           currentUplineId,
-        ]
+        ],
       );
 
       await connection.execute(
@@ -74,7 +74,7 @@ export const processUplineRewards = async (
           commissionEarned,
           "Credit",
           `${pairsToProcess} pair(s) completed`,
-        ]
+        ],
       );
 
       const travelPointsAwarded =
@@ -84,7 +84,7 @@ export const processUplineRewards = async (
       if (travelPointsAwarded > 0) {
         await connection.execute(
           `UPDATE user_stats SET travelGcPoints = travelGcPoints + ? WHERE userId = ?`,
-          [travelPointsAwarded, currentUplineId]
+          [travelPointsAwarded, currentUplineId],
         );
 
         await connection.execute(
@@ -96,7 +96,7 @@ export const processUplineRewards = async (
             travelPointsAwarded,
             "Credit",
             `${travelPointsAwarded} travel point(s) awarded`,
-          ]
+          ],
         );
       }
     }
@@ -110,7 +110,7 @@ export const buildNodeTree = async (
   db: any,
   currentNodeData: any,
   level: number,
-  relativeSide: string
+  relativeSide: string,
 ): Promise<GeonologyNode> => {
   const MAX_LEVEL_DEPTH = 5;
 
@@ -132,6 +132,7 @@ export const buildNodeTree = async (
     leftDownline: currentNodeData.leftDownline,
     rightDownline: currentNodeData.rightDownline,
     rankPoints: currentNodeData.rankPoints,
+    price: Number(currentNodeData.price),
     // 2. Use the passed level
     level: mapLevel(level),
     // 3. Use the passed relative side
@@ -155,12 +156,14 @@ export const buildNodeTree = async (
                     u.leftChildId, u.rightChildId,
                     u.sponsorId, 
                     s.firstName as sponsorFirstName, 
-                    s.lastName as sponsorLastName
+                    s.lastName as sponsorLastName,
+                    ac.price
                 FROM users u
                 JOIN user_stats us ON u.id = us.userId
                 LEFT JOIN users s ON u.sponsorId = s.id
+                LEFT JOIN activation_codes ac ON u.activationCodeId = ac.id
                 WHERE u.id = ?`,
-      [currentNodeData.leftChildId]
+      [currentNodeData.leftChildId],
     );
 
     const leftChildDatas = leftRows as any;
@@ -171,7 +174,7 @@ export const buildNodeTree = async (
         db,
         leftChildData,
         level + 1, // Next level
-        relativeSide === "root" ? "[L]" : `${relativeSide}[L]`
+        relativeSide === "root" ? "[L]" : `${relativeSide}[L]`,
       );
     }
   }
@@ -185,12 +188,14 @@ export const buildNodeTree = async (
                     u.leftChildId, u.rightChildId,
                     u.sponsorId, 
                     s.firstName as sponsorFirstName, 
-                    s.lastName as sponsorLastName
+                    s.lastName as sponsorLastName,
+                    ac.price
                 FROM users u
                 JOIN user_stats us ON u.id = us.userId
                 LEFT JOIN users s ON u.sponsorId = s.id
+                LEFT JOIN activation_codes ac ON u.activationCodeId = ac.id
                 WHERE u.id = ?`,
-      [currentNodeData.rightChildId]
+      [currentNodeData.rightChildId],
     );
 
     const rightChildDatas = rightRows as any;
@@ -201,7 +206,7 @@ export const buildNodeTree = async (
         db,
         rightChildData,
         level + 1, // Next level
-        relativeSide === "root" ? "[R]" : `${relativeSide}[R]`
+        relativeSide === "root" ? "[R]" : `${relativeSide}[R]`,
       );
     }
   }
@@ -212,7 +217,7 @@ export const buildNodeTree = async (
 export const decrementUplineDownlineCounts = async (
   db: any,
   currentParentId: string,
-  side: "[L]" | "[R]"
+  side: "[L]" | "[R]",
 ): Promise<void> => {
   if (!currentParentId) {
     return;
@@ -222,14 +227,14 @@ export const decrementUplineDownlineCounts = async (
 
   await db.execute(
     `UPDATE user_stats SET ${downlineColumn} = ${downlineColumn} -1 WHERE userId = ?`,
-    [currentParentId]
+    [currentParentId],
   );
 
   const [grandParentRows] = await db.execute(
     `SELECT id, leftChildId, rightChildId
      FROM users
      WHERE leftChildId = ? OR rightChildId = ?`,
-    [currentParentId, currentParentId]
+    [currentParentId, currentParentId],
   );
 
   const grandParentData = grandParentRows[0];
@@ -247,7 +252,7 @@ export const decrementUplineDownlineCounts = async (
     await decrementUplineDownlineCounts(
       db,
       grandParentId,
-      parentSideRelativeToGrandParent
+      parentSideRelativeToGrandParent,
     );
   }
 };
@@ -256,14 +261,14 @@ export const collectDescendantsForDeletion = async (
   db: any,
   currentId: string,
   idsToDelete: string[],
-  coodesToReset: string[]
+  coodesToReset: string[],
 ): Promise<void> => {
   const [userRows] = await db.execute(
     `SELECT id, leftChildId, rightChildId, activationCodeId
      FROM users
      WHERE id = ? FOR UPDATE
     `,
-    [currentId]
+    [currentId],
   );
 
   const userData: User = userRows[0];
@@ -281,7 +286,7 @@ export const collectDescendantsForDeletion = async (
       db,
       userData.leftChildId,
       idsToDelete,
-      coodesToReset
+      coodesToReset,
     );
   }
 
@@ -290,7 +295,7 @@ export const collectDescendantsForDeletion = async (
       db,
       userData.rightChildId,
       idsToDelete,
-      coodesToReset
+      coodesToReset,
     );
   }
 };

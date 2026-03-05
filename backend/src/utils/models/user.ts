@@ -20,6 +20,7 @@ export interface User {
   leftChildId: string;
   rightChildId: string;
   activationCodeId: string;
+  image?: string;
 }
 
 export interface AuthResponse {

@@ -1,10 +1,11 @@
 import { Component, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { BalanceCardComponent } from '../balance-card/balance-card.component';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-profile-card',
-  imports: [MatIcon, BalanceCardComponent],
+  imports: [MatIcon, BalanceCardComponent, JsonPipe],
   templateUrl: './profile-card.component.html',
   styleUrl: './profile-card.component.scss',
 })
@@ -15,6 +16,7 @@ export class ProfileCardComponent {
         lastName: string;
         userName: string;
         email: string;
+        image: string;
       }
     | undefined
     | null
@@ -25,8 +27,8 @@ export class ProfileCardComponent {
     "PMA Reminder for FA049950: Qualified for next month's benefits...";
 
   balances = [
-    { amount: 'PHP', label: 'TOTAL BALANCE' },
-    { amount: 'PHP', label: 'TOTAL EARNINGS' },
+    { amount: '340 PHP', label: 'TOTAL BALANCE' },
+    { amount: '121 PHP', label: 'TOTAL EARNINGS' },
   ];
 
   imgUrl = 'person-img.jpg';

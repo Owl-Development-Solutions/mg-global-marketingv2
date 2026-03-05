@@ -1,5 +1,4 @@
 import { Component, inject, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { PageTitlePortalService } from '../../services';
 import { CdkPortal } from '@angular/cdk/portal';
 import { ColumnContainerComponent } from '../../components';
@@ -15,7 +14,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-ecu-wallet',
   imports: [
-    CommonModule,
     CdkPortal,
     BalanceCardComponent,
     ColumnContainerComponent,

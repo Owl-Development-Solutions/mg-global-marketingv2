@@ -16,7 +16,11 @@
             (click)="handleClickMember(userNode()?.id)"
           >
             <img
-              class="relative inline-flex items-center justify-center mt-2 rounded-full ring-2 ring-primary dark:ring-primary-600-dark {{
+              [ngClass]="{
+                'ring-green-700': userNode()!.price === 500,
+                'ring-alert-600': userNode()!.price == 3500,
+              }"
+              class="relative inline-flex items-center justify-center mt-2 rounded-full ring-2 {{
                 isSmallNode ? 'h-8 w-8' : 'h-12 w-12'
               }}"
               src="person-img.jpg"
@@ -57,15 +61,15 @@
                 {{ userNode()!.rightPoints }}
               </span>
             </div>
-            <!-- 
-            Leaving this in here in case you need to delete some node child  
-            Uncomment it if you want to delete child nodes
-            It also delete the sub child also eg parent => child => child it will remove all -->
+            <!--
+                    Leaving this in here in case you need to delete some node child
+                    Uncomment it if you want to delete child nodes
+                    It also delete the sub child also eg parent => child => child it will remove all -->
             <!-- @if (userNode()?.side !== "root") {
-              <div (click)="deleteMember(userNode())" class="cursor-pointer">
-                <mat-icon class="!text-red-500">delete</mat-icon>
-              </div>
-            } -->
+                    <div (click)="deleteMember(userNode())" class="cursor-pointer">
+                      <mat-icon class="!text-red-500">delete</mat-icon>
+                    </div>
+                    } -->
           </div>
         </div>
 
@@ -94,18 +98,14 @@
                   </div>
 
                   <div class="pt-6 flex justify-center">
-                    <ng-container
-                      *ngIf="userNode()!.leftChild; else leftEmptySlot"
-                    >
+                    @if (userNode()!.leftChild) {
                       <app-geonology-tree
                         [userNode]="userNode()!.leftChild!"
                         (handleAddMember)="handleAddMember.emit($event)"
                         (routeToMember)="routeToMember.emit($event)"
                         (handleDeleteMember)="handleDeleteMember.emit($event)"
                       ></app-geonology-tree>
-                    </ng-container>
-
-                    <ng-template #leftEmptySlot>
+                    } @else {
                       @if (currentDepth === 3) {
                         <!-- Leaf node (depth 3) showing question mark placeholder -->
                         <div class="relative">
@@ -134,26 +134,20 @@
                       } @else {
                         <!-- Add Member Slot -->
                         <div class="relative">
-                          <div
-                            class="flex cursor-pointer flex-col items-center group"
-                            (click)="addMember(userNode(), 'left')"
-                          >
+                          <div class="flex flex-col items-center group">
                             <span
-                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-primary-400 group-hover:opacity-80 size-10 dark:border-gray-300 dark:opacity-50"
+                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all size-10 dark:border-gray-300 dark:opacity-50"
                             >
                               <span
-                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-primary-600 dark:group-hover:bg-transparent"
+                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full"
                               >
-                                <mat-icon
-                                  class="dark:!text-gray-300 dark:group-hover:!text-primary-600-dark"
-                                  >add</mat-icon
-                                >
+                                <mat-icon>question_mark</mat-icon>
                               </span>
                             </span>
                             <div
-                              class="mt-2 text-xs text-primary-600 group-hover:text-primary-600 dark:text-primary-600-dark group-hover:text-primary-600-dark"
+                              class="text-muted-foreground mt-2 text-xs dark:text-white"
                             >
-                              Add Member
+                              Empty
                             </div>
                             <div
                               class="text-muted-foreground text-xs dark:text-white"
@@ -163,7 +157,7 @@
                           </div>
                         </div>
                       }
-                    </ng-template>
+                    }
                   </div>
                 </div>
 
@@ -177,18 +171,14 @@
                   </div>
 
                   <div class="pt-6 flex justify-center">
-                    <ng-container
-                      *ngIf="userNode()!.rightChild; else rightEmptySlot"
-                    >
+                    @if (userNode()!.rightChild) {
                       <app-geonology-tree
                         [userNode]="userNode()!.rightChild!"
                         (handleAddMember)="handleAddMember.emit($event)"
                         (routeToMember)="routeToMember.emit($event)"
                         (handleDeleteMember)="handleDeleteMember.emit($event)"
                       ></app-geonology-tree>
-                    </ng-container>
-
-                    <ng-template #rightEmptySlot>
+                    } @else {
                       @if (currentDepth === 3) {
                         <!-- Leaf node (depth 3) showing question mark placeholder -->
                         <div class="relative">
@@ -217,26 +207,20 @@
                       } @else {
                         <!-- Add Member Slot -->
                         <div class="relative">
-                          <div
-                            class="flex cursor-pointer flex-col items-center group"
-                            (click)="addMember(userNode(), 'right')"
-                          >
+                          <div class="flex flex-col items-center group">
                             <span
-                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all group-hover:border-primary-400 group-hover:opacity-80 size-10 dark:border-gray-300 dark:opacity-50"
+                              class="border-border relative flex shrink-0 overflow-hidden rounded-full border-2 border-dashed opacity-50 transition-all size-10 dark:border-gray-300 dark:opacity-50"
                             >
                               <span
-                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full group-hover:bg-blue-50 group-hover:text-primary-600 dark:group-hover:bg-transparent"
+                                class="bg-muted/50 text-muted-foreground flex size-full items-center justify-center rounded-full"
                               >
-                                <mat-icon
-                                  class="dark:!text-gray-300 dark:group-hover:!text-primary-600-dark"
-                                  >add</mat-icon
-                                >
+                                <mat-icon>question_mark</mat-icon>
                               </span>
                             </span>
                             <div
-                              class="mt-2 text-xs text-primary-600 group-hover:text-primary-600 dark:text-primary-600-dark group-hover:text-primary-600-dark"
+                              class="text-muted-foreground mt-2 text-xs dark:text-white"
                             >
-                              Add Member
+                              Empty
                             </div>
                             <div
                               class="text-muted-foreground text-xs dark:text-white"
@@ -246,7 +230,7 @@
                           </div>
                         </div>
                       }
-                    </ng-template>
+                    }
                   </div>
                 </div>
               </div>

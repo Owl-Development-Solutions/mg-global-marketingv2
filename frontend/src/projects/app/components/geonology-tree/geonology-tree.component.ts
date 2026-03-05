@@ -1,13 +1,14 @@
 import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { GeonologyNode } from '../../models';
-import { CommonModule } from '@angular/common';
+
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { SkeletonUserNodeComponent } from '../skeleton-user-node/skeleton-user-node.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-geonology-tree',
-  imports: [CommonModule, MatIcon, SkeletonUserNodeComponent],
+  imports: [MatIcon, SkeletonUserNodeComponent, CommonModule],
   templateUrl: './geonology-tree.component.html',
   styleUrl: './geonology-tree.component.scss',
 })

@@ -20,7 +20,12 @@ import {
   MatLabel,
 } from '@angular/material/input';
 import { SubmitButtonComponent } from '../submit-button/submit-button.component';
-import { CommonModule, DatePipe, JsonPipe } from '@angular/common';
+import {
+  CommonModule,
+  DatePipe,
+  JsonPipe,
+  NgOptimizedImage,
+} from '@angular/common';
 import {
   CallbackOnFailureModel,
   ErrorProps,
@@ -38,6 +43,8 @@ import {
 } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { BehaviorSubject } from 'rxjs';
+import { MatTooltip } from '@angular/material/tooltip';
+import { UploadThingUsecase } from '@app-store/lib/usecases';
 
 export interface AccountModalData {
   userProfile: User;
@@ -78,6 +85,8 @@ export interface AccountModalData {
     MatNativeDateModule,
     MatSuffix,
     MatSelectModule,
+    NgOptimizedImage,
+    MatTooltip,
   ],
   templateUrl: './account-modal.component.html',
   styleUrl: './account-modal.component.scss',
@@ -86,6 +95,7 @@ export interface AccountModalData {
 export class AccountModalComponent {
   constructor(
     public dialogRef: MatDialogRef<AccountModalComponent>,
+    private uploadThing: UploadThingUsecase,
     @Inject(MAT_DIALOG_DATA) public data: AccountModalData,
   ) {}
 
@@ -102,8 +112,23 @@ export class AccountModalComponent {
 
   triggerImageUpload() {}
 
-  onImageSelected(event: any) {
-    // @TODO
+  onImageSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+
+    if (!file.type.startsWith('image/')) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.data.userProfile.image = reader.result as string;
+    };
+
+    reader.readAsDataURL(file);
+
+    this.uploadThing.execute(this.data.userProfile.id, file);
   }
 
   onCancelClick() {
