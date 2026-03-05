@@ -7,3 +7,4 @@ export * from './geonology.model';
 export * from './geonology.interface';
 export * from './callbacks.model';
 export * from './activation-code.interface';
+export * from './image-upload.interface';

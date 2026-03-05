@@ -1,4 +1,3 @@
-import { ResultSetHeader } from "mysql2";
 import { connection } from "../../config/mysql.db";
 import {
   ActivationCode,
@@ -11,11 +10,10 @@ import {
   User,
   UserStats,
 } from "../../utils";
-import { processUplineRewards } from "../../utils/helpers/genology-helper";
 import { processBinaryVolumeUpstream } from "../../utils/helpers/process-upstream-geonology";
 
 export const addGeonologyUserIn = async (
-  data: AddUserGeonologyData
+  data: AddUserGeonologyData,
 ): Promise<Result<SuccessResponse<GeonologyResponse>, ErrorResponse>> => {
   const { parentUserName, side, child, activationCodeId } = data;
 
@@ -36,7 +34,7 @@ export const addGeonologyUserIn = async (
   try {
     const [codes] = await db.execute(
       `SELECT id, status, expiresAt FROM activation_codes WHERE code = ? FOR UPDATE`,
-      [activationCodeId]
+      [activationCodeId],
     );
 
     const codeRecords = codes as ActivationCode[];
@@ -66,7 +64,7 @@ export const addGeonologyUserIn = async (
 
     const [sponsorResult] = await db.execute(
       `SELECT id FROM users WHERE username = ?`,
-      [data.sponsorUsername]
+      [data.sponsorUsername],
     );
     const sponsors = sponsorResult as User[];
     const sponsor = sponsors[0];
@@ -85,7 +83,7 @@ export const addGeonologyUserIn = async (
 
     const [parent] = await db.execute(
       `SELECT id, ${sideColumn} FROM users WHERE username = ?`,
-      [parentUserName]
+      [parentUserName],
     );
     const users = parent as User[];
     const user = users[0];
@@ -126,12 +124,12 @@ export const addGeonologyUserIn = async (
         parentId,
         activationCodeIdFromDB,
         sponsorId,
-      ]
+      ],
     );
 
     await db.execute(
       `INSERT INTO code_usages (id, activationCodeId, userId) VALUES (?, ?, ?)`,
-      [uuidv4(), activationCodeIdFromDB, newUserId]
+      [uuidv4(), activationCodeIdFromDB, newUserId],
     );
 
     await db.execute(`UPDATE activation_codes SET status = ? WHERE id = ?`, [
@@ -141,7 +139,7 @@ export const addGeonologyUserIn = async (
 
     const [parentStats] = await db.execute(
       `SELECT sidePath, level FROM user_stats WHERE userId = ?`,
-      [parentId]
+      [parentId],
     );
     const userStats = parentStats as UserStats[];
     const userStat = userStats[0];
@@ -166,7 +164,7 @@ export const addGeonologyUserIn = async (
         newDbLevel,
         newSidePath,
         child.hasDeduction,
-      ]
+      ],
     );
 
     await db.execute(`UPDATE users SET ${sideColumn} = ? WHERE id = ?`, [

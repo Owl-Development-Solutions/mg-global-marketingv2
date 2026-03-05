@@ -28,19 +28,55 @@
         <mat-icon class="text-lg sm:text-xl lg:text-2xl">edit</mat-icon>
       </button>
     </div>
-
     <div class="mt-4 sm:mt-6 lg:mt-8 xl:mt-10 flex flex-col items-center">
       <div class="relative group cursor-pointer mb-4 sm:mb-6">
-        <div
-          class="w-16 sm:w-20 lg:w-24 xl:w-28 h-16 sm:h-20 lg:h-24 xl:h-28 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center shadow-md overflow-hidden ring-2 ring-gray-200 transition-all duration-300 hover:ring-blue-500 hover:shadow-lg"
-        >
-          <span
-            class="text-white text-lg sm:text-xl lg:text-2xl xl:text-3xl font-medium tracking-wide"
+        @if (!data.userProfile.image) {
+          <div
+            class="w-16 sm:w-20 lg:w-24 xl:w-28 h-16 sm:h-20 lg:h-24 xl:h-28 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center shadow-md overflow-hidden ring-2 ring-gray-200 transition-all duration-300 hover:ring-blue-500 hover:shadow-lg"
           >
-            {{ data.userProfile.firstName.charAt(0) || "U" }}
-            {{ data.userProfile.lastName.charAt(0) || "S" }}
-          </span>
-        </div>
+            <span
+              class="text-white text-lg sm:text-xl lg:text-2xl xl:text-3xl font-medium tracking-wide"
+            >
+              {{ data.userProfile.firstName.charAt(0) || "U" }}
+              {{ data.userProfile.lastName.charAt(0) || "S" }}
+            </span>
+          </div>
+        } @else {
+          <div
+            class="w-16 sm:w-20 lg:w-24 xl:w-28 h-16 sm:h-20 lg:h-24 xl:h-28 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center shadow-md overflow-hidden ring-2 ring-gray-200 transition-all duration-300 hover:ring-blue-500 hover:shadow-lg"
+          >
+            <img
+              [src]="data.userProfile.image"
+              class="w-full h-full object-cover"
+              width="400"
+              height="200"
+              alt="Image Profile"
+            />
+          </div>
+        }
+
+        @if (isEditMode()) {
+          <!-- Edit Button -->
+          <button
+            mat-icon-button
+            type="button"
+            (click)="fileInput.click()"
+            class="!absolute bottom-0 right-0 !bg-gray-300"
+            matTooltip="Change your profile picture"
+            color="primary"
+          >
+            <mat-icon>upload</mat-icon>
+          </button>
+
+          <!-- Hidden File Input -->
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            class="hidden"
+            (change)="onImageSelected($event)"
+          />
+        }
       </div>
 
       <div class="text-center mt-3 sm:mt-4 space-y-1 sm:space-y-2 lg:space-y-3">

@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { AuthUserResponse, UserResponseModel } from '../../../models';
 import * as fromAuth from '../../actions/auth/auth-actions';
+import * as fromImageUpload from '../../actions/image-upload/upload-image.actions';
 export const authFeatureKey = 'authz';
 
 export interface AuthState {
@@ -71,6 +72,21 @@ export const initiateAuthReducer = createReducer(
         attributes: {
           ...state.data.attributes,
           ...data,
+        },
+      },
+    };
+  }),
+  on(fromImageUpload.uploadUserImageSucceeded, (state, { resp }) => {
+    console.log(resp);
+
+    if (!state.data) return state;
+    return {
+      ...state,
+      data: {
+        ...state.data,
+        attributes: {
+          ...state.data.attributes,
+          image: resp,
         },
       },
     };
