@@ -21,6 +21,11 @@ export interface User {
   rightChildId: string;
   activationCodeId: string;
   image?: string;
+  indirectBonus500?: number;
+  indirectBonus3500?: number;
+  directBonus3500?: number;
+  directBonus500?: number;
+  pairingBonusAmount?: number;
 }
 
 export interface AuthResponse {

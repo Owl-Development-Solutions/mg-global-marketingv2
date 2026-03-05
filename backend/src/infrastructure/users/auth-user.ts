@@ -459,11 +459,23 @@ export const loginUserIn = async (
     const db = connection();
 
     //check if the user exists
-    const [rows] = await db.execute("SELECT * FROM users where email = ?", [
-      data.email,
-    ]);
+    const [rows] = await db.execute(
+      `SELECT 
+        u.*, 
+        us.indirectBonus500, 
+        us.directBonus500, 
+        us.indirectBonus3500, 
+        us.directBonus3500, 
+        us.pairingBonusAmount
+      FROM users u
+      LEFT JOIN user_stats us ON u.id = us.userId
+      WHERE u.email = ?`,
+      [data.email],
+    );
 
     const users = rows as User[];
+
+    console.log(users);
 
     if (users.length === 0) {
       return {
@@ -495,6 +507,15 @@ export const loginUserIn = async (
 
     await saveRefreshToken(user.id, refreshTokenz);
 
+    const totalBalance =
+      Number(user.directBonus3500) +
+      Number(user.directBonus500) +
+      Number(user.indirectBonus3500) +
+      Number(user.indirectBonus500) +
+      Number(user.pairingBonusAmount);
+
+    console.log();
+
     const {
       password,
       parentId,
@@ -511,6 +532,7 @@ export const loginUserIn = async (
       attributes: {
         ...userData,
         username: user.userName,
+        totalBalance: totalBalance,
       } as any,
       accessToken: accessToken,
     };
