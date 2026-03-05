@@ -1,5 +1,5 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-  @for (balance of balances; track balance.label) {
+  @for (balance of balances(); track balance.label) {
     <app-balance-card
       [amount]="balance.amount"
       [label]="balance.label"

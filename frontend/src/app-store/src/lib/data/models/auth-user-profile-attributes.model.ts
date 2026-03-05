@@ -20,6 +20,7 @@ export interface User {
   birthDate?: string;
   createdAt: Date;
   updatedAt: Date;
+  totalBalance: number;
 }
 export interface AuthUserResponse {
   accessToken: string;

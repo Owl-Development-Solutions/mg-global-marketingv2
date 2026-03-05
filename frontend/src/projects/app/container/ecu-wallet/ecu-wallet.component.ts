@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, computed, inject, ViewChild } from '@angular/core';
 import { PageTitlePortalService } from '../../services';
 import { CdkPortal } from '@angular/cdk/portal';
 import { ColumnContainerComponent } from '../../components';
@@ -45,13 +45,27 @@ export class EcuWalletComponent {
   }
 
   userId = toSignal(this.userUsecase.getUserId$);
+  getUserInfo = toSignal(this.userUsecase.getUserInfo$);
+
+  balances = computed(() => {
+    const user = this.getUserInfo();
+
+    // Provide a fallback of 0 if the user isn't loaded yet
+    const totalBalance = user?.totalBalance ?? 0;
+
+    return [
+      {
+        amount: `${totalBalance.toFixed(2)} PHP`,
+        label: 'TOTAL BALANCE',
+      },
+      {
+        amount: `0.00 PHP`,
+        label: 'TOTAL ELEARNINGS',
+      },
+    ];
+  });
 
   dataSource = [];
-
-  balances = [
-    { amount: '339.18 PHP', label: 'TOTAL BALANCE' },
-    { amount: '145.00 PHP', label: 'TOTAL ELEARNINGS' },
-  ];
 
   handleAddWallet() {
     this.dialog.open(AddWalletModalComponent, {
