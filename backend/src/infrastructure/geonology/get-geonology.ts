@@ -10,27 +10,28 @@ import {
 import { buildNodeTree } from "../../utils/helpers/genology-helper";
 
 export const getGeonologyTreeIn = async (
-  user: string
+  user: string,
 ): Promise<Result<SuccessResponse<GeonologyNode>, ErrorResponse>> => {
   const db = connection();
 
   try {
     const [rootRows] = await db.execute(
       `SELECT
-            u.id, u.userName, u.firstName, u.lastName,
-            us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
-            us.rankPoints, us.level, us.sidePath, us.hasDeduction,
-            u.leftChildId, u.rightChildId, 
-            u.sponsorId, 
-            s.firstName AS sponsorFirstName, 
-            s.lastName AS sponsorLastName
+          u.id, u.userName, u.firstName, u.lastName,
+          us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
+          us.rankPoints, us.level, us.sidePath, us.hasDeduction,
+          u.leftChildId, u.rightChildId, 
+          u.sponsorId, 
+          s.firstName AS sponsorFirstName, 
+          s.lastName AS sponsorLastName,
+          ac.price
         FROM users u
         JOIN user_stats us ON u.id = us.userId
         LEFT JOIN users s ON u.sponsorId = s.id
+        LEFT JOIN activation_codes ac ON u.activationCodeId = ac.id
         WHERE u.id = ?`,
-      [user]
+      [user],
     );
-
     const rootUsers = rootRows as any;
 
     const rootUser = rootUsers[0] as User &

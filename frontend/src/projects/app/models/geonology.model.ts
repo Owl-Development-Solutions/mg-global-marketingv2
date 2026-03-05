@@ -15,6 +15,7 @@ export interface GeonologyNode {
   hasDeduction: number | boolean;
   leftChild?: GeonologyNode | null;
   rightChild?: GeonologyNode | null;
+  price?: number;
 }
 
 export interface LowOrHigh {
