@@ -16,7 +16,11 @@
             (click)="handleClickMember(userNode()?.id)"
           >
             <img
-              class="relative inline-flex items-center justify-center mt-2 rounded-full ring-2 ring-primary dark:ring-primary-600-dark {{
+              [ngClass]="{
+                'ring-green-700': userNode()!.price === 500,
+                'ring-alert-600': userNode()!.price == 3500,
+              }"
+              class="relative inline-flex items-center justify-center mt-2 rounded-full ring-2 {{
                 isSmallNode ? 'h-8 w-8' : 'h-12 w-12'
               }}"
               src="person-img.jpg"

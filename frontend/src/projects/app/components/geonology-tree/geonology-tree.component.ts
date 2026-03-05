@@ -4,10 +4,11 @@ import { GeonologyNode } from '../../models';
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { SkeletonUserNodeComponent } from '../skeleton-user-node/skeleton-user-node.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-geonology-tree',
-  imports: [MatIcon, SkeletonUserNodeComponent],
+  imports: [MatIcon, SkeletonUserNodeComponent, CommonModule],
   templateUrl: './geonology-tree.component.html',
   styleUrl: './geonology-tree.component.scss',
 })

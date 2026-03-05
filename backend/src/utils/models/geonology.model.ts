@@ -17,6 +17,7 @@ export interface GeonologyNode {
   sponsorName?: string | null;
   leftChild?: GeonologyNode | null;
   rightChild?: GeonologyNode | null;
+  price?: number;
 }
 
 export interface LowOrHigh {
