@@ -11,7 +11,6 @@ import {
   DeleteObjectCommand,
   GetObjectCommand,
 } from "@aws-sdk/client-s3";
-import { v4 as uuidv4 } from "uuid";
 import { connection } from "../../config/mysql.db";
 import { Multer } from "multer";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -41,7 +40,6 @@ export const uploadImage = async (
       };
     }
 
-    // 🔹 Get existing image key
     const [existingUsers] = await db.query(
       "SELECT image FROM users WHERE id = ?",
       [data.userId],
@@ -50,7 +48,6 @@ export const uploadImage = async (
     const user = (existingUsers as User[])[0];
     const oldKey = user?.image;
 
-    // 🔹 Delete old image if exists
     if (oldKey) {
       await s3.send(
         new DeleteObjectCommand({
@@ -60,11 +57,12 @@ export const uploadImage = async (
       );
     }
 
-    // 🔹 Create new file name (KEY only)
-    const fileExtension = data.file.originalname.split(".").pop();
-    const newFileName = `users/${uuidv4()}.${fileExtension}`;
+    const { v4: uuidv4 } = await import("uuid");
+    let id = uuidv4();
 
-    // 🔹 Upload to B2
+    const fileExtension = data.file.originalname.split(".").pop();
+    const newFileName = `users/${id}.${fileExtension}`;
+
     await s3.send(
       new PutObjectCommand({
         Bucket: process.env.B2_BUCKET!,
@@ -74,7 +72,6 @@ export const uploadImage = async (
       }),
     );
 
-    // 🔹 Generate Signed URL
     const command = new GetObjectCommand({
       Bucket: process.env.B2_BUCKET!,
       Key: newFileName,
@@ -84,9 +81,6 @@ export const uploadImage = async (
       expiresIn: 60 * 60,
     });
 
-    console.log("signedUrl", signedUrl);
-
-    // 🔹 Save KEY in database
     await db.query("UPDATE users SET image = ? WHERE id = ?", [
       signedUrl,
       data.userId,
