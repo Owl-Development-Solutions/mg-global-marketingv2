@@ -5,3 +5,4 @@ export * from "./users/update-user";
 export * from "./activation-code/search-activation-code";
 export * from "./users/search-user";
 export * from "./activation-code/create-activation-code";
+export * from "./upload/upload-image-controller";
