@@ -23,7 +23,7 @@
               class="relative inline-flex items-center justify-center mt-2 rounded-full ring-2 {{
                 isSmallNode ? 'h-8 w-8' : 'h-12 w-12'
               }}"
-              src="person-img.jpg"
+              [src]="userNode()?.image ? userNode()?.image : 'person-img.jpg'"
             />
           </div>
 
