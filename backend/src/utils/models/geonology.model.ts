@@ -19,6 +19,7 @@ export interface GeonologyNode {
   rightChild?: GeonologyNode | null;
   price?: number;
   image?: string;
+  isDirect?: boolean;
 }
 
 export interface LowOrHigh {

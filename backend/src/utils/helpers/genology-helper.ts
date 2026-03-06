@@ -106,24 +106,132 @@ export const processUplineRewards = async (
   }
 };
 
+// old code
+
+// export const buildNodeTree = async (
+//   db: any,
+//   currentNodeData: any,
+//   level: number,
+//   relativeSide: string,
+// ): Promise<GeonologyNode> => {
+//   const MAX_LEVEL_DEPTH = 5;
+
+//   const mapLevel = (lvl: number): LowOrHigh => ({
+//     low: lvl,
+//     high: 0,
+//   });
+
+//   const shouldRecurse = level < MAX_LEVEL_DEPTH;
+
+//   const node: GeonologyNode = {
+//     id: currentNodeData.id,
+//     userName: currentNodeData.userName,
+//     firstName: currentNodeData.firstName,
+//     lastName: currentNodeData.lastName,
+//     balance: currentNodeData.balance,
+//     leftPoints: currentNodeData.leftPoints,
+//     rightPoints: currentNodeData.rightPoints,
+//     leftDownline: currentNodeData.leftDownline,
+//     rightDownline: currentNodeData.rightDownline,
+//     rankPoints: currentNodeData.rankPoints,
+//     price: Number(currentNodeData.price),
+//     image: currentNodeData.image,
+//     // 2. Use the passed level
+//     level: mapLevel(level),
+//     // 3. Use the passed relative side
+//     side: relativeSide,
+//     hasDeduction: currentNodeData.hasDeduction,
+//     sponsorId: currentNodeData.sponsorId,
+//     sponsorName:
+//       currentNodeData.sponsorFirstName && currentNodeData.sponsorLastName
+//         ? `${currentNodeData.sponsorFirstName} ${currentNodeData.sponsorLastName}`
+//         : null,
+//     leftChild: null,
+//     rightChild: null,
+//   };
+
+//   if (currentNodeData.leftChildId && shouldRecurse) {
+//     const [leftRows] = await db.execute(
+//       `SELECT
+//                     u.id, u.userName, u.firstName, u.lastName, u.image,
+//                     us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
+//                     us.rankPoints, us.level, us.sidePath, us.hasDeduction,
+//                     u.leftChildId, u.rightChildId,
+//                     u.sponsorId,
+//                     s.firstName as sponsorFirstName,
+//                     s.lastName as sponsorLastName,
+//                     ac.price
+//                 FROM users u
+//                 JOIN user_stats us ON u.id = us.userId
+//                 LEFT JOIN users s ON u.sponsorId = s.id
+//                 LEFT JOIN activation_codes ac ON u.activationCodeId = ac.id
+//                 WHERE u.id = ?`,
+//       [currentNodeData.leftChildId],
+//     );
+
+//     const leftChildDatas = leftRows as any;
+//     const leftChildData = leftChildDatas[0];
+
+//     if (leftChildData) {
+//       node.leftChild = await buildNodeTree(
+//         db,
+//         leftChildData,
+//         level + 1, // Next level
+//         relativeSide === "root" ? "[L]" : `${relativeSide}[L]`,
+//       );
+//     }
+//   }
+
+//   if (currentNodeData.rightChildId && shouldRecurse) {
+//     const [rightRows] = await db.execute(
+//       `SELECT
+//                     u.id, u.userName, u.firstName, u.lastName, u.image,
+//                     us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
+//                     us.rankPoints, us.level, us.sidePath, us.hasDeduction,
+//                     u.leftChildId, u.rightChildId,
+//                     u.sponsorId,
+//                     s.firstName as sponsorFirstName,
+//                     s.lastName as sponsorLastName,
+//                     ac.price
+//                 FROM users u
+//                 JOIN user_stats us ON u.id = us.userId
+//                 LEFT JOIN users s ON u.sponsorId = s.id
+//                 LEFT JOIN activation_codes ac ON u.activationCodeId = ac.id
+//                 WHERE u.id = ?`,
+//       [currentNodeData.rightChildId],
+//     );
+
+//     const rightChildDatas = rightRows as any;
+//     const rightChildData = rightChildDatas[0];
+
+//     if (rightChildData) {
+//       node.rightChild = await buildNodeTree(
+//         db,
+//         rightChildData,
+//         level + 1, // Next level
+//         relativeSide === "root" ? "[R]" : `${relativeSide}[R]`,
+//       );
+//     }
+//   }
+
+//   return node;
+// };
+
 export const buildNodeTree = async (
   db: any,
   currentNodeData: any,
   level: number,
   relativeSide: string,
+  rootSponsorId: string,
 ): Promise<GeonologyNode> => {
   const MAX_LEVEL_DEPTH = 5;
-
-  const mapLevel = (lvl: number): LowOrHigh => ({
-    low: lvl,
-    high: 0,
-  });
-
   const shouldRecurse = level < MAX_LEVEL_DEPTH;
+
+  const isDirect = currentNodeData.sponsorId === rootSponsorId || level === 0;
 
   const node: GeonologyNode = {
     id: currentNodeData.id,
-    userName: currentNodeData.userName,
+    userName: isDirect ? currentNodeData.userName : "indirect",
     firstName: currentNodeData.firstName,
     lastName: currentNodeData.lastName,
     balance: currentNodeData.balance,
@@ -132,11 +240,9 @@ export const buildNodeTree = async (
     leftDownline: currentNodeData.leftDownline,
     rightDownline: currentNodeData.rightDownline,
     rankPoints: currentNodeData.rankPoints,
-    price: Number(currentNodeData.price),
-    image: currentNodeData.image,
-    // 2. Use the passed level
-    level: mapLevel(level),
-    // 3. Use the passed relative side
+    price: isDirect ? Number(currentNodeData.price) : 0,
+    image: isDirect ? currentNodeData.image : null,
+    level: { low: level, high: 0 },
     side: relativeSide,
     hasDeduction: currentNodeData.hasDeduction,
     sponsorId: currentNodeData.sponsorId,
@@ -148,71 +254,60 @@ export const buildNodeTree = async (
     rightChild: null,
   };
 
-  if (currentNodeData.leftChildId && shouldRecurse) {
-    const [leftRows] = await db.execute(
-      `SELECT
-                    u.id, u.userName, u.firstName, u.lastName, u.image,
-                    us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
-                    us.rankPoints, us.level, us.sidePath, us.hasDeduction,
-                    u.leftChildId, u.rightChildId,
-                    u.sponsorId, 
-                    s.firstName as sponsorFirstName, 
-                    s.lastName as sponsorLastName,
-                    ac.price
-                FROM users u
-                JOIN user_stats us ON u.id = us.userId
-                LEFT JOIN users s ON u.sponsorId = s.id
-                LEFT JOIN activation_codes ac ON u.activationCodeId = ac.id
-                WHERE u.id = ?`,
-      [currentNodeData.leftChildId],
-    );
-
-    const leftChildDatas = leftRows as any;
-    const leftChildData = leftChildDatas[0];
-
-    if (leftChildData) {
-      node.leftChild = await buildNodeTree(
+  if (shouldRecurse) {
+    if (currentNodeData.leftChildId) {
+      node.leftChild = await fetchChildById(
         db,
-        leftChildData,
-        level + 1, // Next level
-        relativeSide === "root" ? "[L]" : `${relativeSide}[L]`,
+        currentNodeData.leftChildId,
+        level,
+        relativeSide,
+        "L",
+        rootSponsorId,
       );
     }
-  }
-
-  if (currentNodeData.rightChildId && shouldRecurse) {
-    const [rightRows] = await db.execute(
-      `SELECT
-                    u.id, u.userName, u.firstName, u.lastName, u.image,
-                    us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
-                    us.rankPoints, us.level, us.sidePath, us.hasDeduction,
-                    u.leftChildId, u.rightChildId,
-                    u.sponsorId, 
-                    s.firstName as sponsorFirstName, 
-                    s.lastName as sponsorLastName,
-                    ac.price
-                FROM users u
-                JOIN user_stats us ON u.id = us.userId
-                LEFT JOIN users s ON u.sponsorId = s.id
-                LEFT JOIN activation_codes ac ON u.activationCodeId = ac.id
-                WHERE u.id = ?`,
-      [currentNodeData.rightChildId],
-    );
-
-    const rightChildDatas = rightRows as any;
-    const rightChildData = rightChildDatas[0];
-
-    if (rightChildData) {
-      node.rightChild = await buildNodeTree(
+    if (currentNodeData.rightChildId) {
+      node.rightChild = await fetchChildById(
         db,
-        rightChildData,
-        level + 1, // Next level
-        relativeSide === "root" ? "[R]" : `${relativeSide}[R]`,
+        currentNodeData.rightChildId,
+        level,
+        relativeSide,
+        "R",
+        rootSponsorId,
       );
     }
   }
 
   return node;
+};
+
+// Helper function to keep the code clean
+const fetchChildById = async (
+  db: any,
+  childId: string,
+  level: number,
+  relativeSide: string,
+  side: "L" | "R",
+  rootSponsorId: string,
+) => {
+  const [rows] = await db.execute(
+    `SELECT u.*, us.*, s.firstName as sponsorFirstName, s.lastName as sponsorLastName, ac.price
+     FROM users u
+     JOIN user_stats us ON u.id = us.userId
+     LEFT JOIN users s ON u.sponsorId = s.id
+     LEFT JOIN activation_codes ac ON u.activationCodeId = ac.id
+     WHERE u.id = ?`,
+    [childId],
+  );
+  const data = (rows as any)[0];
+  if (!data) return null;
+
+  return await buildNodeTree(
+    db,
+    data,
+    level + 1,
+    relativeSide === "root" ? `[${side}]` : `${relativeSide}[${side}]`,
+    rootSponsorId,
+  );
 };
 
 export const decrementUplineDownlineCounts = async (

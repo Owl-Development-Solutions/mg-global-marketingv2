@@ -225,10 +225,10 @@ export const processBinaryVolumeUpstreamv1 = async (
 
       /* DIRECT BONUS */
       if (node.currentId === node.actualSponsorId) {
-        const directAmt = price === 3500 ? 400 : 100;
+        const directAmt = price === 3500 ? 500 : 100;
 
         if (price === 3500) {
-          //package price bonus 400
+          //package price bonus 500
           await db.execute(
             `UPDATE user_stats SET directBonus3500 = COALESCE(directBonus3500, 0) + ? WHERE userId = ?`,
             [directAmt, node.currentId],
@@ -344,7 +344,7 @@ export const processBinaryVolumeUpstreamv1 = async (
         const todayPairs = (dailyResult as any[])[0]?.todayPairs ?? 0;
 
         if (todayPairs < 15) {
-          const pairingBonus = 500;
+          const pairingBonus = 700;
 
           await db.execute(
             `UPDATE user_stats SET pairingBonusAmount = COALESCE(pairingBonusAmount, 0) + ? WHERE userId = ?`,

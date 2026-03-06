@@ -65,8 +65,8 @@ export const getIndirectBonus = ({
 
   const currentTotal = price === 3500 ? current3500 : current500;
 
-  const firstBonus = price === 3500 ? 400 : 100;
-  const maxTotal = price === 3500 ? 550 : 250;
+  const firstBonus = price === 3500 ? 50 : 50;
+  const maxTotal = price === 3500 ? 150 : 150;
 
   if (currentTotal >= maxTotal) return 0;
 

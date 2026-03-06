@@ -47,7 +47,7 @@ export const getGeonologyTreeIn = async (
       };
     }
 
-    const tree = await buildNodeTree(db, rootUser, 0, "root");
+    const tree = await buildNodeTree(db, rootUser, 0, "root", rootUser.id);
 
     return {
       success: true,
