@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   ProfileCardComponent,
   AddWalletButtonComponent,
@@ -46,7 +46,23 @@ export class DashboardComponent implements OnDestroy, OnInit {
       return 'Good Evening';
     }
   }
-
+    balances = computed(() => {
+      const user = this.getUserInfo();
+  
+      // Provide a fallback of 0 if the user isn't loaded yet
+      const totalBalance = user?.totalBalance ?? 0;
+  
+      return [
+        {
+          amount: `${totalBalance.toFixed(2)} PHP`,
+          label: 'TOTAL BALANCE',
+        },
+        {
+          amount: `0.00 PHP`,
+          label: 'TOTAL ELEARNINGS',
+        },
+      ];
+    });
   ngOnDestroy(): void {
     if (this.pageTitle?.isAttached) {
       this.pageTitle.detach();
