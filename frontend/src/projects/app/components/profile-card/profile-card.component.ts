@@ -22,14 +22,5 @@ export class ProfileCardComponent {
     | null
   >();
 
-  reminderLink = 'https://shop.empoweredconsumerism.com/?epid=FA049950';
-  reminderText =
-    "PMA Reminder for FA049950: Qualified for next month's benefits...";
-
-  balances = [
-    { amount: '340 PHP', label: 'TOTAL BALANCE' },
-    { amount: '121 PHP', label: 'TOTAL EARNINGS' },
-  ];
-
-  imgUrl = 'person-img.jpg';
+      balances = input.required<any>()
 }
