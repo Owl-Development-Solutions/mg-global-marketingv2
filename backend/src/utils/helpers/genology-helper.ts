@@ -240,7 +240,7 @@ export const buildNodeTree = async (
     leftDownline: currentNodeData.leftDownline,
     rightDownline: currentNodeData.rightDownline,
     rankPoints: currentNodeData.rankPoints,
-    price: isDirect ? Number(currentNodeData.price) : 0,
+    price: Number(currentNodeData.price),
     image: isDirect ? currentNodeData.image : null,
     level: { low: level, high: 0 },
     side: relativeSide,
