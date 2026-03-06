@@ -18,10 +18,6 @@ export const processBinaryVolumeUpstream = async (
     const db = connection();
     const pointColumn = side === "Left" ? "leftPoints" : "rightPoints";
 
-    console.log(`pointColumn`, pointColumn);
-
-    console.log(`ancestorId`, ancestorId);
-
     await db.execute(
       `UPDATE user_stats SET ${pointColumn} = ${pointColumn} + 1 WHERE userId = ?`,
       [ancestorId],
@@ -47,8 +43,6 @@ export const processBinaryVolumeUpstream = async (
     }
 
     const matchValue = Math.min(ancestore.leftPoints, ancestore.rightPoints);
-
-    console.log(`matchValue`, matchValue);
 
     if (matchValue >= 1) {
       const pairsToProcess = Math.floor(matchValue);
@@ -152,10 +146,6 @@ export const processBinaryVolumeUpstreamv1 = async (
   packagePrice: number,
 ): Promise<void> => {
   if (!initialAncestorId) return;
-
-  console.log("initialAncestorId", initialAncestorId);
-
-  console.log("newUserId", newUserId);
 
   const db = connection();
   const price = Number(packagePrice);

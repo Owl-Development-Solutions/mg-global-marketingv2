@@ -133,6 +133,7 @@ export const buildNodeTree = async (
     rightDownline: currentNodeData.rightDownline,
     rankPoints: currentNodeData.rankPoints,
     price: Number(currentNodeData.price),
+    image: currentNodeData.image,
     // 2. Use the passed level
     level: mapLevel(level),
     // 3. Use the passed relative side
@@ -150,7 +151,7 @@ export const buildNodeTree = async (
   if (currentNodeData.leftChildId && shouldRecurse) {
     const [leftRows] = await db.execute(
       `SELECT
-                    u.id, u.userName, u.firstName, u.lastName,
+                    u.id, u.userName, u.firstName, u.lastName, u.image,
                     us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
                     us.rankPoints, us.level, us.sidePath, us.hasDeduction,
                     u.leftChildId, u.rightChildId,
@@ -182,7 +183,7 @@ export const buildNodeTree = async (
   if (currentNodeData.rightChildId && shouldRecurse) {
     const [rightRows] = await db.execute(
       `SELECT
-                    u.id, u.userName, u.firstName, u.lastName,
+                    u.id, u.userName, u.firstName, u.lastName, u.image,
                     us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
                     us.rankPoints, us.level, us.sidePath, us.hasDeduction,
                     u.leftChildId, u.rightChildId,

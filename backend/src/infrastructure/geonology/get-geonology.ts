@@ -17,7 +17,7 @@ export const getGeonologyTreeIn = async (
   try {
     const [rootRows] = await db.execute(
       `SELECT
-          u.id, u.userName, u.firstName, u.lastName,
+          u.id, u.userName, u.firstName, u.lastName, u.image,
           us.balance, us.leftPoints, us.rightPoints, us.leftDownline, us.rightDownline,
           us.rankPoints, us.level, us.sidePath, us.hasDeduction,
           u.leftChildId, u.rightChildId, 

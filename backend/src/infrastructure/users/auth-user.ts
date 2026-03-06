@@ -352,16 +352,12 @@ export const registerUserIn = async (
       };
     }
 
-    console.log("from auth", upline);
-
     // 2. Calculate New Stats based on Upline
     // If upline sidePath is "root", we start fresh, otherwise append [L] or [R]
     const parentPath = upline.sidePath === "root" ? "" : upline.sidePath;
     const newSidePath = `${parentPath}${user.position}`;
     const newLevel = (upline.level || 0) + 1;
     const effectiveMainParentTree = upline.mainParentTree || null;
-
-    console.log("from auth", upline.mainParentTree || null);
 
     // 3. Fetch Activation Code & Price
     const [codes] = await db.execute(

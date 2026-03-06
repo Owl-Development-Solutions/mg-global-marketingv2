@@ -6,9 +6,6 @@ export const imageUploadController = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  console.log(req.body);
-  console.log(req.file);
-
   const data = {
     userId: req.body.userId,
     file: req.file!,

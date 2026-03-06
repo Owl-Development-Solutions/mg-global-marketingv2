@@ -4,8 +4,6 @@ import { imageUploadController } from "../../controller";
 
 import multer from "multer";
 
-console.log("upload router sdfloaded");
-
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
