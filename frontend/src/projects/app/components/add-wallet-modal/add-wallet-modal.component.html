@@ -13,8 +13,7 @@
 
       <!-- Custom Amount Input -->
       <div class="mt-4">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label class="font-display">Amount (Pesos)</mat-label>
+        <mat-form-field class="w-full" hideRequiredMarker>
           <input
             matInput
             type="number"
@@ -26,7 +25,10 @@
             min="500"
             required
           />
-          @if (customAmountInput.invalid && (customAmountInput.dirty || customAmountInput.touched)) {
+          @if (
+            customAmountInput.invalid &&
+            (customAmountInput.dirty || customAmountInput.touched)
+          ) {
             <mat-error>
               @if (customAmountInput.hasError("required")) {
                 <span class="font-display dark:text-alert-300">
@@ -49,8 +51,12 @@
     <div class="px-4 pb-2">
       <div class="bg-red-50 border border-red-200 rounded-lg p-3">
         <div class="flex items-center gap-2">
-          <mat-icon class="text-red-600" style="font-size: 20px;">error</mat-icon>
-          <span class="text-red-700 text-sm font-display">{{ error.message }}</span>
+          <mat-icon class="text-red-600" style="font-size: 20px"
+            >error</mat-icon
+          >
+          <span class="text-red-700 text-sm font-display">{{
+            error.message
+          }}</span>
         </div>
       </div>
     </div>
@@ -60,7 +66,6 @@
     <button
       mat-stroked-button
       mat-dialog-close
-      color="warn"
       type="button"
       class="!font-display"
     >
