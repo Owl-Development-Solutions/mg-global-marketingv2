@@ -63,6 +63,8 @@ export const getIndirectBonus = ({
 }): number => {
   console.log(price, current500, current3500);
 
+  if (price === 0) return 0;
+
   const currentTotal = price === 3500 ? current3500 : current500;
 
   const firstBonus = price === 3500 ? 50 : 50;

@@ -162,6 +162,7 @@ export const processBinaryVolumeUpstreamv1 = async (
             anc.id AS currentId,
             anc.parentId,
             anc.sponsorId AS ancestorSponsorId,
+            ac.price AS currentIdPrice,
             child.sponsorId AS actualSponsorId,
             parent.sponsorId AS parentSponsorId,
             childStats.level AS childLevel,
@@ -169,6 +170,7 @@ export const processBinaryVolumeUpstreamv1 = async (
             ancStats.indirectBonus3500 AS ancestorIndirectBonus3500,
             ancStats.indirectBonus500 AS ancestorIndirectBonus500
          FROM users anc
+         LEFT JOIN activation_codes ac ON anc.activationCodeId = ac.id
          LEFT JOIN user_stats ancStats ON anc.id = ancStats.userId
          LEFT JOIN users child ON child.id = ?
          LEFT JOIN users parent ON parent.id = child.parentId
@@ -223,9 +225,16 @@ export const processBinaryVolumeUpstreamv1 = async (
 
       const degree = Number(node.childLevel) - Number(node.ancestorLevel);
 
+      console.log("price", price);
+
+      // PREVENT BONUS IF PRICE IS 0
+      if (price === 0) return;
+
       /* DIRECT BONUS */
       if (node.currentId === node.actualSponsorId) {
         const directAmt = price === 3500 ? 500 : 100;
+
+        console.log("runs direct", directAmt);
 
         if (price === 3500) {
           //package price bonus 500
@@ -250,14 +259,14 @@ export const processBinaryVolumeUpstreamv1 = async (
           );
         }
       } else if (node.currentId === node.parentSponsorId) {
-        console.log("runs the indirect");
-
         /* INDIRECT BONUS */
         const indirectAmt = getIndirectBonus({
           price,
           current3500: Number(node.ancestorIndirectBonus3500),
           current500: Number(node.ancestorIndirectBonus500),
         });
+
+        console.log("runs in direct", indirectAmt);
 
         if (indirectAmt > 0) {
           if (price === 3500) {
@@ -323,7 +332,24 @@ export const processBinaryVolumeUpstreamv1 = async (
       }
     }
 
-    if (price === 3500 && mainGrandParentSponsor) {
+    console.log("mainGrandParentSponsor", mainGrandParentSponsor);
+
+    const mainGrandParentNode = path.find(
+      (p) => p.currentId === mainGrandParentSponsor,
+    );
+
+    console.log(
+      "activation code price for mother",
+      Number(mainGrandParentNode?.currentIdPrice),
+    );
+
+    if (
+      price === 3500 &&
+      mainGrandParentSponsor &&
+      Number(mainGrandParentNode?.currentIdPrice) > 0
+    ) {
+      console.log("runs the pairing for", mainGrandParentNode);
+
       await db.execute(
         `UPDATE user_stats SET totalPairsMade = COALESCE(totalPairsMade, 0) + 1 WHERE userId = ?`,
         [mainGrandParentSponsor],
