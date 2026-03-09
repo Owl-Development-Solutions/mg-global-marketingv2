@@ -6,39 +6,66 @@
       >
         <div class="flex items-center gap-3">
           <p class="text-muted-foreground text-sm dark:text-gray-300">
-            Select an amount you wish to reload
+            Enter an amount you wish to reload (minimum: 500 pesos)
           </p>
         </div>
       </div>
 
+      <!-- Custom Amount Input -->
       <div class="mt-4">
-        <mat-radio-group
-          (change)="selectPrice(price)"
-          [(ngModel)]="selectedPrice"
-          #price="ngModel"
-          name="price"
-        >
-          <div class="grid grid-cols-2 gap-4">
-            @for (priceOpt of priceOpts; track priceOpt.label) {
-              <div
-                class="border rounded-lg text-center bg-gray-50 p-3 flex items-center justify-center"
-              >
-                <mat-radio-button [value]="priceOpt.price">
-                  <span class="!font-display">{{ priceOpt.price }}</span>
-                </mat-radio-button>
-              </div>
-            }
-          </div>
-        </mat-radio-group>
+        <mat-form-field class="w-full" hideRequiredMarker>
+          <input
+            matInput
+            type="number"
+            placeholder="Enter amount (minimum 500)"
+            name="customAmount"
+            id="customAmount"
+            #customAmountInput="ngModel"
+            [(ngModel)]="customAmount"
+            min="500"
+            required
+          />
+          @if (
+            customAmountInput.invalid &&
+            (customAmountInput.dirty || customAmountInput.touched)
+          ) {
+            <mat-error>
+              @if (customAmountInput.hasError("required")) {
+                <span class="font-display dark:text-alert-300">
+                  Amount is required
+                </span>
+              }
+              @if (customAmountInput.hasError("min")) {
+                <span class="font-display dark:text-alert-300">
+                  Minimum amount is 500 pesos
+                </span>
+              }
+            </mat-error>
+          }
+        </mat-form-field>
       </div>
     </div>
   </div>
+
+  @if (error$ | async; as error) {
+    <div class="px-4 pb-2">
+      <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-red-600" style="font-size: 20px"
+            >error</mat-icon
+          >
+          <span class="text-red-700 text-sm font-display">{{
+            error.message
+          }}</span>
+        </div>
+      </div>
+    </div>
+  }
 
   <div mat-dialog-actions class="p-4 flex gap-2">
     <button
       mat-stroked-button
       mat-dialog-close
-      color="warn"
       type="button"
       class="!font-display"
     >
@@ -49,7 +76,7 @@
       icon="add_card"
       color="primary"
       [type]="'submit'"
-      [isDisabled]="!price.value"
+      [isDisabled]="!customAmount"
       [isLoading]="submitting$ | async"
     >
     </app-submit-button>
