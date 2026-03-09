@@ -8,9 +8,11 @@ import {
 } from '@angular/material/dialog';
 import { MatAnchor } from '@angular/material/button';
 import { SubmitButtonComponent } from '../submit-button/submit-button.component';
-import { MatRadioModule } from '@angular/material/radio';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { CallbackOnFailureModel, ErrorProps } from '@app-store/public-api';
 
@@ -35,10 +37,11 @@ export interface AddWalletModalData {
     MatAnchor,
     MatDialogClose,
     SubmitButtonComponent,
-    MatRadioModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
     CommonModule,
     FormsModule,
-    MatRadioModule,
   ],
   templateUrl: './add-wallet-modal.component.html',
   styleUrl: './add-wallet-modal.component.scss',
@@ -49,20 +52,13 @@ export class AddWalletModalComponent {
     @Inject(MAT_DIALOG_DATA) public data: AddWalletModalData,
   ) {}
 
-  selectedPrice: string | null = null;
-
-  priceOpts = [
-    { price: '500.00', label: '500 Pesos' },
-    { price: '1,000.00', label: '1,000 Pesos' },
-    { price: '5,000.00', label: '5,000 Pesos' },
-    { price: '10,000.00', label: '10,000 Pesos' },
-    { price: '20,000.00', label: '20,000 Pesos' },
-    { price: '50,000.00', label: '50,000 Pesos' },
-    { price: '100,000.00', label: '100,000 Pesos' },
-  ];
+  customAmount: number | null = null;
 
   submitting$ = new BehaviorSubject<boolean>(false);
   error$ = new BehaviorSubject<ErrorProps | null>(null);
+
+  // Minimum amount validation
+  MIN_AMOUNT = 500;
 
   onCancelClick() {
     if (!this.submitting$.getValue()) {
@@ -88,16 +84,20 @@ export class AddWalletModalComponent {
 
   performAddWallet(form: NgForm) {
     this.submitting$.next(true);
-    const { price } = form.value;
+    const amount = this.customAmount || 0;
+
+    // Validate minimum amount
+    if (amount < this.MIN_AMOUNT) {
+      this.handleError({
+        errorMsg: `Minimum amount is ${this.MIN_AMOUNT} pesos. Please enter an amount of ${this.MIN_AMOUNT} or more.`
+      });
+      return;
+    }
 
     this.data.onSubmit({
       onSuccess: this.handleSuccess.bind(this),
       onFailure: this.handleError.bind(this),
-      price: price,
+      price: amount.toString(),
     });
-  }
-
-  selectPrice(event: any) {
-    // console.log(event.value);
   }
 }
