@@ -12,6 +12,6 @@ router.post(
   verifyToken,
   searchActivationCodeController
 );
-router.post("/createCode", verifyToken, generateFiftyActivationCodesController);
+router.post("/createCode", generateFiftyActivationCodesController);
 
 export default router;

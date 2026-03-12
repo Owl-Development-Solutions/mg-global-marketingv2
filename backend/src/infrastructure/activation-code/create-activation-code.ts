@@ -40,12 +40,12 @@ export const generateFiftyActivationCodes = async (): Promise<
         id,
         code,
         "Active",
-        "third batch 50 codes",
+        "5 batch 50 codes 500 pesos",
         sponsorID,
         null,
         new Date(),
         new Date(),
-        2000,
+        500,
       ]);
     }
 
