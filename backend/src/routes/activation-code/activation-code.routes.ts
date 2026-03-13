@@ -10,8 +10,8 @@ const router = express.Router();
 router.post(
   "/searchActivationCode",
   verifyToken,
-  searchActivationCodeController
+  searchActivationCodeController,
 );
-router.post("/createCode", generateFiftyActivationCodesController);
+router.post("/createCode", verifyToken, generateFiftyActivationCodesController);
 
 export default router;
