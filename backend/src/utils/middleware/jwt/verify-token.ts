@@ -16,8 +16,6 @@ export const verifyToken = (
   const authHeader = req.headers["authorization"];
 
   const token = authHeader?.split(" ")[1];
-  console.log("Extracted token:", token ? "exists" : "missing");
-  console.log("Token length:", token?.length || 0);
 
   if (!token) {
     console.log("No token provided, returning 401");
@@ -32,7 +30,6 @@ export const verifyToken = (
       });
     }
 
-    console.log("Token verified successfully, user:", user);
     req.user = user as JWTProps;
     next();
   });
