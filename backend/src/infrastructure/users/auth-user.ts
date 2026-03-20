@@ -372,6 +372,13 @@ export const registerUserIn = async (
       };
     }
 
+    if (code.status === "Used") {
+      return {
+        success: false,
+        error: { statusCode: 404, errorMessage: "Code already used." },
+      };
+    }
+
     // 4. Create User
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(user.password, salt);
@@ -421,6 +428,7 @@ export const registerUserIn = async (
       user.position === "[L]" ? "Left" : "Right";
     await processBinaryVolumeUpstreamv1(
       actualSponsorId,
+      upline.id,
       placementSide,
       newUserId,
       code.price, // Pass the price for the custom bonus logic we wrote earlier

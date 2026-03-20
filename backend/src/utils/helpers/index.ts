@@ -25,24 +25,10 @@ export const generateCodes = (existingCodes: Set<string>, count: number) => {
   return Array.from(generated);
 };
 
-export const getLevelBonus = (price: number, degree: number): number => {
-  if (price === 500) {
-    if (degree === 1) return 100;
-    if (degree >= 2 && degree <= 3) return 50;
-    if (degree >= 4 && degree <= 5) return 25;
-
-    return 0;
-  }
-
-  if (price === 3500) {
-    if (degree === 1 || degree === 2) return 400;
-    if (degree === 3) return 100;
-    if (degree === 4 || degree === 5) return 50;
-    if (degree >= 6) return 25;
-
-    return 0;
-  }
-
+export const getLevelBonus = (degree: number): number => {
+  if (degree >= 1 && degree <= 2) return 50;
+  if (degree >= 3 && degree <= 4) return 25;
+  if (degree === 5) return 25;
   return 0;
 };
 
