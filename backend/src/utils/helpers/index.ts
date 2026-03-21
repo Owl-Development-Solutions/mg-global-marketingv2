@@ -26,6 +26,8 @@ export const generateCodes = (existingCodes: Set<string>, count: number) => {
 };
 
 export const getLevelBonus = (degree: number): number => {
+  console.log("degree", degree);
+
   if (degree >= 1 && degree <= 2) return 50;
   if (degree >= 3 && degree <= 4) return 25;
   if (degree === 5) return 25;
