@@ -402,26 +402,22 @@ export const processBinaryVolumeUpstreamv1 = async (
     //logic for the direct and indirect bonuses...
     const nodeArrayMap = Array.from(nodeMap.values());
 
-    const [newUserResult] = await db.execute(
-      `SELECT sponsorId FROM users WHERE id = ?`,
-      [newUserId],
-    );
-    const directSponsorId = (newUserResult as any[])[0]?.sponsorId;
-
     console.log("nodeArrayMap", nodeArrayMap);
 
     //newlogicv1
-    let referalChain = await getSponsorshipChain(db, directSponsorId, 5);
+    let referalChain = await getSponsorshipChain(db, newUserId);
 
     const chainLength = referalChain.length;
 
-    if (chainLength === 3) {
-      referalChain = referalChain.map((entry, index) => {
-        if (index === 1) return { ...entry, level: 2 };
-        if (index === 2) return { ...entry, level: 3 };
+    if (uplineId !== initialAncestorId) {
+      if (chainLength === 3) {
+        referalChain = referalChain.map((entry, index) => {
+          if (index === 1) return { ...entry, level: 2 };
+          if (index === 2) return { ...entry, level: 3 };
 
-        return entry;
-      });
+          return entry;
+        });
+      }
     }
 
     console.log("referal chain", referalChain);

@@ -396,32 +396,105 @@ export const collectDescendantsForDeletion = async (
   }
 };
 
-export const getSponsorshipChain = async (
-  db: any,
-  startSponsorId: string,
-  maxDepth: number,
-) => {
+// export const getSponsorshipChain = async (db: any, newUserId: string) => {
+//   const chain = [];
+
+//   const [userResult] = await db.execute(
+//     `SELECT sponsorId FROM users WHERE id = ?`,
+//     [newUserId],
+//   );
+
+//   let currentSponsorId = (userResult as any[])[0]?.sponsorId;
+//   let levelCount = 0;
+
+//   while (currentSponsorId) {
+//     chain.push({
+//       userId: currentSponsorId,
+//       num: levelCount,
+//     });
+
+//     const [parentResult] = await db.execute(
+//       `SELECT sponsorId FROM users WHERE id = ?`,
+//       [currentSponsorId],
+//     );
+
+//     const nextSponsor = (parentResult as any[])[0]?.sponsorId;
+
+//     console.log("nextSponsor", nextSponsor);
+//     console.log("currentSponsorId", currentSponsorId);
+
+//     if (!nextSponsor || nextSponsor === currentSponsorId) {
+//       break;
+//     }
+
+//     currentSponsorId = nextSponsor;
+//     levelCount++;
+//   }
+
+//   return chain;
+// };
+
+// export const getSponsorshipChain = async (
+//   db: any,
+//   startSponsorId: string,
+//   maxDepth: number,
+// ) => {
+//   const chain = [];
+//   let currentId = startSponsorId;
+
+//   for (let i = 0; i < maxDepth; i++) {
+//     if (!currentId) break;
+
+//     const [rows] = await db.execute(
+//       `SELECT id, sponsorId FROM users WHERE id = ?`,
+//       [currentId],
+//     );
+//     const user = (rows as any[])[0];
+
+//     if (user) {
+//       chain.push({
+//         userId: user.id,
+//         level: i,
+//       });
+//       currentId = user.sponsorId;
+//     } else {
+//       break;
+//     }
+//   }
+//   return chain;
+// };
+
+export const getSponsorshipChain = async (db: any, startUserId: string) => {
   const chain = [];
-  let currentId = startSponsorId;
+  let level = 0;
 
-  for (let i = 0; i < maxDepth; i++) {
-    if (!currentId) break;
+  const [initial] = await db.execute(
+    `SELECT sponsorId FROM users WHERE id = ?`,
+    [startUserId],
+  );
 
-    const [rows] = await db.execute(
-      `SELECT id, sponsorId FROM users WHERE id = ?`,
-      [currentId],
+  let nextSponsorId = initial[0]?.sponsorId;
+
+  while (nextSponsorId) {
+    // Push current sponsor with correct level
+    chain.push({
+      userId: nextSponsorId,
+      level: level,
+    });
+
+    const [next] = await db.execute(
+      `SELECT sponsorId FROM users WHERE id = ?`,
+      [nextSponsorId],
     );
-    const user = (rows as any[])[0];
 
-    if (user) {
-      chain.push({
-        userId: user.id,
-        level: i,
-      });
-      currentId = user.sponsorId;
-    } else {
-      break;
-    }
+    const nextId = next[0]?.sponsorId;
+
+    // Break if no more chain or self-reference
+    if (!nextId || nextId === nextSponsorId) break;
+
+    nextSponsorId = nextId;
+    level++; // increment AFTER moving up the chain
   }
+
   return chain;
 };
