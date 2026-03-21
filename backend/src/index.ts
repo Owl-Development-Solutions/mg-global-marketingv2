@@ -16,7 +16,7 @@ dotenv.config();
 
 const allowedOrigins = [
   "http://localhost:4200",
-  "https://mg-global-marketingv2.vercel.app",
+  "https://mg-global-marketingv2-two.vercel.app",
 ];
 
 app.use(
