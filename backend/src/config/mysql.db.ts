@@ -9,7 +9,7 @@ let pool: mysql.Pool;
 // host: process.env.DB_HOST_NEW!,
 // user: process.env.DB_USER_NEW!,
 // password: process.env.DB_PASSWORD_NEW!,
-// database: process.env.DB_DATABASE_NEW!,
+// database: process.env.DB_DATABASE!,
 // port: Number(process.env.DB_PORT_NEW),
 
 export const connection = () => {
@@ -18,7 +18,7 @@ export const connection = () => {
       host: process.env.DB_HOST_NEW!,
       user: process.env.DB_USER_NEW!,
       password: process.env.DB_PASSWORD_NEW!,
-      database: process.env.DB_DATABASE_NEW!,
+      database: process.env.DB_DATABASE!,
       port: Number(process.env.DB_PORT_NEW),
       ssl: {
         rejectUnauthorized: false,
