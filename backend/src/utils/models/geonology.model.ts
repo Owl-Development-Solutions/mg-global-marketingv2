@@ -40,3 +40,8 @@ export interface GeonologyResponse {
   newUserId: string;
   geonologyLevel: LowOrHigh;
 }
+
+export interface NodeWithSponsors extends Node {
+  directSponsor: string | null;
+  indirectSponsors: { sponsorId: string; degree: number }[];
+}

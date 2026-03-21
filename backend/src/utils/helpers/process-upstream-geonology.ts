@@ -1,5 +1,6 @@
 import { getDirectBonus, getIndirectBonus, getLevelBonus } from ".";
 import { connection } from "../../config/mysql.db";
+import { User, UserStats } from "../models";
 import {
   getAll3500Users,
   groupBySponsor,
@@ -7,6 +8,7 @@ import {
   processPairs,
   processSponsorPairs,
 } from "./geanology-pairing-helper";
+import { buildNodeTree, getSponsorshipChain } from "./genology-helper";
 
 /**
  * Recursively processes binary volume and commissions for all ancestors up the tree.
@@ -400,106 +402,75 @@ export const processBinaryVolumeUpstreamv1 = async (
     //logic for the direct and indirect bonuses...
     const nodeArrayMap = Array.from(nodeMap.values());
 
-    for (const node of nodeArrayMap) {
-      const degree = Number(node.childLevel) - Number(node.ancestorLevel);
-      console.log(node);
-      if (node.currentId === node.actualSponsorId) {
-        //static for every bonuses if directAmount
+    //newlogicv1
+    const [newUserResult] = await db.execute(
+      `SELECT sponsorId FROM users WHERE id = ?`,
+      [newUserId],
+    );
+
+    const directSponsor = (newUserResult as any[])[0]?.sponsorId;
+
+    const referalChain = await getSponsorshipChain(db, directSponsor, 5);
+
+    for (let i = 0; i < referalChain.length; i++) {
+      const beneficiaryId = referalChain[i];
+
+      const isDirect = i === 0;
+
+      const level = i;
+
+      if (isDirect) {
+        console.log("direct amount runs reciever", beneficiaryId);
         const directAmt = price === 3500 ? 500 : 100;
-
-        console.log("runs direct", directAmt);
-
         if (price === 3500) {
-          //package price bonus 500
           await db.execute(
             `UPDATE user_stats SET directBonus3500 = COALESCE(directBonus3500, 0) + ? WHERE userId = ?`,
-            [directAmt, node.currentId],
+            [directAmt, beneficiaryId],
           );
           await db.execute(
             `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
            VALUES (?, 'Direct Bonus for package 3500', 'directBonus', ?, 'Credit', 'Direct referral bonus')`,
-            [node.currentId, directAmt],
+            [beneficiaryId, directAmt],
           );
         } else {
           await db.execute(
             `UPDATE user_stats SET directBonus500 = COALESCE(directBonus500, 0) + ? WHERE userId = ?`,
-            [directAmt, node.currentId],
+            [directAmt, beneficiaryId],
           );
           await db.execute(
             `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
            VALUES (?, 'Direct Bonus for package 500', 'directBonus', ?, 'Credit', 'Direct referral bonus')`,
-            [node.currentId, directAmt],
+            [beneficiaryId, directAmt],
           );
         }
-      } else if (node.currentId === node.parentSponsorId) {
-        /* INDIRECT BONUS */
-        const indirectAmt = getLevelBonus(newLevel);
+      } else {
+        const indirectAmt = getLevelBonus(level);
 
-        console.log("runs indirect", indirectAmt);
+        console.log(
+          `indirect amounts receives ${indirectAmt} receivers`,
+          beneficiaryId,
+        );
 
-        if (indirectAmt > 0) {
-          if (price === 3500) {
-            console.log("indirect runs amount 3500");
-            await db.execute(
-              `UPDATE user_stats SET inDirectBonus3500 = COALESCE(inDirectBonus3500, 0) + ? WHERE userId = ?`,
-              [indirectAmt, node.currentId],
-            );
-            await db.execute(
-              `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
+        if (price === 3500) {
+          await db.execute(
+            `UPDATE user_stats SET inDirectBonus3500 = COALESCE(inDirectBonus3500, 0) + ? WHERE userId = ?`,
+            [indirectAmt, beneficiaryId],
+          );
+          await db.execute(
+            `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
              VALUES (?, 'Indirect Bonus for 3500', 'indirectBonus', ?, 'Credit', ?)`,
-              [node.currentId, indirectAmt, `Indirect bonus degree ${degree}`],
-            );
-
-            if (
-              mainGrandParentSponsor &&
-              node.currentId !== mainGrandParentSponsor
-            ) {
-              await db.execute(
-                `UPDATE user_stats SET inDirectBonus3500 = COALESCE(inDirectBonus3500, 0) + ? WHERE userId = ?`,
-                [indirectAmt, mainGrandParentSponsor],
-              );
-              await db.execute(
-                `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
-             VALUES (?, 'Indirect Bonus for 3500', 'indirectBonus', ?, 'Credit', ?)`,
-                [
-                  mainGrandParentSponsor,
-                  indirectAmt,
-                  `Indirect bonus degree ${degree}`,
-                ],
-              );
-            }
-          } else {
-            console.log("indirect runs amount 500");
-
-            await db.execute(
-              `UPDATE user_stats SET inDirectBonus500 = COALESCE(inDirectBonus500, 0) + ? WHERE userId = ?`,
-              [indirectAmt, node.currentId],
-            );
-            await db.execute(
-              `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
+            [beneficiaryId, indirectAmt, `Indirect bonus degree ${level}`],
+          );
+        } else {
+          await db.execute(
+            `UPDATE user_stats SET inDirectBonus500 = COALESCE(inDirectBonus500, 0) + ? WHERE userId = ?`,
+            [indirectAmt, beneficiaryId],
+          );
+          await db.execute(
+            `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
              VALUES (?, 'Indirect Bonus for 500', 'indirectBonus', ?, 'Credit', ?)`,
-              [node.currentId, indirectAmt, `Indirect bonus degree ${degree}`],
-            );
-
-            if (
-              mainGrandParentSponsor &&
-              node.currentId !== mainGrandParentSponsor
-            ) {
-              await db.execute(
-                `UPDATE user_stats SET inDirectBonus500 = COALESCE(inDirectBonus500, 0) + ? WHERE userId = ?`,
-                [indirectAmt, mainGrandParentSponsor],
-              );
-              await db.execute(
-                `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
-             VALUES (?, 'Indirect Bonus for 500', 'indirectBonus', ?, 'Credit', ?)`,
-                [
-                  mainGrandParentSponsor,
-                  indirectAmt,
-                  `Indirect bonus degree ${degree}`,
-                ],
-              );
-            }
-          }
+            [beneficiaryId, indirectAmt, `Indirect bonus degree ${level}`],
+          );
         }
       }
     }

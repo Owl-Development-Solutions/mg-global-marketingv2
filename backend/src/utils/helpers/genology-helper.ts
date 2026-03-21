@@ -395,3 +395,30 @@ export const collectDescendantsForDeletion = async (
     );
   }
 };
+
+export const getSponsorshipChain = async (
+  db: any,
+  startSponsorId: string,
+  depth: number = 5,
+) => {
+  const chain = [];
+  let currentId = startSponsorId;
+
+  for (let i = 0; i < depth; i++) {
+    if (!currentId) break;
+
+    const [rows] = await db.execute(
+      `SELECT id, sponsorId FROM users WHERE id = ?`,
+      [currentId],
+    );
+    const user = (rows as any[])[0];
+
+    if (user) {
+      chain.push(user.id);
+      currentId = user.sponsorId;
+    } else {
+      break;
+    }
+  }
+  return chain;
+};
