@@ -152,6 +152,7 @@ export const processBinaryVolumeUpstreamv1 = async (
   initialSide: "Left" | "Right",
   newUserId: string,
   packagePrice: number,
+  newLevel: any,
 ): Promise<void> => {
   if (!initialAncestorId) return;
 
@@ -202,7 +203,7 @@ export const processBinaryVolumeUpstreamv1 = async (
 
       const rawData = (dataResult as any[])[0];
 
-      console.log("dataRes", dataResult);
+      // console.log("dataRes", dataResult);
 
       const leftChildData =
         rawData.currentId === uplineId && initialSide === "Left"
@@ -259,7 +260,7 @@ export const processBinaryVolumeUpstreamv1 = async (
       }
     }
 
-    console.log("path", path);
+    // console.log("path", path);
 
     const secondToLastItem = path.length >= 2 ? path[path.length - 2] : null;
 
@@ -289,14 +290,119 @@ export const processBinaryVolumeUpstreamv1 = async (
         [node.currentId],
       );
 
-      const degree = Number(node.childLevel) - Number(node.ancestorLevel);
-
       console.log("price", price);
 
       // PREVENT BONUS IF PRICE IS 0
       if (price === 0) return;
 
-      /* DIRECT BONUS */
+      // console.log("nodeMap", nodeMap);
+      // console.log("node", node);
+
+      //LOGIC FOR 3500 PAIRING
+      nodeMap.set(node.currentId, node);
+      que.push(node);
+    }
+
+    let queIndex = 0;
+    while (queIndex < que.length) {
+      const currentNode = que[queIndex];
+      queIndex++;
+
+      const childrenToFetch = [];
+
+      if (currentNode.leftChild?.id && !nodeMap.has(currentNode.leftChild.id)) {
+        childrenToFetch.push(currentNode.leftChild.id);
+      }
+      if (
+        currentNode.rightChild?.id &&
+        !nodeMap.has(currentNode.rightChild.id)
+      ) {
+        childrenToFetch.push(currentNode.rightChild.id);
+      }
+
+      for (const childId of childrenToFetch) {
+        const [siblingResult] = await db.execute(
+          `SELECT
+            u.id AS currentId,
+            u.parentId,
+            u.createdAt,
+            u.sponsorId AS ancestorSponsorId,
+            ac.price AS currentIdPrice,
+
+            child.sponsorId AS actualSponsorId,
+            parent.sponsorId AS parentSponsorId,
+            childStats.level AS childLevel,
+
+            us.level AS ancestorLevel,
+            us.indirectBonus3500 AS ancestorIndirectBonus3500,
+            us.indirectBonus500 AS ancestorIndirectBonus500,
+
+            u.leftChildId AS leftChildId,
+            acl.price AS leftChildPrice,
+            u.rightChildId AS rightChildId,
+            acr.price AS rightChildPrice
+
+          FROM users u
+          LEFT JOIN activation_codes ac ON u.activationCodeId = ac.id
+          LEFT JOIN user_stats us ON u.id = us.userId
+
+          LEFT JOIN users child ON child.id = ?
+          LEFT JOIN users parent ON parent.id = child.parentId
+          LEFT JOIN user_stats childStats ON childStats.userId = child.id
+
+          LEFT JOIN users l ON u.leftChildId = l.id
+          LEFT JOIN activation_codes acl ON l.activationCodeId = acl.id
+          LEFT JOIN users r ON u.rightChildId = r.id
+          LEFT JOIN activation_codes acr ON r.activationCodeId = acr.id
+
+        WHERE u.id = ?`,
+          [newUserId, childId],
+        );
+
+        const rawSibling = (siblingResult as any[])[0];
+
+        if (rawSibling) {
+          const newNode: any = {
+            currentId: rawSibling.currentId,
+            createdAt: rawSibling.createdAt,
+            parentId: rawSibling.parentId,
+            ancestorSponsorId: rawSibling.ancestorSponsorId,
+            currentIdPrice: rawSibling.currentIdPrice,
+            actualSponsorId: rawSibling.actualSponsorId,
+            parentSponsorId: rawSibling.parentSponsorId,
+            childLevel: rawSibling.childLevel,
+            ancestorLevel: rawSibling.ancestorLevel,
+            ancestorIndirectBonus3500: rawSibling.ancestorIndirectBonus3500,
+            ancestorIndirectBonus500: rawSibling.ancestorIndirectBonus500,
+            leftChild: rawSibling.leftChildId
+              ? {
+                  id: rawSibling.leftChildId,
+                  activationCodePrice: rawSibling.leftChildPrice,
+                }
+              : null,
+            rightChild: rawSibling.rightChildId
+              ? {
+                  id: rawSibling.rightChildId,
+                  activationCodePrice: rawSibling.rightChildPrice,
+                }
+              : null,
+            isExpansion: true, // Flag to distinguish from the main path
+          };
+
+          nodeMap.set(rawSibling.currentId, newNode);
+          que.push(newNode);
+        }
+      }
+    }
+
+    // console.log("nodeMap", nodeMap);
+
+    //logic for the direct and indirect bonuses...
+    const nodeArrayMap = Array.from(nodeMap.values());
+
+    for (const node of nodeArrayMap) {
+      const degree = Number(node.childLevel) - Number(node.ancestorLevel);
+      console.log(node);
       if (node.currentId === node.actualSponsorId) {
         //static for every bonuses if directAmount
         const directAmt = price === 3500 ? 500 : 100;
@@ -327,7 +433,7 @@ export const processBinaryVolumeUpstreamv1 = async (
         }
       } else if (node.currentId === node.parentSponsorId) {
         /* INDIRECT BONUS */
-        const indirectAmt = getLevelBonus(node.ancestorLevel);
+        const indirectAmt = getLevelBonus(newLevel);
 
         console.log("runs indirect", indirectAmt);
 
@@ -396,90 +502,7 @@ export const processBinaryVolumeUpstreamv1 = async (
           }
         }
       }
-
-      //LOGIC FOR 3500 PAIRING
-      nodeMap.set(node.currentId, node);
-      que.push(node);
     }
-
-    let queIndex = 0;
-    while (queIndex < que.length) {
-      const currentNode = que[queIndex];
-      queIndex++;
-
-      const childrenToFetch = [];
-
-      if (currentNode.leftChild?.id && !nodeMap.has(currentNode.leftChild.id)) {
-        childrenToFetch.push(currentNode.leftChild.id);
-      }
-      if (
-        currentNode.rightChild?.id &&
-        !nodeMap.has(currentNode.rightChild.id)
-      ) {
-        childrenToFetch.push(currentNode.rightChild.id);
-      }
-
-      for (const childId of childrenToFetch) {
-        const [siblingResult] = await db.execute(
-          `SELECT
-              u.id AS currentId,
-              u.parentId,
-              u.createdAt,
-              u.sponsorId AS ancestorSponsorId,
-              ac.price AS currentIdPrice,
-              us.level AS ancestorLevel,
-              us.indirectBonus3500 AS ancestorIndirectBonus3500,
-              us.indirectBonus500 AS ancestorIndirectBonus500,
-              u.leftChildId AS leftChildId,
-              acl.price AS leftChildPrice,
-              u.rightChildId AS rightChildId,
-              acr.price AS rightChildPrice
-            FROM users u
-            LEFT JOIN activation_codes ac ON u.activationCodeId = ac.id
-            LEFT JOIN user_stats us ON u.id = us.userId
-            -- Joins for the siblings own children prices
-            LEFT JOIN users l ON u.leftChildId = l.id
-            LEFT JOIN activation_codes acl ON l.activationCodeId = acl.id
-            LEFT JOIN users r ON u.rightChildId = r.id
-            LEFT JOIN activation_codes acr ON r.activationCodeId = acr.id
-            WHERE u.id = ?`,
-          [childId],
-        );
-
-        const rawSibling = (siblingResult as any[])[0];
-
-        if (rawSibling) {
-          const newNode: any = {
-            currentId: rawSibling.currentId,
-            createdAt: rawSibling.createdAt,
-            parentId: rawSibling.parentId,
-            ancestorSponsorId: rawSibling.ancestorSponsorId,
-            currentIdPrice: rawSibling.currentIdPrice,
-            ancestorLevel: rawSibling.ancestorLevel,
-            ancestorIndirectBonus3500: rawSibling.ancestorIndirectBonus3500,
-            ancestorIndirectBonus500: rawSibling.ancestorIndirectBonus500,
-            leftChild: rawSibling.leftChildId
-              ? {
-                  id: rawSibling.leftChildId,
-                  activationCodePrice: rawSibling.leftChildPrice,
-                }
-              : null,
-            rightChild: rawSibling.rightChildId
-              ? {
-                  id: rawSibling.rightChildId,
-                  activationCodePrice: rawSibling.rightChildPrice,
-                }
-              : null,
-            isExpansion: true, // Flag to distinguish from the main path
-          };
-
-          nodeMap.set(rawSibling.currentId, newNode);
-          que.push(newNode);
-        }
-      }
-    }
-
-    console.log("nodeMap", nodeMap);
 
     //LOGIC FOR 3500 PAIRING
     const [dailyResult] = await db.execute(
@@ -506,19 +529,19 @@ export const processBinaryVolumeUpstreamv1 = async (
 
     const users3500 = getAll3500Users(nodeMap);
 
-    console.log(
-      "users3500",
-      users3500.map((u) => u.currentId),
-    );
+    // console.log(
+    //   "users3500",
+    //   users3500.map((u) => u.currentId),
+    // );
 
     //group by sponsor
     const sponsorGroups = groupBySponsor(users3500);
 
-    console.log("sponsorGroups", sponsorGroups);
+    // console.log("sponsorGroups", sponsorGroups);
 
     const remainingSlots = 15 - todayPairs;
 
-    console.log("remainingSlots", remainingSlots);
+    // console.log("remainingSlots", remainingSlots);
 
     if (remainingSlots <= 0) {
       console.log("Daily pairing limit reached");

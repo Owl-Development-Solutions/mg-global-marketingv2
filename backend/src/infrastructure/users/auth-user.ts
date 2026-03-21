@@ -431,7 +431,8 @@ export const registerUserIn = async (
       upline.id,
       placementSide,
       newUserId,
-      code.price, // Pass the price for the custom bonus logic we wrote earlier
+      code.price, // Pass the price for the custom bonus logic we wrote earlier,
+      newLevel,
     );
 
     return {
@@ -479,7 +480,7 @@ export const loginUserIn = async (
 
     const users = rows as User[];
 
-    console.log(users);
+    // console.log(users);
 
     if (users.length === 0) {
       return {
