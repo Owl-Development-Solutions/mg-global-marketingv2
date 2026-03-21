@@ -399,12 +399,12 @@ export const collectDescendantsForDeletion = async (
 export const getSponsorshipChain = async (
   db: any,
   startSponsorId: string,
-  depth: number = 5,
+  maxDepth: number,
 ) => {
   const chain = [];
   let currentId = startSponsorId;
 
-  for (let i = 0; i < depth; i++) {
+  for (let i = 0; i < maxDepth; i++) {
     if (!currentId) break;
 
     const [rows] = await db.execute(
@@ -414,7 +414,10 @@ export const getSponsorshipChain = async (
     const user = (rows as any[])[0];
 
     if (user) {
-      chain.push(user.id);
+      chain.push({
+        userId: user.id,
+        level: i,
+      });
       currentId = user.sponsorId;
     } else {
       break;

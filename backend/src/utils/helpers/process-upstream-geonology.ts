@@ -402,74 +402,79 @@ export const processBinaryVolumeUpstreamv1 = async (
     //logic for the direct and indirect bonuses...
     const nodeArrayMap = Array.from(nodeMap.values());
 
-    //newlogicv1
     const [newUserResult] = await db.execute(
       `SELECT sponsorId FROM users WHERE id = ?`,
       [newUserId],
     );
+    const directSponsorId = (newUserResult as any[])[0]?.sponsorId;
 
-    const directSponsor = (newUserResult as any[])[0]?.sponsorId;
+    console.log("nodeArrayMap", nodeArrayMap);
 
-    const referalChain = await getSponsorshipChain(db, directSponsor, 5);
+    //newlogicv1
+    const referalChain = await getSponsorshipChain(db, directSponsorId, 5);
 
-    for (let i = 0; i < referalChain.length; i++) {
-      const beneficiaryId = referalChain[i];
+    console.log("referal chain", referalChain);
 
-      const isDirect = i === 0;
+    for (const entry of referalChain) {
+      const { userId, level } = entry;
 
-      const level = i;
+      const nodeEntry = nodeArrayMap.find((node) => node.currentId === userId);
 
-      if (isDirect) {
-        console.log("direct amount runs reciever", beneficiaryId);
+      const childLevel = nodeEntry ? nodeEntry.childLevel : 0;
+
+      const adjustedLevel = Math.max(0, childLevel - level);
+
+      if (level === 0) {
+        console.log("direct amount runs reciever", userId);
         const directAmt = price === 3500 ? 500 : 100;
         if (price === 3500) {
           await db.execute(
             `UPDATE user_stats SET directBonus3500 = COALESCE(directBonus3500, 0) + ? WHERE userId = ?`,
-            [directAmt, beneficiaryId],
+            [directAmt, userId],
           );
           await db.execute(
             `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
            VALUES (?, 'Direct Bonus for package 3500', 'directBonus', ?, 'Credit', 'Direct referral bonus')`,
-            [beneficiaryId, directAmt],
+            [userId, directAmt],
           );
         } else {
           await db.execute(
             `UPDATE user_stats SET directBonus500 = COALESCE(directBonus500, 0) + ? WHERE userId = ?`,
-            [directAmt, beneficiaryId],
+            [directAmt, userId],
           );
           await db.execute(
             `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
            VALUES (?, 'Direct Bonus for package 500', 'directBonus', ?, 'Credit', 'Direct referral bonus')`,
-            [beneficiaryId, directAmt],
+            [userId, directAmt],
           );
         }
       } else {
-        const indirectAmt = getLevelBonus(level);
+        const indirectAmt = getLevelBonus(adjustedLevel);
 
         console.log(
           `indirect amounts receives ${indirectAmt} receivers`,
-          beneficiaryId,
+          userId,
         );
 
         if (price === 3500) {
           await db.execute(
             `UPDATE user_stats SET inDirectBonus3500 = COALESCE(inDirectBonus3500, 0) + ? WHERE userId = ?`,
-            [indirectAmt, beneficiaryId],
+            [indirectAmt, userId],
           );
           await db.execute(
             `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
              VALUES (?, 'Indirect Bonus for 3500', 'indirectBonus', ?, 'Credit', ?)`,
-            [beneficiaryId, indirectAmt, `Indirect bonus degree ${level}`],
+            [userId, indirectAmt, `Indirect bonus degree ${level}`],
           );
         } else {
           await db.execute(
             `UPDATE user_stats SET inDirectBonus500 = COALESCE(inDirectBonus500, 0) + ? WHERE userId = ?`,
-            [indirectAmt, beneficiaryId],
+            [indirectAmt, userId],
           );
           await db.execute(
             `INSERT INTO transactions (userId, type, walletType, amount, transactionDirection, description)
              VALUES (?, 'Indirect Bonus for 500', 'indirectBonus', ?, 'Credit', ?)`,
-            [beneficiaryId, indirectAmt, `Indirect bonus degree ${level}`],
+            [userId, indirectAmt, `Indirect bonus degree ${level}`],
           );
         }
       }
