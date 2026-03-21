@@ -411,7 +411,18 @@ export const processBinaryVolumeUpstreamv1 = async (
     console.log("nodeArrayMap", nodeArrayMap);
 
     //newlogicv1
-    const referalChain = await getSponsorshipChain(db, directSponsorId, 5);
+    let referalChain = await getSponsorshipChain(db, directSponsorId, 5);
+
+    const chainLength = referalChain.length;
+
+    if (chainLength === 3) {
+      referalChain = referalChain.map((entry, index) => {
+        if (index === 1) return { ...entry, level: 2 };
+        if (index === 2) return { ...entry, level: 3 };
+
+        return entry;
+      });
+    }
 
     console.log("referal chain", referalChain);
 
@@ -420,9 +431,19 @@ export const processBinaryVolumeUpstreamv1 = async (
 
       const nodeEntry = nodeArrayMap.find((node) => node.currentId === userId);
 
-      const childLevel = nodeEntry ? nodeEntry.childLevel : 0;
+      let finalLevel = level;
 
-      const adjustedLevel = Math.max(0, childLevel - level);
+      if ((nodeEntry && chainLength === 2) || chainLength === 3) {
+        const childLevel = nodeEntry.childLevel || 0;
+        finalLevel = Math.max(0, childLevel - level);
+        console.log(
+          `Applying subtraction for ${userId}: ${childLevel} - ${level} = ${finalLevel}`,
+        );
+      } else {
+        console.log(
+          `Skipping subtraction for ${userId} (Chain Length: ${chainLength})`,
+        );
+      }
 
       if (level === 0) {
         console.log("direct amount runs reciever", userId);
@@ -449,7 +470,7 @@ export const processBinaryVolumeUpstreamv1 = async (
           );
         }
       } else {
-        const indirectAmt = getLevelBonus(adjustedLevel);
+        const indirectAmt = getLevelBonus(finalLevel);
 
         console.log(
           `indirect amounts receives ${indirectAmt} receivers`,
