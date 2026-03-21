@@ -14,6 +14,7 @@ import fileUploadRouter from "./routes/upload/file-upload.routes";
 const app = express();
 dotenv.config();
 
+//in the allowedOrigins change the url into 'https://mg-global-marketingv2-two.vercel.app' keep the localhost when switching to dev
 const allowedOrigins = [
   "http://localhost:4200",
   "https://mg-global-marketingv2.vercel.app",
