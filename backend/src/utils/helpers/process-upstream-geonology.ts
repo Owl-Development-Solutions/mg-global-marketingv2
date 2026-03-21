@@ -426,14 +426,22 @@ export const processBinaryVolumeUpstreamv1 = async (
 
     console.log("referal chain", referalChain);
 
+    if (uplineId === initialAncestorId) {
+      console.log("runs here dont apply subtraction");
+    }
+
     for (const entry of referalChain) {
       const { userId, level } = entry;
 
       const nodeEntry = nodeArrayMap.find((node) => node.currentId === userId);
 
       let finalLevel = level;
+      const isInitialAncestor = uplineId === initialAncestorId;
 
-      if ((nodeEntry && chainLength === 2) || chainLength === 3) {
+      if (
+        (nodeEntry && chainLength === 2) ||
+        (chainLength === 3 && level !== 0 && !isInitialAncestor)
+      ) {
         const childLevel = nodeEntry.childLevel || 0;
         finalLevel = Math.max(0, childLevel - level);
         console.log(
