@@ -5,7 +5,7 @@ import {
   getAll3500Users,
   groupBySponsor,
   processMotherPairs,
-  processPairs,
+  processMotherPairsForNode,
   processSponsorPairs,
 } from "./geanology-pairing-helper";
 import { buildNodeTree, getSponsorshipChain } from "./genology-helper";
@@ -179,6 +179,7 @@ export const processBinaryVolumeUpstreamv1 = async (
           parent.sponsorId AS parentSponsorId,
           childStats.level AS childLevel,
           ancStats.level AS ancestorLevel,
+          ancStats.sidePath AS userPath,
           ancStats.indirectBonus3500 AS ancestorIndirectBonus3500,
           ancStats.indirectBonus500 AS ancestorIndirectBonus500,
           -- Left Child Data
@@ -236,6 +237,7 @@ export const processBinaryVolumeUpstreamv1 = async (
         actualSponsorId: rawData.actualSponsorId,
         parentSponsorId: rawData.parentSponsorId,
         childLevel: rawData.childLevel,
+        userPath: rawData.userPath,
         ancestorLevel: rawData.ancestorLevel,
         ancestorIndirectBonus3500: rawData.ancestorIndirectBonus3500,
         ancestorIndirectBonus500: rawData.ancestorIndirectBonus500,
@@ -336,6 +338,7 @@ export const processBinaryVolumeUpstreamv1 = async (
             childStats.level AS childLevel,
 
             us.level AS ancestorLevel,
+            us.sidePath AS userPath,
             us.indirectBonus3500 AS ancestorIndirectBonus3500,
             us.indirectBonus500 AS ancestorIndirectBonus500,
 
@@ -373,6 +376,7 @@ export const processBinaryVolumeUpstreamv1 = async (
             actualSponsorId: rawSibling.actualSponsorId,
             parentSponsorId: rawSibling.parentSponsorId,
             childLevel: rawSibling.childLevel,
+            userPath: rawSibling.userPath,
             ancestorLevel: rawSibling.ancestorLevel,
             ancestorIndirectBonus3500: rawSibling.ancestorIndirectBonus3500,
             ancestorIndirectBonus500: rawSibling.ancestorIndirectBonus500,
@@ -538,6 +542,9 @@ export const processBinaryVolumeUpstreamv1 = async (
     //group by sponsor
     const sponsorGroups = groupBySponsor(users3500);
 
+    console.log("sponsorGroups", sponsorGroups);
+    console.log("nodeMap", nodeMap);
+
     // console.log("sponsorGroups", sponsorGroups);
 
     const remainingSlots = 15 - todayPairs;
@@ -547,8 +554,14 @@ export const processBinaryVolumeUpstreamv1 = async (
     if (remainingSlots <= 0) {
       console.log("Daily pairing limit reached");
     } else {
-      await processSponsorPairs(sponsorGroups, nodeMap);
-      await processMotherPairs(users3500, nodeMap);
+      // await processSponsorPairs(sponsorGroups, nodeMap);
+
+      for (const node of nodeMap.values()) {
+        console.log("node", node);
+
+        await processMotherPairsForNode(node, nodeMap);
+      }
+      // await processMotherPairs(users3500, nodeMap);
     }
   } catch (error) {
     console.error("Bonus Error:", error);

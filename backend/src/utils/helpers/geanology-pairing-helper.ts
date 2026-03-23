@@ -54,6 +54,39 @@ export const buildQueue = (users: any[]) => {
   return [...users];
 };
 
+export const getSponsorChain = (userId: string, map: Map<string, any>) => {
+  const chain: string[] = [];
+  let current = map.get(userId);
+
+  while (current) {
+    if (current.ancestorSponsorId) {
+      chain.push(current.ancestorSponsorId);
+      current = map.get(current.ancestorSponsorId);
+    } else {
+      break;
+    }
+  }
+
+  return chain;
+};
+
+export const findCommonSponsor = (
+  user1: any,
+  user2: any,
+  map: Map<string, any>,
+) => {
+  const chain1 = getSponsorChain(user1.currentId, map);
+  const chain2 = new Set(getSponsorChain(user2.currentId, map));
+
+  for (const sponsor of chain1) {
+    if (chain2.has(sponsor)) {
+      return sponsor;
+    }
+  }
+
+  return null;
+};
+
 export const hasExistingPair = async (userId: string) => {
   const db = connection();
   const [result]: any = await db.execute(
@@ -97,8 +130,8 @@ export const processSponsorPairs = async (
 
       const [existing]: any = await db.execute(
         `SELECT 1 FROM pairing_records 
-     WHERE user1_id IN (?, ?) OR user2_id IN (?, ?) 
-     LIMIT 1`,
+          WHERE user1_id IN (?, ?) OR user2_id IN (?, ?) 
+          LIMIT 1`,
         [u1, u2, u1, u2],
       );
 
@@ -114,7 +147,30 @@ export const processSponsorPairs = async (
         [u1, u2, sponsorId],
       );
 
-      await giveBonusToUplineChain(sponsorId, map, user1, user2);
+      const commonSponsorId = findCommonSponsor(user1, user2, map);
+
+      if (!commonSponsorId) return;
+
+      const node = map.get(commonSponsorId);
+
+      if (!node) return;
+
+      // skip root if needed
+      const root = getRootNode(map);
+
+      if (commonSponsorId === root?.currentId) return;
+
+      if (isEligibleForBonus(node)) {
+        console.log(`only ${commonSponsorId} receives bonus`);
+
+        await db.execute(
+          `UPDATE user_stats
+             SET pairingBonusAmount = COALESCE(pairingBonusAmount, 0) + ?
+             WHERE userId = ?
+            `,
+          [700, commonSponsorId],
+        );
+      }
     }
   }
 };
@@ -171,48 +227,62 @@ export const giveBonusToUplineChain = async (
   }
 };
 
+/**
+ *
+ * @param users who uses 3500 activation code
+ * @param map mapped users who have been recorded in the geanology
+ * @returns bonuses for the ROOT MOTHER ONLY
+ */
 export const processMotherPairs = async (
   users: any[],
   map: Map<string, any>,
 ) => {
+  console.log("users");
+
   const db = connection();
   const motherNode = getRootNode(map);
   if (!motherNode || !Array.isArray(users)) return;
 
   const motherId = motherNode.currentId;
-  // buildQueue sorts by createdAt so we process oldest first
-  let queue = buildQueue(users);
 
-  // We will store people who are actually eligible for a new pair here
-  const eligibleUsers = [];
+  const leftQueue = [];
+  const rightQueue = [];
 
-  // Filter out anyone who already exists in a mother pair record
-  for (const user of queue) {
-    const [existing]: any = await db.execute(
-      `SELECT 1 FROM pairing_records_for_mother 
-       WHERE user1_id = ? OR user2_id = ? LIMIT 1`,
-      [user.currentId, user.currentId],
-    );
+  for (const user of users) {
+    if (Number(user.currentIdPrice) !== 3500) continue;
 
-    if (existing.length === 0) {
-      eligibleUsers.push(user);
-    } else {
-      console.log(`Mother skip: ${user.currentId} already used.`);
+    if (user.userPath.startsWith("[L]")) {
+      leftQueue.push(user);
+    } else if (user.userPath.startsWith("[R]")) {
+      rightQueue.push(user);
     }
   }
 
-  // Pair the remaining eligible users
-  while (eligibleUsers.length >= 2) {
-    const user1 = eligibleUsers.shift();
-    const user2 = eligibleUsers.shift();
-    const [u1, u2] = normalizePair(user1.currentId, user2.currentId);
+  while (leftQueue.length > 0 && rightQueue.length > 0) {
+    const leftUser = leftQueue.shift();
+    const rightUser = rightQueue.shift();
+
+    const [u1, u2] = normalizePair(leftUser.currentId, rightUser.currentId);
+
+    const [existing]: any = await db.execute(
+      `SELECT 1 FROM pairing_records_for_mother
+       WHERE user1_id IN (?, ?) or user2_id IN (?, ?)
+       LIMIT 1
+      `,
+      [u1, u2, u1, u2],
+    );
+
+    if (existing.length > 0) {
+      console.log(
+        `skipped: one of the users (${u1} or ${u2}) is already paired`,
+      );
+      continue;
+    }
 
     await db.execute(
       `INSERT INTO pairing_records_for_mother (user1_id, user2_id) VALUES (?, ?)`,
       [u1, u2],
     );
-
-    console.log(`SUCCESSFUL MOTHER PAIR: ${u1} + ${u2}`);
 
     const motherNodeData = map.get(motherId);
     if (isEligibleForBonus(motherNodeData)) {
@@ -225,83 +295,75 @@ export const processMotherPairs = async (
   }
 };
 
-//new
-export const processPairs = async (
-  sponsorGroups: Map<string, any>,
-  users3500: any[],
+export const processMotherPairsForNode = async (
+  motherNode: any,
   map: Map<string, any>,
 ) => {
   const db = connection();
-  const motherNode = getRootNode(map);
 
-  if (motherNode && Array.isArray(users3500)) {
-    if (users3500.length < 2) return;
+  const motherId = motherNode.currentId;
 
-    const queue = buildQueue(users3500);
+  //get all descendants from the mother
+  const descendants = Array.from(map.values()).filter((u) =>
+    u.userPath.startsWith(
+      motherNode.userPath === "root" ? "" : motherNode.userPath,
+    ),
+  );
 
-    const root = getRootNode(map);
+  //users with 3500 only
+  const users3500 = descendants.filter(
+    (u) => Number(u.currentIdPrice) === 3500,
+  );
 
-    if (!root) return;
+  const leftQueue = [];
+  const rightQueue = [];
 
-    const motherId = motherNode.currentId;
-    console.log(`Processing Mother Node: ${motherId}`);
+  for (const user of users3500) {
+    if (user.currentId === motherId) continue;
 
-    while (queue.length >= 2) {
-      const user1 = queue.shift();
-      const user2 = queue.shift();
+    const relativePath = user.userPath.replace(motherNode.userPath, "");
 
-      const [u1, u2] = normalizePair(user1.currentId, user2.currentId);
-
-      const [result]: any = await db.execute(
-        `INSERT IGNORE INTO pairing_records_for_mother (user1_id, user2_id) VALUES (?, ?)`,
-        [u1, u2],
-      );
-
-      if (result.affectedRows === 0) {
-        console.log(`mother duplicate skipped`);
-
-        continue;
-      }
-
-      console.log(`MOTHER PAIR: ${u1} + ${u2}`);
-
-      const motherNodeData = map.get(motherId);
-
-      if (isEligibleForBonus(motherNodeData)) {
-        console.log("Mother received bonues");
-
-        await db.execute(
-          `UPDATE user_stats SET pairingBonusAmount = COALESCE(pairingBonusAmount, 0) + ? WHERE userId = ?`,
-          [700, motherId],
-        );
-      }
+    if (relativePath.startsWith("[L]")) {
+      leftQueue.push(user);
+    } else if (relativePath.startsWith("[R]")) {
+      rightQueue.push(user);
     }
-  } else if (sponsorGroups instanceof Map) {
-    console.log("runs here");
 
-    for (const [sponsorId, users] of sponsorGroups) {
-      if (users.length < 2) continue;
+    // FIFO
+    leftQueue.sort((a, b) => +new Date(a.createdAt) - +new Date(b.createdAt));
+    rightQueue.sort((a, b) => +new Date(a.createdAt) - +new Date(b.createdAt));
+  }
 
-      const queue = buildQueue(users);
+  // Pairing
+  while (leftQueue.length > 0 && rightQueue.length > 0) {
+    const leftUser = leftQueue.shift();
+    const rightUser = rightQueue.shift();
 
-      while (queue.length >= 2) {
-        const user1 = queue.shift();
-        const user2 = queue.shift();
+    const [u1, u2] = normalizePair(leftUser.currentId, rightUser.currentId);
 
-        const [u1, u2] = normalizePair(user1.currentId, user2.currentId);
+    // prevent duplicate pairing per mother
+    const [existing]: any = await db.execute(
+      `SELECT 1 FROM pairing_records_for_mother 
+       WHERE motherId = ? AND user1_id = ? AND user2_id = ? LIMIT 1`,
+      [motherId, u1, u2],
+    );
 
-        const [result]: any = await db.execute(
-          `INSERT IGNORE INTO pairing_records (user1_id, user2_id, sponsor_id) VALUES (?, ?, ?)`,
-          [u1, u2, sponsorId],
-        );
+    if (existing.length > 0) continue;
 
-        if (result.affectedRows === 0) {
-          console.log(`SKIPPED DUPLICATE: ${u1} + ${u2}`);
-          continue;
-        }
+    await db.execute(
+      `INSERT INTO pairing_records_for_mother (motherId, user1_id, user2_id)
+       VALUES (?, ?, ?)`,
+      [motherId, u1, u2],
+    );
 
-        await giveBonusToUplineChain(sponsorId, map, user1, user2);
-      }
-    }
+    console.log(`PAIR for ${motherId}: ${u1} + ${u2}`);
+
+    // 💰 BONUS
+    await db.execute(
+      `UPDATE user_stats 
+       SET pairingBonusAmount = COALESCE(pairingBonusAmount, 0) + 700 
+       WHERE userId = ?`,
+      [motherId],
+    );
   }
 };
